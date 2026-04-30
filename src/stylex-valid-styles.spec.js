@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+'use strict'
 
-jest.disableAutomock();
+jest.disableAutomock()
 
-const { RuleTester: ESLintTester } = require('eslint');
-const rule = require('../src/stylex-valid-styles');
+const { RuleTester: ESLintTester } = require('eslint')
+const rule = require('./stylex-valid-styles')
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
@@ -18,7 +18,7 @@ const eslintTester = new ESLintTester({
     ecmaVersion: 6,
     sourceType: 'module',
   },
-});
+})
 
 eslintTester.run('stylex-valid-styles', rule.default, {
   valid: [
@@ -2048,7 +2048,7 @@ const styles = stylex.create({
       ],
     },
   ],
-});
+})
 
 eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
   valid: [
@@ -2772,7 +2772,7 @@ revert`,
       ],
     },
   ],
-});
+})
 
 eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
   valid: [
@@ -3289,4 +3289,4 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       ],
     },
   ],
-});
+})

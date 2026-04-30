@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+'use strict'
 
-jest.disableAutomock();
+jest.disableAutomock()
 
-const { RuleTester: ESLintTester } = require('eslint');
-const rule = require('../src/stylex-no-conflicting-props');
+const { RuleTester: ESLintTester } = require('eslint')
+const rule = require('../src/stylex-no-conflicting-props')
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
@@ -21,7 +21,7 @@ const eslintTester = new ESLintTester({
       jsx: true,
     },
   },
-});
+})
 
 eslintTester.run('stylex-no-conflicting-props', rule.default, {
   valid: [
@@ -305,4 +305,4 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
       ],
     },
   ],
-});
+})
