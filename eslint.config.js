@@ -21,10 +21,12 @@ const eslintConfig = defineConfig([
       'func-names': 'off',
       'func-style': 'off',
       'id-length': 'off',
+      'max-lines': 'off',
       'max-lines-per-function': 'off',
       'max-statements': 'off',
       'no-duplicate-imports': 'off',
       'no-eq-null': 'off',
+      'no-inline-comments': 'off',
       'no-magic-numbers': ['warn', { ignore: [0, 1] }],
       'no-param-reassign': ['error', { props: true }],
       'no-ternary': 'off',
@@ -143,6 +145,7 @@ const eslintConfig = defineConfig([
       // TODO: use vite-plugin-test-name instead
       'vitest/prefer-describe-function-title': 'off',
       'vitest/require-top-level-describe': 'off',
+      'vitest/require-hook': 'off',
     },
   },
 
