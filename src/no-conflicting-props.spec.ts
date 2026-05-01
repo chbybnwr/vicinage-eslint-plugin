@@ -10,7 +10,7 @@ const ruleTester = new RuleTester({
   },
 })
 
-ruleTester.run('stylex-no-conflicting-props', rule, {
+ruleTester.run('no-conflicting-props', rule, {
   valid: [
     {
       code: /* js */ `
