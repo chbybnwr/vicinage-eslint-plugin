@@ -19,6 +19,9 @@ const viteConfig = {
 
         test: {
           name: 'unit',
+          setupFiles: [
+            fileURLToPath(new URL('src/test/setup.ts', import.meta.url)),
+          ],
         },
       },
     ],
