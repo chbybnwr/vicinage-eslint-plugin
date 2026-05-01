@@ -1,124 +1,127 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-'use strict'
-
-jest.disableAutomock()
-
-const { RuleTester: ESLintTester } = require('eslint')
-const rule = require('../src/stylex-no-conflicting-props')
-
-const eslintTester = new ESLintTester({
-  parser: require.resolve('hermes-eslint'),
-  parserOptions: {
-    ecmaVersion: 6,
-    sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true,
+const ruleTester = new RuleTester({
+  languageOptions: {
+    parserOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      ecmaFeatures: {
+        jsx: true,
+      },
     },
   },
 })
 
-eslintTester.run('stylex-no-conflicting-props', rule.default, {
+ruleTester.run('stylex-no-conflicting-props', rule, {
   valid: [
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...stylex.props(styles.main)} />;
+          return <div {...stylex.props(styles.main)} />
         }
       `,
     },
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         function Component() {
-          return <div className="foo" />;
+          return <div className="foo" />
         }
       `,
     },
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         function Component() {
-          return <div style={{ color: 'red' }} />;
+          return <div style={{ color: 'red' }} />
         }
       `,
     },
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...stylex.props(styles.main)} data-testid="test" />;
+          return <div {...stylex.props(styles.main)} data-testid="test" />
         }
       `,
     },
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...otherProps} className="foo" />;
+          return <div {...otherProps} className="foo" />
         }
       `,
     },
     {
-      code: `
-        import { props, create } from '@stylexjs/stylex';
+      code: /* js */ `
+        import { props, create } from '@stylexjs/stylex'
+
         const styles = create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...props(styles.main)} />;
+          return <div {...props(styles.main)} />
         }
       `,
     },
     {
       options: [{ validImports: ['custom-stylex'] }],
-      code: `
-        import * as stylex from 'custom-stylex';
+      code: /* js */ `
+        import * as stylex from 'custom-stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...stylex.props(styles.main)} />;
+          return <div {...stylex.props(styles.main)} />
         }
       `,
     },
     {
       options: [{ validImports: [{ from: 'a', as: 'css' }] }],
-      code: `
-        import { css } from 'a';
+      code: /* js */ `
+        import { css } from 'a'
+
         const styles = css.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...css.props(styles.main)} />;
+          return <div {...css.props(styles.main)} />
         }
       `,
     },
   ],
   invalid: [
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...stylex.props(styles.main)} className="foo" />;
+          return <div {...stylex.props(styles.main)} className="foo" />
         }
       `,
       errors: [
@@ -129,13 +132,15 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
       ],
     },
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...stylex.props(styles.main)} style={{ margin: 10 }} />;
+          return <div {...stylex.props(styles.main)} style={{ margin: 10 }} />
         }
       `,
       errors: [
@@ -146,13 +151,15 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
       ],
     },
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div className="foo" {...stylex.props(styles.main)} />;
+          return <div className="foo" {...stylex.props(styles.main)} />
         }
       `,
       errors: [
@@ -163,13 +170,15 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
       ],
     },
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div style={{ margin: 10 }} {...stylex.props(styles.main)} />;
+          return <div style={{ margin: 10 }} {...stylex.props(styles.main)} />
         }
       `,
       errors: [
@@ -180,13 +189,15 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
       ],
     },
     {
-      code: `
-        import { props, create } from '@stylexjs/stylex';
+      code: /* js */ `
+        import { props, create } from '@stylexjs/stylex'
+
         const styles = create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...props(styles.main)} className="foo" />;
+          return <div {...props(styles.main)} className="foo" />
         }
       `,
       errors: [
@@ -197,13 +208,15 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
       ],
     },
     {
-      code: `
-        import { props as p, create } from '@stylexjs/stylex';
+      code: /* js */ `
+        import { props as p, create } from '@stylexjs/stylex'
+
         const styles = create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...p(styles.main)} className="foo" />;
+          return <div {...p(styles.main)} className="foo" />
         }
       `,
       errors: [
@@ -215,13 +228,15 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
     },
     {
       options: [{ validImports: ['custom-stylex'] }],
-      code: `
-        import * as stylex from 'custom-stylex';
+      code: /* js */ `
+        import * as stylex from 'custom-stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...stylex.props(styles.main)} className="foo" />;
+          return <div {...stylex.props(styles.main)} className="foo" />
         }
       `,
       errors: [
@@ -233,13 +248,15 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
     },
     {
       options: [{ validImports: [{ from: 'a', as: 'css' }] }],
-      code: `
-        import { css } from 'a';
+      code: /* js */ `
+        import { css } from 'a'
+
         const styles = css.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...css.props(styles.main)} className="foo" />;
+          return <div {...css.props(styles.main)} className="foo" />
         }
       `,
       errors: [
@@ -250,13 +267,15 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
       ],
     },
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...stylex.props(styles.main)} className="foo" style={{ margin: 10 }} />;
+          return <div {...stylex.props(styles.main)} className="foo" style={{ margin: 10 }} />
         }
       `,
       errors: [
@@ -271,13 +290,15 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
       ],
     },
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...stylex.props(styles.main)} {...{ className: 'foo' }} />;
+          return <div {...stylex.props(styles.main)} {...{ className: 'foo' }} />
         }
       `,
       errors: [
@@ -288,13 +309,15 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
       ],
     },
     {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex'
+
         const styles = stylex.create({
           main: { color: 'red' },
-        });
+        })
+
         function Component() {
-          return <div {...stylex.props(styles.main)} {...{ style: { margin: 10 } }} />;
+          return <div {...stylex.props(styles.main)} {...{ style: { margin: 10 } }} />
         }
       `,
       errors: [
@@ -306,3 +329,7 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
     },
   ],
 })
+
+import rule from './stylex-no-conflicting-props'
+import { RuleTester } from 'eslint'
+//

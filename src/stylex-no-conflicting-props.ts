@@ -1,45 +1,12 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
+export { stylexNoConflictingProps as default }
 
-'use strict';
-
-import type { Node } from 'estree';
-import createImportTracker from './utils/createImportTracker';
-/*:: import { Rule } from 'eslint'; */
-
-type JSXIdentifier = {
-  +type: 'JSXIdentifier',
-  +name: string,
-};
-
-type JSXAttribute = {
-  +type: 'JSXAttribute',
-  +name: JSXIdentifier | { +type: string },
-};
-
-type JSXSpreadAttribute = {
-  +type: 'JSXSpreadAttribute',
-  +argument: Node,
-};
-
-type JSXOpeningElement = {
-  +type: 'JSXOpeningElement',
-  +attributes: $ReadOnlyArray<JSXAttribute | JSXSpreadAttribute>,
-};
-
-const stylexNoConflictingProps = {
+const stylexNoConflictingProps: Rule.RuleModule = {
   meta: {
     type: 'problem',
     docs: {
       description:
         'Disallow using `className` or `style` props on elements that spread `stylex.props()`',
-      category: 'Best Practices',
+      // category: 'Best Practices',
       recommended: true,
     },
     schema: [
@@ -67,11 +34,15 @@ const stylexNoConflictingProps = {
       },
     ],
   },
-  create(context: Rule.RuleContext): { ... } {
-    const { validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'] } =
-      context.options[0] || {};
+  create: (context: Rule.RuleContext) => {
+    const options = context.options as { validImports: string[] }[]
 
-    const importTracker = createImportTracker(importsToLookFor);
+    const validImports = options[0]?.validImports ?? [
+      'stylex',
+      '@stylexjs/stylex',
+    ]
+
+    const importTracker = createImportTracker(validImports)
 
     function isStylexPropsCallee(node: Node) {
       return (
@@ -82,28 +53,33 @@ const stylexNoConflictingProps = {
           node.property.name === 'props') ||
         (node.type === 'Identifier' &&
           importTracker.isStylexNamedImport('props', node.name))
-      );
+      )
     }
 
     return {
       ImportDeclaration: importTracker.ImportDeclaration,
 
-      JSXOpeningElement(node: JSXOpeningElement) {
+      JSXOpeningElement: (node: Node | JSXOpeningElement) => {
+        if (!(node.type === 'JSXOpeningElement')) {
+          return
+        }
+
         const hasStylexPropsSpread = node.attributes.some(
           (attr) =>
             attr.type === 'JSXSpreadAttribute' &&
             attr.argument.type === 'CallExpression' &&
             isStylexPropsCallee(attr.argument.callee),
-        );
+        )
 
         if (!hasStylexPropsSpread) {
-          return;
+          return
         }
 
         for (const attr of node.attributes) {
           if (
             attr.type === 'JSXAttribute' &&
             attr.name.type === 'JSXIdentifier' &&
+            'name' in attr.name &&
             (attr.name.name === 'className' || attr.name.name === 'style')
           ) {
             context.report({
@@ -112,7 +88,7 @@ const stylexNoConflictingProps = {
               message:
                 'The `{{propName}}` prop should not be used when spreading `stylex.props()` to avoid conflicts.',
               data: { propName: attr.name.name },
-            });
+            })
           } else if (
             attr.type === 'JSXSpreadAttribute' &&
             attr.argument.type === 'ObjectExpression'
@@ -130,18 +106,41 @@ const stylexNoConflictingProps = {
                   message:
                     'The `{{propName}}` prop should not be used when spreading `stylex.props()` to avoid conflicts.',
                   data: { propName: prop.key.name },
-                });
+                })
               }
             }
           }
         }
       },
 
-      'Program:exit'() {
-        importTracker.clear();
+      'Program:exit': () => {
+        importTracker.clear()
       },
-    };
+    }
   },
-};
+}
 
-export default stylexNoConflictingProps;
+interface JSXIdentifier {
+  type: 'JSXIdentifier'
+  name: string
+}
+
+interface JSXAttribute {
+  type: 'JSXAttribute'
+  name: JSXIdentifier | { type: string }
+}
+
+interface JSXSpreadAttribute {
+  type: 'JSXSpreadAttribute'
+  argument: Node
+}
+
+interface JSXOpeningElement {
+  type: 'JSXOpeningElement'
+  attributes: readonly (JSXAttribute | JSXSpreadAttribute)[]
+}
+
+import createImportTracker from './utils/create-import-tracker'
+import type { Node } from 'estree'
+import type { Rule } from 'eslint'
+//

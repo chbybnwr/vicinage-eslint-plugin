@@ -30,6 +30,7 @@
     "@stylistic/eslint-plugin": "^5.10.0",
     "@txe/eslint-plugin-x": "~0.2.1",
     "@txe/tsconfig": "file:modules/txe-tsconfig-0.1.0.tgz",
+    "@types/estree": "^1.0.8",
     "@types/node": "^25.6.0",
     "@typescript-eslint/parser": "^8.59.1",
     "@typescript/native-preview": "7.0.0-dev.20260422.1",

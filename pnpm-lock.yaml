@@ -39,6 +39,9 @@ importers:
       '@txe/tsconfig':
         specifier: file:modules/txe-tsconfig-0.1.0.tgz
         version: file:modules/txe-tsconfig-0.1.0.tgz
+      '@types/estree':
+        specifier: ^1.0.8
+        version: 1.0.8
       '@types/node':
         specifier: ^25.6.0
         version: 25.6.0
