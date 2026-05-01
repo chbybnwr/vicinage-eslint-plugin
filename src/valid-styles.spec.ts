@@ -10,7 +10,7 @@
 jest.disableAutomock()
 
 const { RuleTester: ESLintTester } = require('eslint')
-const rule = require('./stylex-valid-styles')
+const rule = require('./valid-styles')
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
@@ -20,7 +20,7 @@ const eslintTester = new ESLintTester({
   },
 })
 
-eslintTester.run('stylex-valid-styles', rule.default, {
+eslintTester.run('valid-styles', rule.default, {
   valid: [
     // test for local static variables
     `
@@ -2050,7 +2050,7 @@ const styles = stylex.create({
   ],
 })
 
-eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
+eslintTester.run('valid-styles [restrictions]', rule.default, {
   valid: [
     `
       import * as stylex from '@stylexjs/stylex';
@@ -2774,7 +2774,7 @@ revert`,
   ],
 })
 
-eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
+eslintTester.run('valid-styles [autofixers]', rule.default, {
   valid: [
     // Grid longhands should be allowed under banPropsForLegacy
     {

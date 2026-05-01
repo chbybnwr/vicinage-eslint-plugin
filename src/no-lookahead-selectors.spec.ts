@@ -10,7 +10,7 @@
 jest.disableAutomock();
 
 const { RuleTester: ESLintTester } = require('eslint');
-const rule = require('../src/stylex-no-lookahead-selectors');
+const rule = require('../src/no-lookahead-selectors');
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
@@ -20,7 +20,7 @@ const eslintTester = new ESLintTester({
   },
 });
 
-eslintTester.run('stylex-no-lookahead-selectors', rule.default, {
+eslintTester.run('no-lookahead-selectors', rule.default, {
   valid: [
     {
       // stylex.when usage for ancestor selectors

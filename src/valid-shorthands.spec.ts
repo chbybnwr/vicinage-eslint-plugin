@@ -10,7 +10,7 @@
 jest.disableAutomock();
 
 const { RuleTester: ESLintTester } = require('eslint');
-const rule = require('../src/stylex-valid-shorthands');
+const rule = require('../src/valid-shorthands');
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
@@ -20,7 +20,7 @@ const eslintTester = new ESLintTester({
   },
 });
 
-eslintTester.run('stylex-valid-shorthands', rule.default, {
+eslintTester.run('valid-shorthands', rule.default, {
   valid: [
     {
       code: `

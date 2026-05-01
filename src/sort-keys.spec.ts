@@ -10,7 +10,7 @@
 jest.disableAutomock();
 
 const { RuleTester: ESLintTester } = require('eslint');
-const rule = require('../src/stylex-sort-keys');
+const rule = require('../src/sort-keys');
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
@@ -20,7 +20,7 @@ const eslintTester = new ESLintTester({
   },
 });
 
-eslintTester.run('stylex-sort-keys', rule.default, {
+eslintTester.run('sort-keys', rule.default, {
   valid: [
     {
       code: `

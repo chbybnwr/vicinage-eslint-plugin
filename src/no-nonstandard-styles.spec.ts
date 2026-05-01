@@ -10,7 +10,7 @@
 jest.disableAutomock()
 
 const { RuleTester: ESLintTester } = require('eslint')
-const rule = require('./stylex-no-nonstandard-styles')
+const rule = require('./no-nonstandard-styles')
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
@@ -20,7 +20,7 @@ const eslintTester = new ESLintTester({
   },
 })
 
-eslintTester.run('stylex-no-nonstandard-styles', rule.default, {
+eslintTester.run('no-nonstandard-styles', rule.default, {
   valid: [
     `
       import * as stylex from '@stylexjs/stylex';
