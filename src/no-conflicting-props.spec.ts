@@ -330,6 +330,6 @@ ruleTester.run('stylex-no-conflicting-props', rule, {
   ],
 })
 
-import rule from './stylex-no-conflicting-props'
+import rule from './no-conflicting-props'
 import { RuleTester } from 'eslint'
 //
