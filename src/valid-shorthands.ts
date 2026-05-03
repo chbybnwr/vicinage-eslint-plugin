@@ -84,7 +84,7 @@ const validShorthands: Rule.RuleModule = {
                 },
               ],
             },
-            default: ['stylex', '@stylexjs/stylex'],
+            default: ['vicinage'],
           },
           allowImportant: {
             type: 'boolean',
@@ -99,9 +99,9 @@ const validShorthands: Rule.RuleModule = {
       },
     ],
   },
-  create(context: Rule.RuleContext) {
+  create: (context: Rule.RuleContext) => {
     const {
-      validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
+      validImports = ['vicinage'],
       allowImportant = false,
       preferInline = false,
     } = (context.options[0] ?? {}) as {
@@ -110,17 +110,17 @@ const validShorthands: Rule.RuleModule = {
       preferInline?: boolean
     }
 
-    const importTracker = createImportTracker(importsToLookFor)
+    const importTracker = createImportTracker(validImports)
 
     function isStylexCreateCallee(node: Node) {
       return (
-        (node.type === 'MemberExpression' &&
-          node.object.type === 'Identifier' &&
-          importTracker.isDefaultImport(node.object.name) &&
-          node.property.type === 'Identifier' &&
-          node.property.name === 'create') ||
-        (node.type === 'Identifier' &&
-          importTracker.isNamedImport('create', node.name))
+        // (node.type === 'MemberExpression' &&
+        //   node.object.type === 'Identifier' &&
+        //   importTracker.isDefaultImport(node.object.name) &&
+        //   node.property.type === 'Identifier' &&
+        //   node.property.name === 'create') ||
+        node.type === 'Identifier' &&
+        importTracker.isNamedImport('apply', node.name)
       )
     }
 
@@ -238,32 +238,24 @@ const validShorthands: Rule.RuleModule = {
 
     return {
       ImportDeclaration: importTracker.ImportDeclaration,
-      CallExpression(
+
+      CallExpression: (
         node: Readonly<CallExpression & Rule.NodeParentExtension>,
-      ) {
-        const isStyleXCall = isStylexCreateCallee(node.callee)
-
-        if (!isStyleXCall) {
+      ) => {
+        if (!isStylexCreateCallee(node.callee)) {
           return
         }
 
-        const [namespacesObj] = node.arguments
-
-        if (namespacesObj?.type !== 'ObjectExpression') {
-          return
-        }
-
-        for (const namespaceProp of namespacesObj.properties) {
-          if (namespaceProp.type !== 'Property') {
+        for (const arg of node.arguments) {
+          if (arg.type !== 'ObjectExpression') {
             continue
           }
 
-          if (namespaceProp.value.type === 'ObjectExpression') {
-            validateObject(namespaceProp.value)
-          }
+          validateObject(arg)
         }
       },
-      'Program:exit'() {
+
+      'Program:exit': () => {
         importTracker.clear()
       },
     }
