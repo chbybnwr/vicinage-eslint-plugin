@@ -460,7 +460,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "margin: 10px 12px 13px 14px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "margin: 10px 12px 13px 14px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -492,7 +492,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "borderRight: 4px solid var(--fds-gray-10)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderRight: 4px solid var(--fds-gray-10)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -518,7 +518,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "borderRadius: 10px 15px 20px 25px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderRadius: 10px 15px 20px 25px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -545,7 +545,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "borderRadius: 10px 15px 20px 25px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderRadius: 10px 15px 20px 25px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -570,7 +570,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "cornerShape: scoop notch" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "cornerShape: scoop notch" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -636,15 +636,15 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "margin: 10px 10px 10px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "margin: 10px 10px 10px" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "marginInline: 15px 15px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "marginInline: 15px 15px" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "padding: 20px 20px 20px 20px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "padding: 20px 20px 20px 20px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -667,7 +667,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "borderWidth: var(--vertical-border-width, 10) var(--horizontal-border-width, 15)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderWidth: var(--vertical-border-width, 10) var(--horizontal-border-width, 15)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -695,15 +695,15 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "borderWidth: calc(100% - 20px) calc(90% - 20px)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderWidth: calc(100% - 20px) calc(90% - 20px)" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderColor: var(--test-color, #ccc) linear-gradient(to right, #ff7e5f, #feb47b)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderColor: var(--test-color, #ccc) linear-gradient(to right, #ff7e5f, #feb47b)" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "background: no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "background: no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -760,35 +760,35 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "borderWidth: 1px 2px 3px 4px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderWidth: 1px 2px 3px 4px" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderStyle: solid dashed dotted double" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderStyle: solid dashed dotted double" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderColor: red green blue yellow" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderColor: red green blue yellow" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderTop: 2px solid red" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderTop: 2px solid red" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderRight: 3px dashed green" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderRight: 3px dashed green" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderBottom: 4px dotted blue" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderBottom: 4px dotted blue" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderLeft: 5px double yellow" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderLeft: 5px double yellow" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderRadius: 10px 20px 30px 40px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderRadius: 10px 20px 30px 40px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -812,7 +812,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "outline: 2px dashed red" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "outline: 2px dashed red" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -839,7 +839,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "background: #ff0 url("image.jpg") no-repeat fixed center / cover !important" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "background: #ff0 url("image.jpg") no-repeat fixed center / cover !important" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -867,7 +867,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "background: #ff0 url("image.jpg") no-repeat fixed center / cover !important" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "background: #ff0 url("image.jpg") no-repeat fixed center / cover !important" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -898,7 +898,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "font: italic small-caps bold 16px/1.5 "Helvetica Neue"" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "font: italic small-caps bold 16px/1.5 "Helvetica Neue"" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -924,7 +924,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "margin: 10px 12px 13px 14px !important" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "margin: 10px 12px 13px 14px !important" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -949,7 +949,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "margin: 10px 12px 13px 14px !important" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "margin: 10px 12px 13px 14px !important" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -975,7 +975,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "margin: 10em 1em 5em 2em" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "margin: 10em 1em 5em 2em" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -998,7 +998,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "margin: 10em 1em" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "margin: 10em 1em" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1021,7 +1021,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "marginInline: 10em 1em" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "marginInline: 10em 1em" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1044,7 +1044,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "marginBlock: 10em 1em" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "marginBlock: 10em 1em" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1067,7 +1067,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "paddingBlock: 10em 1em" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "paddingBlock: 10em 1em" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1084,15 +1084,15 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "borderWidth: 4px 5px 6px 7px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderWidth: 4px 5px 6px 7px" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderStyle: solid dashed dotted double" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderStyle: solid dashed dotted double" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderColor: var(--fds-gray-10) var(--fds-gray-20) var(--fds-gray-30) var(--fds-gray-40)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderColor: var(--fds-gray-10) var(--fds-gray-20) var(--fds-gray-30) var(--fds-gray-40)" are not supported. Separate into individual properties.',
         },
       ],
       output: /* js */ `
@@ -1128,15 +1128,15 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "borderWidth: 4px 5px 6px 7px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderWidth: 4px 5px 6px 7px" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderStyle: solid dashed dotted double" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderStyle: solid dashed dotted double" are not supported. Separate into individual properties.',
         },
         {
           message:
-            'Property shorthands using multiple values like "borderColor: var(--fds-gray-10) var(--fds-gray-20) var(--fds-gray-30) var(--fds-gray-40)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderColor: var(--fds-gray-10) var(--fds-gray-20) var(--fds-gray-30) var(--fds-gray-40)" are not supported. Separate into individual properties.',
         },
       ],
       output: /* js */ `
@@ -1221,7 +1221,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "padding: 10em 1em" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "padding: 10em 1em" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1245,7 +1245,7 @@ ruleTester.run('valid-shorthands', rule, {
     //   errors: [
     //     {
     //       message:
-    //         'Property shorthands using multiple values like "margin: 10px 12px" are not supported in Vicinage. Separate into individual properties.',
+    //         'Property shorthands using multiple values like "margin: 10px 12px" are not supported. Separate into individual properties.',
     //     },
     //   ],
     // },
@@ -1269,7 +1269,7 @@ ruleTester.run('valid-shorthands', rule, {
     //   errors: [
     //     {
     //       message:
-    //         'Property shorthands using multiple values like "padding: 5px 10px" are not supported in Vicinage. Separate into individual properties.',
+    //         'Property shorthands using multiple values like "padding: 5px 10px" are not supported. Separate into individual properties.',
     //     },
     //   ],
     // },
@@ -1292,7 +1292,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "borderColor: hsl(220 3% 15%) hsl(240 3% 20%)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderColor: hsl(220 3% 15%) hsl(240 3% 20%)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1315,7 +1315,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "borderColor: oklch(0.7 0.15 180) rgb(255 0 0)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "borderColor: oklch(0.7 0.15 180) rgb(255 0 0)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1341,7 +1341,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridArea: header" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridArea: header" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1367,7 +1367,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridArea: header / sidebar" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridArea: header / sidebar" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1391,7 +1391,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridArea: span 2 / span 3" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridArea: span 2 / span 3" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1416,7 +1416,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridArea: 1 / 2 / 3" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridArea: 1 / 2 / 3" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1442,7 +1442,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridArea: 1 / 2 / 3 / 4" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridArea: 1 / 2 / 3 / 4" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1467,7 +1467,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridArea: header / 2" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridArea: header / 2" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1492,7 +1492,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridArea: 1 / sidebar" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridArea: 1 / sidebar" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1518,7 +1518,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridArea: 1 / sidebar / 3" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridArea: 1 / sidebar / 3" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1542,7 +1542,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridRow: 1 / 3" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridRow: 1 / 3" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1566,7 +1566,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridRow: header-start / content-end" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridRow: header-start / content-end" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1590,7 +1590,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridRow: 1 / span 2" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridRow: 1 / span 2" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1614,7 +1614,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridColumn: 2 / 4" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridColumn: 2 / 4" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1638,7 +1638,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridTemplate: 1fr 2fr / 100px 1fr" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridTemplate: 1fr 2fr / 100px 1fr" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1662,7 +1662,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridTemplate: auto auto / repeat(3, 1fr)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridTemplate: auto auto / repeat(3, 1fr)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1686,7 +1686,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: slidein 3s" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: slidein 3s" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1711,7 +1711,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: slidein 3s ease-in" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: slidein 3s ease-in" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1736,7 +1736,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: slidein 3s 1s" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: slidein 3s 1s" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1766,7 +1766,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: 3s ease-in 1s 2 reverse both paused slidein" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: 3s ease-in 1s 2 reverse both paused slidein" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1791,7 +1791,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: slidein 300ms cubic-bezier(0.4, 0, 0.2, 1)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: slidein 300ms cubic-bezier(0.4, 0, 0.2, 1)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1817,7 +1817,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: spin 1s linear infinite" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: spin 1s linear infinite" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1843,7 +1843,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: slidein 2s ease !important" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: slidein 2s ease !important" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1859,7 +1859,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: slidein 3s, fadeout 2s" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: slidein 3s, fadeout 2s" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1884,7 +1884,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: 2 3s slidein" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: 2 3s slidein" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1908,7 +1908,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: 1s none" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: 1s none" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1933,7 +1933,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: fadein 1s none" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: fadein 1s none" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1958,7 +1958,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "animation: bounce 1s alternate-reverse" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "animation: bounce 1s alternate-reverse" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -1983,7 +1983,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "flex: 1" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "flex: 1" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2008,7 +2008,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "flex: 2" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "flex: 2" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2033,7 +2033,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "flex: auto" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "flex: auto" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2058,7 +2058,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "flex: none" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "flex: none" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2083,7 +2083,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "flex: initial" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "flex: initial" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2108,7 +2108,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "flex: 100px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "flex: 100px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2133,7 +2133,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "flex: 1 0" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "flex: 1 0" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2158,7 +2158,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "flex: 1 30px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "flex: 1 30px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2183,7 +2183,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "flex: 2 2 10%" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "flex: 2 2 10%" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2209,7 +2209,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "flex: 1 0 auto !important" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "flex: 1 0 auto !important" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2234,7 +2234,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "flex: 1 1 calc(100% - 20px)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "flex: 1 1 calc(100% - 20px)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2258,7 +2258,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: 10px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: 10px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2282,7 +2282,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: 10" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: 10" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2306,7 +2306,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: 0" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: 0" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2330,7 +2330,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: var(--spacing)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: var(--spacing)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2354,7 +2354,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: calc(10px + 1rem)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: calc(10px + 1rem)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2378,7 +2378,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: 10px 20px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: 10px 20px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2402,7 +2402,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridGap: 10px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridGap: 10px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2426,7 +2426,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridGap: 10px 20px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridGap: 10px 20px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2496,7 +2496,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: calc(10px + 1rem) calc(20px + 2rem)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: calc(10px + 1rem) calc(20px + 2rem)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2520,7 +2520,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: 0px 0px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: 0px 0px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2545,7 +2545,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: 10px 20px !important" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: 10px 20px !important" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2569,7 +2569,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gridGap: 10" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gridGap: 10" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2585,7 +2585,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: 10px, 20px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: 10px, 20px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2601,7 +2601,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: 10px / 20px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: 10px / 20px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2617,7 +2617,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "gap: 10px 20px 30px" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "gap: 10px 20px 30px" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2641,7 +2641,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "border: 1px solid red" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "border: 1px solid red" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2665,7 +2665,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "border: 2px dashed blue" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "border: 2px dashed blue" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2752,7 +2752,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "border: 1px solid" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "border: 1px solid" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2776,7 +2776,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "border: 1px solid rgba(0, 0, 0, 0.5)" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "border: 1px solid rgba(0, 0, 0, 0.5)" are not supported. Separate into individual properties.',
         },
       ],
     },
@@ -2801,7 +2801,7 @@ ruleTester.run('valid-shorthands', rule, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "border: 1px solid red !important" are not supported in Vicinage. Separate into individual properties.',
+            'Property shorthands using multiple values like "border: 1px solid red !important" are not supported. Separate into individual properties.',
         },
       ],
     },
