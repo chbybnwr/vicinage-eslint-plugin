@@ -9,11 +9,11 @@
 
 'use strict';
 
-import type { CallExpression, Node, Property, ObjectExpression } from 'estree';
+import type { Node, Property, ObjectExpression } from 'estree';
 import {
-  createBlockInlineTransformer,
-  createSpecificTransformer,
-  createDirectionalTransformer,
+    createBlockInlineTransformer,
+    createSpecificTransformer,
+    createDirectionalTransformer,
 } from './utils/splitShorthands.js';
 import { CANNOT_FIX } from './utils/splitShorthands.js';
 import getSourceCode from './utils/getSourceCode';

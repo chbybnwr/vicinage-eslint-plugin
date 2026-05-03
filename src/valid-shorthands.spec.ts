@@ -5,12 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+jest.disableAutomock()
 
-jest.disableAutomock();
-
-const { RuleTester: ESLintTester } = require('eslint');
-const rule = require('../src/valid-shorthands');
+const { RuleTester: ESLintTester } = require('eslint')
+const rule = require('../src/valid-shorthands')
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
@@ -18,7 +16,7 @@ const eslintTester = new ESLintTester({
     ecmaVersion: 6,
     sourceType: 'module',
   },
-});
+})
 
 eslintTester.run('valid-shorthands', rule.default, {
   valid: [
@@ -3066,4 +3064,4 @@ eslintTester.run('valid-shorthands', rule.default, {
       ],
     },
   ],
-});
+})
