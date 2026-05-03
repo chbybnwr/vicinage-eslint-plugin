@@ -1,29 +1,15 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
-
-import type { Comment } from 'estree'
-import type { Node } from 'estree'
-import type { SourceCode } from 'eslint/eslint-rule'
-import type { Token } from 'eslint/eslint-ast'
+export { getNodeIndentation as default }
 
 function isSameLine(
-  aNode: Node | Comment | Token,
-  bNode: Node | Comment | Token,
+  aNode: Node | Comment | AST.Token | null,
+  bNode: Node | Comment | AST.Token | null,
 ): boolean {
-  return Boolean(
-    aNode.loc && bNode.loc && aNode.loc?.start.line === bNode.loc?.start.line,
-  )
+  return aNode?.loc != null && aNode.loc.start.line === bNode?.loc?.start.line
 }
 
-export default function getNodeIndentation(
+function getNodeIndentation(
   sourceCode: SourceCode,
-  node: $ReadOnly<Node | Comment>,
+  node: Readonly<Node | Comment>,
 ): string {
   const tokenBefore = sourceCode.getTokenBefore(node, {
     includeComments: false,
@@ -37,10 +23,17 @@ export default function getNodeIndentation(
       ? tokenBefore.loc.end.column
       : 0
 
-  return node?.loc
-    ? sourceCode.lines[node.loc.start.line - 1].slice(
+  return node.loc
+    ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      sourceCode.lines[node.loc.start.line - 1]!.slice(
         sliceStart,
         node.loc.start.column,
       )
     : ''
 }
+
+import type { AST } from 'eslint'
+import type { Comment } from 'estree'
+import type { Node } from 'estree'
+import type { SourceCode } from 'eslint'
+//
