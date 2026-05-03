@@ -1,5 +1,10 @@
+fadein
+longhands
+Neue
 oklab
 oklch
+slidein
+squircle
 stylex
 stylexjs
 Unitless
