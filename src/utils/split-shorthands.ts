@@ -1,27 +1,24 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
+/* eslint-disable no-magic-numbers */
+/* eslint-disable no-continue */
+/* eslint-disable max-params */
 
-import type { CSSToken } from '@csstools/css-tokenizer'
-import parser from 'postcss-value-parser'
-import { tokenize } from '@csstools/css-tokenizer'
-import { TokenType } from '@csstools/css-tokenizer'
+export { CANNOT_FIX }
+export { createBlockInlineTransformer }
+export { createDirectionalTransformer }
+export { createSpecificTransformer }
+export { splitDirectionalShorthands }
+export { splitSpecificShorthands }
 
-export const CANNOT_FIX = 'CANNOT_FIX'
+const CANNOT_FIX = 'CANNOT_FIX'
 
-export const createSpecificTransformer =
+const createSpecificTransformer =
   (
     property: string,
   ): ((
     rawValue: number | string,
     allowImportant?: boolean,
     _preferInline?: boolean,
-  ) => $ReadOnlyArray<$ReadOnly<[string, number | string]>>) =>
+  ) => readonly Readonly<[string, number | string]>[]) =>
   (rawValue: number | string, allowImportant = false, _preferInline = false) =>
     splitSpecificShorthands(
       property,
@@ -31,7 +28,7 @@ export const createSpecificTransformer =
       _preferInline,
     )
 
-export const createDirectionalTransformer =
+const createDirectionalTransformer =
   (
     baseProperty: string,
     blockSuffix: string,
@@ -40,9 +37,10 @@ export const createDirectionalTransformer =
     rawValue: number | string,
     allowImportant?: boolean,
     preferInline?: boolean,
-  ) => [string, string | number][]) =>
+  ) => [string, string | number | null | undefined][]) =>
   (rawValue: number | string, allowImportant = false, preferInline = false) => {
     const splitValues = splitDirectionalShorthands(rawValue, allowImportant)
+
     const [top, right = top, bottom = top, left = right] = splitValues
 
     if (splitValues.length === 1) {
@@ -71,14 +69,14 @@ export const createDirectionalTransformer =
         ]
   }
 
-export const createBlockInlineTransformer =
+const createBlockInlineTransformer =
   (
     baseProperty: string,
     suffix: string,
   ): ((
     rawValue: number | string,
     allowImportant?: boolean,
-  ) => [string, string | number][]) =>
+  ) => [string, string | number | null | undefined][]) =>
   (rawValue: number | string, allowImportant = false) => {
     const splitValues = splitDirectionalShorthands(rawValue, allowImportant)
     const [start, end = start] = splitValues
@@ -97,12 +95,13 @@ function printNode(node: PostCSSValueASTNode): string {
   switch (node.type) {
     case 'word':
 
+    // fallthrough
     case 'string': {
-      return `${node.value}`
+      return node.value
     }
 
     case 'function': {
-      return `${node.value}(${node.nodes.map(printNode).join('')})`
+      return `${node.value}(${node.nodes.map((iNode) => printNode(iNode)).join('')})`
     }
 
     default: {
@@ -111,8 +110,10 @@ function printNode(node: PostCSSValueASTNode): string {
   }
 }
 
-const toCamelCase = (str: string) =>
-  str.replaceAll(/-([a-z])/g, (match, letter) => letter.toUpperCase())
+const toCamelCase = (text: string) =>
+  text.replaceAll(/-(?<text>[a-z])/gu, (_match, letter) =>
+    (letter as string).toUpperCase(),
+  )
 
 const BORDER_STYLE_KEYWORDS = new Set([
   'none',
@@ -160,11 +161,11 @@ const FONT_SIZE_KEYWORDS = new Set([
 ])
 const COLOR_KEYWORDS = new Set(['transparent', 'currentcolor'])
 const COLOR_FUNCTION_REGEX =
-  /^(?:rgb|rgba|hsl|hsla|hwb|hsb|lab|lch|oklab|oklch|color)\(/i
+  /^(?:rgb|rgba|hsl|hsla|hwb|hsb|lab|lch|oklab|oklch|color)\(/iu
 const IMAGE_FUNCTION_REGEX =
-  /^(?:url|image-set|linear-gradient|radial-gradient|conic-gradient|repeating-linear-gradient|repeating-radial-gradient|repeating-conic-gradient|cross-fade|element)\(/i
-const LENGTH_FUNCTION_REGEX = /^(?:calc|min|max|clamp)\(/i
-const LENGTH_REGEX = /^-?(?:\d+|\d*\.\d+)(?:[%a-z]+)?$/i
+  /^(?:url|image-set|linear-gradient|radial-gradient|conic-gradient|repeating-linear-gradient|repeating-radial-gradient|repeating-conic-gradient|cross-fade|element)\(/iu
+const LENGTH_FUNCTION_REGEX = /^(?:calc|min|max|clamp)\(/iu
+const LENGTH_REGEX = /^-?(?:\d+|\d*\.\d+)(?:[%a-z]+)?$/iu
 
 interface ValuePart {
   text: string
@@ -181,13 +182,14 @@ function extractImportant(value: string): {
   value: string
   important: boolean
 } {
-  const match = /^(.*?)\s*!important\s*$/i.exec(value)
+  const match = /^(?<value>.*?)\s*!important\s*$/iu.exec(value)
 
   if (!match) {
     return { value: value.trim(), important: false }
   }
 
-  return { value: match[1].trim(), important: true }
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return { value: match[1]!.trim(), important: true }
 }
 
 function applyImportant(value: string, suffix: string): string {
@@ -223,8 +225,7 @@ function splitTopLevelValueTokens(
   }
 
   for (const token of tokens) {
-    const type = token[0]
-    const text = token[1]
+    const [type, text] = token
 
     if (type === TokenType.EOF) {
       continue
@@ -288,7 +289,8 @@ function areAllValuesSame(values: string[]): boolean {
 function expandQuadValues(values: string[]): [string, string, string, string] {
   const [top, right = top, bottom = top, left = right] = values
 
-  return [top, right, bottom, left]
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return [top!, right!, bottom!, left!]
 }
 
 const GRID_NON_CUSTOM_IDENT_KEYWORDS = new Set([
@@ -302,11 +304,11 @@ const GRID_NON_CUSTOM_IDENT_KEYWORDS = new Set([
 ])
 
 function isCustomIdent(value: string): boolean {
-  if (/\s/.test(value)) return false
+  if (/\s/u.test(value)) return false
   const lower = value.toLowerCase()
   if (GRID_NON_CUSTOM_IDENT_KEYWORDS.has(lower)) return false
-  if (/^span\b/i.test(lower)) return false
-  if (/^-?\d+$/.test(value)) return false
+  if (/^span\b/iu.test(lower)) return false
+  if (/^-?\d+$/u.test(value)) return false
 
   return true
 }
@@ -318,7 +320,8 @@ function splitOnSlashGroups(parts: ValuePart[]): string[] {
     if (part.text === '/') {
       groups.push([])
     } else {
-      groups.at(-1).push(part.text)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      groups.at(-1)!.push(part.text)
     }
   }
 
@@ -328,52 +331,46 @@ function splitOnSlashGroups(parts: ValuePart[]): string[] {
 function expandGridAreaShorthand(
   groups: string[],
   importantSuffix: string,
-): $ReadOnlyArray<$ReadOnly<[string, string]>> {
-  if (groups.length === 2) {
-    const firstIsCustom = isCustomIdent(groups[0])
-    const secondIsCustom = isCustomIdent(groups[1])
+): readonly Readonly<[string, string]>[] {
+  const [first, second, third, fourth] = groups
+
+  if (first != null && second != null && third == null && fourth == null) {
     const entries: [string, string][] = [
-      ['gridColumnStart', applyImportant(groups[1], importantSuffix)],
-      ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+      ['gridColumnStart', applyImportant(second, importantSuffix)],
+      ['gridRowStart', applyImportant(first, importantSuffix)],
     ]
 
-    if (firstIsCustom) {
-      entries.push(['gridRowEnd', applyImportant(groups[0], importantSuffix)])
+    if (isCustomIdent(first)) {
+      entries.push(['gridRowEnd', applyImportant(first, importantSuffix)])
     }
 
-    if (secondIsCustom) {
-      entries.push([
-        'gridColumnEnd',
-        applyImportant(groups[1], importantSuffix),
-      ])
+    if (isCustomIdent(second)) {
+      entries.push(['gridColumnEnd', applyImportant(second, importantSuffix)])
     }
 
-    return entries.sort(([a], [b]) => a.localeCompare(b))
+    return entries.toSorted(([a], [b]) => a.localeCompare(b))
   }
 
-  if (groups.length === 3) {
+  if (first != null && second != null && third != null && fourth == null) {
     const entries: [string, string][] = [
-      ['gridColumnStart', applyImportant(groups[1], importantSuffix)],
-      ['gridRowEnd', applyImportant(groups[2], importantSuffix)],
-      ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+      ['gridColumnStart', applyImportant(second, importantSuffix)],
+      ['gridRowEnd', applyImportant(third, importantSuffix)],
+      ['gridRowStart', applyImportant(first, importantSuffix)],
     ]
 
-    if (isCustomIdent(groups[1])) {
-      entries.push([
-        'gridColumnEnd',
-        applyImportant(groups[1], importantSuffix),
-      ])
+    if (isCustomIdent(second)) {
+      entries.push(['gridColumnEnd', applyImportant(second, importantSuffix)])
     }
 
-    return entries.sort(([a], [b]) => a.localeCompare(b))
+    return entries.toSorted(([a], [b]) => a.localeCompare(b))
   }
 
-  if (groups.length === 4) {
+  if (first != null && second != null && third != null && fourth != null) {
     return [
-      ['gridColumnEnd', applyImportant(groups[3], importantSuffix)],
-      ['gridColumnStart', applyImportant(groups[1], importantSuffix)],
-      ['gridRowEnd', applyImportant(groups[2], importantSuffix)],
-      ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+      ['gridColumnEnd', applyImportant(fourth, importantSuffix)],
+      ['gridColumnStart', applyImportant(second, importantSuffix)],
+      ['gridRowEnd', applyImportant(third, importantSuffix)],
+      ['gridRowStart', applyImportant(first, importantSuffix)],
     ]
   }
 
@@ -446,15 +443,14 @@ function isFontSizePart(part: ValuePart): boolean {
 
 function splitFontSizeAndLineHeight(
   part: ValuePart,
-): ?{ fontSize: string; lineHeight?: string } {
+): { fontSize: string; lineHeight?: string } | null {
   let depth = 0
   let sawSlash = false
   const beforeTokens: CSSToken[] = []
   const afterTokens: CSSToken[] = []
 
   for (const token of part.tokens) {
-    const type = token[0]
-    const text = token[1]
+    const [type, text] = token
 
     if (
       type === TokenType.Function ||
@@ -503,13 +499,13 @@ function splitFontSizeAndLineHeight(
   return { fontSize, lineHeight }
 }
 
-const BORDER_RADIUS_MAP: { [string]: string } = {
+const BORDER_RADIUS_MAP: Record<string, string> = {
   'border-top-left-radius': 'borderStartStartRadius',
   'border-top-right-radius': 'borderStartEndRadius',
   'border-bottom-left-radius': 'borderEndStartRadius',
   'border-bottom-right-radius': 'borderEndEndRadius',
 }
-const CORNER_SHAPE_MAP: { [string]: string } = {
+const CORNER_SHAPE_MAP: Record<string, string> = {
   'corner-top-left-shape': 'cornerStartStartShape',
   'corner-top-right-shape': 'cornerStartEndShape',
   'corner-bottom-left-shape': 'cornerEndStartShape',
@@ -520,27 +516,27 @@ function mapCornerKey(
   property: string,
   key: string,
   preferInline: boolean,
-): ?string {
+): string | null {
   if (!preferInline) {
     return key
   }
 
   if (property === 'border-radius') {
-    return BORDER_RADIUS_MAP[key] || null
+    return BORDER_RADIUS_MAP[key] ?? null
   }
 
   if (property === 'corner-shape') {
-    return CORNER_SHAPE_MAP[key] || null
+    return CORNER_SHAPE_MAP[key] ?? null
   }
 
   return key
 }
 
-function parseBorderParts(values: string[]): ?{
+function parseBorderParts(values: string[]): {
   width: string
   style: string
   color: string
-} {
+} | null {
   let width = null
   let style = null
   let color = null
@@ -587,9 +583,9 @@ const FLEX_BASIS_KEYWORDS = new Set([
   'max-content',
   'fit-content',
 ])
-const FLEX_BASIS_FUNCTION_REGEX = /^(?:calc|min|max|clamp|fit-content)\(/i
-const FLEX_NUMBER_REGEX = /^-?(?:\d+|\d*\.\d+)$/
-const FLEX_UNITLESS_ZERO_REGEX = /^-?(?:0|0\.0+)$/
+const FLEX_BASIS_FUNCTION_REGEX = /^(?:calc|min|max|clamp|fit-content)\(/iu
+const FLEX_NUMBER_REGEX = /^-?(?:\d+|\d*\.\d+)$/u
+const FLEX_UNITLESS_ZERO_REGEX = /^-?(?:0|0\.0+)$/u
 
 function isFlexNumberValue(value: string): boolean {
   return FLEX_NUMBER_REGEX.test(value)
@@ -609,17 +605,19 @@ function isFlexBasisValue(
     FLEX_BASIS_KEYWORDS.has(lower) ||
     FLEX_BASIS_FUNCTION_REGEX.test(lower) ||
     lower.startsWith('var(') ||
-    /^-?(?:\d+|\d*\.\d+)[%a-z]+$/i.test(lower)
+    /^-?(?:\d+|\d*\.\d+)[%a-z]+$/iu.test(lower)
   )
 }
 
+// eslint-disable-next-line complexity
 function expandFlexShorthand(
   values: string[],
   importantSuffix: string,
-): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
-  if (values.length === 1) {
-    const val = values[0]
-    const lower = val.toLowerCase()
+): readonly Readonly<[string, string]>[] | null {
+  const [first, second, third] = values
+
+  if (first != null && second == null && third == null) {
+    const lower = first.toLowerCase()
 
     if (lower === 'auto') {
       return [
@@ -645,29 +643,27 @@ function expandFlexShorthand(
       ]
     }
 
-    if (isFlexNumberValue(val)) {
+    if (isFlexNumberValue(first)) {
       // Single unitless number = flex-grow
       return [
-        ['flexGrow', applyImportant(val, importantSuffix)],
+        ['flexGrow', applyImportant(first, importantSuffix)],
         ['flexShrink', applyImportant('1', importantSuffix)],
         ['flexBasis', applyImportant('0%', importantSuffix)],
       ]
     }
 
-    if (isFlexBasisValue(val)) {
+    if (isFlexBasisValue(first)) {
       return [
         ['flexGrow', applyImportant('1', importantSuffix)],
         ['flexShrink', applyImportant('1', importantSuffix)],
-        ['flexBasis', applyImportant(val, importantSuffix)],
+        ['flexBasis', applyImportant(first, importantSuffix)],
       ]
     }
 
     return null
   }
 
-  if (values.length === 2) {
-    const [first, second] = values
-
+  if (first != null && second != null && third == null) {
     if (!isFlexNumberValue(first)) {
       return null
     }
@@ -693,21 +689,19 @@ function expandFlexShorthand(
     return null
   }
 
-  if (values.length === 3) {
-    const [grow, shrink, basis] = values
-
+  if (first != null && second != null && third != null) {
     if (
-      !isFlexNumberValue(grow) ||
-      !isFlexNumberValue(shrink) ||
-      !isFlexBasisValue(basis, { allowUnitlessZero: true })
+      !isFlexNumberValue(first) ||
+      !isFlexNumberValue(second) ||
+      !isFlexBasisValue(third, { allowUnitlessZero: true })
     ) {
       return null
     }
 
     return [
-      ['flexGrow', applyImportant(grow, importantSuffix)],
-      ['flexShrink', applyImportant(shrink, importantSuffix)],
-      ['flexBasis', applyImportant(basis, importantSuffix)],
+      ['flexGrow', applyImportant(first, importantSuffix)],
+      ['flexShrink', applyImportant(second, importantSuffix)],
+      ['flexBasis', applyImportant(third, importantSuffix)],
     ]
   }
 
@@ -736,8 +730,8 @@ const ANIMATION_TIMING_KEYWORDS = new Set([
   'step-start',
   'step-end',
 ])
-const ANIMATION_TIMING_FUNCTION_REGEX = /^(?:cubic-bezier|steps|linear)\(/i
-const TIME_REGEX = /^-?(?:\d+|\d*\.\d+)(?:s|ms)$/i
+const ANIMATION_TIMING_FUNCTION_REGEX = /^(?:cubic-bezier|steps|linear)\(/iu
+const TIME_REGEX = /^-?(?:\d+|\d*\.\d+)(?:s|ms)$/iu
 
 function isTimeValue(value: string): boolean {
   return TIME_REGEX.test(value)
@@ -755,14 +749,15 @@ function isAnimationTimingFunction(value: string): boolean {
 function isAnimationIterationCount(value: string): boolean {
   const lower = value.toLowerCase()
 
-  return lower === 'infinite' || /^(?:\d+|\d*\.\d+)$/.test(lower)
+  return lower === 'infinite' || /^(?:\d+|\d*\.\d+)$/u.test(lower)
 }
 
+// eslint-disable-next-line complexity
 function expandAnimationShorthand(
   parts: ValuePart[],
   hasTopLevelComma: boolean,
   importantSuffix: string,
-): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
+): readonly Readonly<[string, string]>[] | null {
   if (hasTopLevelComma) {
     return null
   }
@@ -898,7 +893,7 @@ function expandBorderSideShorthand(
   property: string,
   values: string[],
   importantSuffix: string,
-): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
+): readonly Readonly<[string, string]>[] | null {
   const parsed = parseBorderParts(values)
 
   if (!parsed) {
@@ -914,11 +909,12 @@ function expandBorderSideShorthand(
   ]
 }
 
+// eslint-disable-next-line complexity
 function expandBackgroundShorthand(
   parts: ValuePart[],
   hasTopLevelComma: boolean,
   importantSuffix: string,
-): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
+): readonly Readonly<[string, string]>[] | null {
   if (hasTopLevelComma) {
     return null
   }
@@ -994,7 +990,7 @@ function expandBackgroundShorthand(
     positionParts.length > 0 ? positionParts.join(' ') : null
   const backgroundSize = afterSlash.length > 0 ? afterSlash.join(' ') : null
 
-  const entries = []
+  const entries: [string, string][] = []
 
   if (color) {
     entries.push(['backgroundColor', applyImportant(color, importantSuffix)])
@@ -1039,19 +1035,21 @@ function expandBackgroundShorthand(
 function expandFontShorthand(
   parts: ValuePart[],
   importantSuffix: string,
-): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
+): readonly Readonly<[string, string]>[] | null {
   if (parts.length === 0) {
     return null
   }
 
-  const sizeIndex = parts.findIndex(isFontSizePart)
+  const sizeIndex = parts.findIndex((part) => isFontSizePart(part))
 
   if (sizeIndex === -1) {
     return null
   }
 
   const sizePart = parts[sizeIndex]
-  const sizeValues = splitFontSizeAndLineHeight(sizePart)
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const sizeValues = splitFontSizeAndLineHeight(sizePart!)
 
   if (!sizeValues) {
     return null
@@ -1079,6 +1077,7 @@ function expandFontShorthand(
       }
 
       fontStyle = part.text
+
       continue
     }
 
@@ -1088,13 +1087,14 @@ function expandFontShorthand(
       }
 
       fontVariant = part.text
+
       continue
     }
 
     if (
       FONT_WEIGHT_KEYWORDS.has(lowerPart) ||
-      /^[1-9]00$/.test(lowerPart) ||
-      /^\d+(?:\.\d+)?$/.test(lowerPart)
+      /^[1-9]00$/u.test(lowerPart) ||
+      /^\d+(?:\.\d+)?$/u.test(lowerPart)
     ) {
       if (fontWeight != null) {
         return null
@@ -1107,7 +1107,9 @@ function expandFontShorthand(
     return null
   }
 
-  const entries = [['fontFamily', applyImportant(fontFamily, importantSuffix)]]
+  const entries: [string, string][] = [
+    ['fontFamily', applyImportant(fontFamily, importantSuffix)],
+  ]
 
   if (fontStyle) {
     entries.push(['fontStyle', applyImportant(fontStyle, importantSuffix)])
@@ -1130,14 +1132,17 @@ function expandFontShorthand(
   return entries
 }
 
-export function splitSpecificShorthands(
+// eslint-disable-next-line complexity
+function splitSpecificShorthands(
   property: string,
   value: string,
   allowImportant = false,
   isNumber = false,
   _preferInline = false,
-): $ReadOnlyArray<$ReadOnly<[string, number | string]>> {
-  const rawValue = value.toString()
+): readonly Readonly<[string, number | string]>[] {
+  // const rawValue = value.toString()
+  // TODO: check the line above if the line below is broken
+  const rawValue = value
   const { value: baseValue, important } = extractImportant(rawValue)
   const importantSuffix = allowImportant && important ? ' !important' : ''
 
@@ -1159,13 +1164,15 @@ export function splitSpecificShorthands(
     const gridSplit = splitTopLevelValueTokens(baseValue)
     const groups = splitOnSlashGroups(gridSplit.parts)
 
-    if (groups.length === 1) {
-      if (isCustomIdent(groups[0])) {
+    const [first] = groups
+
+    if (first != null) {
+      if (isCustomIdent(first)) {
         return [
-          ['gridColumnEnd', applyImportant(groups[0], importantSuffix)],
-          ['gridColumnStart', applyImportant(groups[0], importantSuffix)],
-          ['gridRowEnd', applyImportant(groups[0], importantSuffix)],
-          ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+          ['gridColumnEnd', applyImportant(first, importantSuffix)],
+          ['gridColumnStart', applyImportant(first, importantSuffix)],
+          ['gridRowEnd', applyImportant(first, importantSuffix)],
+          ['gridRowStart', applyImportant(first, importantSuffix)],
         ]
       }
 
@@ -1198,11 +1205,12 @@ export function splitSpecificShorthands(
     }
 
     const gapValues = gapSplit.parts.map((part) => part.text)
+    const [first, second] = gapValues
 
-    if (gapValues.length <= 1) {
+    if (gapValues.length === 0 || (first != null && second == null)) {
       const val = isNumber
         ? Number(rawValue)
-        : applyImportant(gapValues[0] ?? rawValue, importantSuffix)
+        : applyImportant(first ?? rawValue, importantSuffix)
 
       return [
         ['rowGap', val],
@@ -1210,10 +1218,10 @@ export function splitSpecificShorthands(
       ]
     }
 
-    if (gapValues.length === 2) {
+    if (first != null && second != null) {
       return [
-        ['rowGap', applyImportant(gapValues[0], importantSuffix)],
-        ['columnGap', applyImportant(gapValues[1], importantSuffix)],
+        ['rowGap', applyImportant(first, importantSuffix)],
+        ['columnGap', applyImportant(second, importantSuffix)],
       ]
     }
 
@@ -1235,28 +1243,37 @@ export function splitSpecificShorthands(
       return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]]
     }
 
-    const groups = splitOnSlashGroups(splitValues.parts)
+    const [first, second] = splitOnSlashGroups(splitValues.parts)
 
-    if (groups.length === 2) {
-      if (property === 'grid-row') {
-        return [
-          ['gridRowEnd', applyImportant(groups[1], importantSuffix)],
-          ['gridRowStart', applyImportant(groups[0], importantSuffix)],
-        ]
-      }
+    if (first != null && second != null) {
+      switch (property) {
+        case 'grid-row': {
+          return [
+            ['gridRowEnd', applyImportant(second, importantSuffix)],
+            ['gridRowStart', applyImportant(first, importantSuffix)],
+          ]
+        }
 
-      if (property === 'grid-column') {
-        return [
-          ['gridColumnEnd', applyImportant(groups[1], importantSuffix)],
-          ['gridColumnStart', applyImportant(groups[0], importantSuffix)],
-        ]
-      }
+        case 'grid-column': {
+          return [
+            ['gridColumnEnd', applyImportant(second, importantSuffix)],
+            ['gridColumnStart', applyImportant(first, importantSuffix)],
+          ]
+        }
 
-      if (property === 'grid-template') {
-        return [
-          ['gridTemplateColumns', applyImportant(groups[1], importantSuffix)],
-          ['gridTemplateRows', applyImportant(groups[0], importantSuffix)],
-        ]
+        case 'grid-template': {
+          return [
+            ['gridTemplateColumns', applyImportant(second, importantSuffix)],
+            ['gridTemplateRows', applyImportant(first, importantSuffix)],
+          ]
+        }
+
+        default: {
+          // eslint-disable-next-line no-underscore-dangle
+          const _exhaustiveCheck: never = property
+
+          return _exhaustiveCheck
+        }
       }
     }
 
@@ -1343,12 +1360,13 @@ export function splitSpecificShorthands(
           `border-left-${suffix}`,
         ]
 
-    const entries = []
+    const entries: [string, string][] = []
 
     for (const [index, key] of keys.entries()) {
       entries.push([
         toCamelCase(key),
-        applyImportant(expanded[index], importantSuffix),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        applyImportant(expanded[index]!, importantSuffix),
       ])
     }
 
@@ -1384,7 +1402,7 @@ export function splitSpecificShorthands(
             'corner-end-end-shape',
           ]
 
-    const entries = []
+    const entries: [string, string][] = []
 
     for (const [index, key] of keys.entries()) {
       const mappedKey = mapCornerKey(property, key, _preferInline)
@@ -1395,7 +1413,8 @@ export function splitSpecificShorthands(
 
       entries.push([
         toCamelCase(mappedKey),
-        applyImportant(expanded[index], importantSuffix),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        applyImportant(expanded[index]!, importantSuffix),
       ])
     }
 
@@ -1452,10 +1471,10 @@ export function splitSpecificShorthands(
   return [[toCamelCase(property), CANNOT_FIX]]
 }
 
-export function splitDirectionalShorthands(
-  str: number | string,
+function splitDirectionalShorthands(
+  str: number | string | null,
   allowImportant = false,
-): $ReadOnlyArray<number | string> {
+): readonly (number | string | null | undefined)[] {
   let processedStr = str
 
   if (str == null || (typeof str !== 'string' && typeof str !== 'number')) {
@@ -1478,18 +1497,18 @@ export function splitDirectionalShorthands(
 
   const nodes = parsed.nodes
     .filter((node) => node.type !== 'space' && node.type !== 'div')
-    .map(printNode)
+    .map((node) => printNode(node as PostCSSValueASTNode))
 
   if (typeof str === 'number') {
     // if originally a number, let's preserve that here
-    const processedNodes = nodes.map(Number.parseFloat)
+    const processedNodes = nodes.map((node) => Number.parseFloat(node))
 
     return processedNodes
   }
 
   if (
     nodes.length > 1 &&
-    nodes.at(-1).toLowerCase() === '!important' &&
+    nodes.at(-1)?.toLowerCase() === '!important' &&
     allowImportant
   ) {
     return nodes.slice(0, -1).map((node) => `${node} !important`)
@@ -1502,3 +1521,10 @@ export function splitDirectionalShorthands(
 
   return nodes
 }
+
+import type { CSSToken } from '@csstools/css-tokenizer'
+import parser from 'postcss-value-parser'
+import type { PostCSSValueASTNode } from '#/types/postcss-value-ast-node'
+import { tokenize } from '@csstools/css-tokenizer'
+import { TokenType } from '@csstools/css-tokenizer'
+//
