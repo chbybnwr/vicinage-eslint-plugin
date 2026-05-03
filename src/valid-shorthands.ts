@@ -1,27 +1,10 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
+/* eslint-disable unicorn/no-keyword-prefix */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable no-continue */
 
-'use strict';
+export { validShorthands as default }
 
-import type { Node, Property, ObjectExpression } from 'estree';
-import {
-    createBlockInlineTransformer,
-    createSpecificTransformer,
-    createDirectionalTransformer,
-} from './utils/splitShorthands.js';
-import { CANNOT_FIX } from './utils/splitShorthands.js';
-import getSourceCode from './utils/getSourceCode';
-import getNodeIndentation from './utils/getNodeIndentation';
-import createImportTracker from './utils/createImportTracker';
-/*:: import { Rule } from 'eslint'; */
-
-const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
+const legacyNameMapping: Readonly<Record<string, string>> = {
   marginStart: 'marginInlineStart',
   marginEnd: 'marginInlineEnd',
   marginHorizontal: 'marginInline',
@@ -34,11 +17,16 @@ const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
   gridRowGap: 'rowGap',
   borderStart: 'borderInlineStart',
   borderEnd: 'borderInlineEnd',
-};
+}
 
-const shorthandAliases: $ReadOnly<{
-  [string]: ?ReturnType<typeof createSpecificTransformer>,
-}> = {
+const shorthandAliases: Readonly<
+  Record<
+    string,
+    ReturnType<
+      typeof createSpecificTransformer | typeof createDirectionalTransformer
+    >
+  >
+> = {
   background: createSpecificTransformer('background'),
   font: createSpecificTransformer('font'),
   borderColor: createSpecificTransformer('border-color'),
@@ -66,11 +54,11 @@ const shorthandAliases: $ReadOnly<{
   marginInline: createBlockInlineTransformer('margin', 'Inline'),
   paddingBlock: createBlockInlineTransformer('padding', 'Block'),
   paddingInline: createBlockInlineTransformer('padding', 'Inline'),
-};
+}
 
-const stylexValidShorthands = {
+const validShorthands: Rule.RuleModule = {
   meta: {
-    type: 'error',
+    type: 'problem',
     docs: {
       description:
         'Require shorthand properties to be split into individual properties',
@@ -111,98 +99,113 @@ const stylexValidShorthands = {
       },
     ],
   },
-  create(context: Rule.RuleContext): { ... } {
-    const options = context.options[0] || {};
-    const { validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'] } =
-      options;
-    const allowImportant = options.allowImportant || false;
-    const preferInline = options.preferInline || false;
+  create(context: Rule.RuleContext) {
+    const {
+      validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
+      allowImportant = false,
+      preferInline = false,
+    } = (context.options[0] ?? {}) as {
+      validImports?: string[]
+      allowImportant?: boolean
+      preferInline?: boolean
+    }
 
-    const importTracker = createImportTracker(importsToLookFor);
+    const importTracker = createImportTracker(importsToLookFor)
 
     function isStylexCreateCallee(node: Node) {
       return (
         (node.type === 'MemberExpression' &&
           node.object.type === 'Identifier' &&
-          importTracker.isStylexDefaultImport(node.object.name) &&
+          importTracker.isDefaultImport(node.object.name) &&
           node.property.type === 'Identifier' &&
           node.property.name === 'create') ||
         (node.type === 'Identifier' &&
-          importTracker.isStylexNamedImport('create', node.name))
-      );
+          importTracker.isNamedImport('create', node.name))
+      )
     }
 
     function validateObject(obj: ObjectExpression) {
       for (const prop of obj.properties) {
         if (prop.type === 'SpreadElement') {
-          continue;
+          continue
         }
+
         if (prop.value.type === 'ObjectExpression') {
-          validateObject(prop.value);
+          validateObject(prop.value)
         } else {
-          validateProperty(prop);
+          validateProperty(prop)
         }
       }
     }
 
+    // eslint-disable-next-line complexity
     function validateProperty(property: Property) {
       if (property.computed) {
         // can't resolve computed keys
-        return;
+        return
       }
 
-      let key;
+      // eslint-disable-next-line init-declarations
+      let key
+
       if (property.key.type === 'Identifier') {
-        key = property.key.name;
+        key = property.key.name
       } else if (property.key.type === 'Literal') {
-        key = property.key.value;
+        key = property.key.value
       }
 
       if (typeof key === 'string' && legacyNameMapping[key] != null) {
         context.report({
           node: property,
           message: `Use "${legacyNameMapping[key]}" instead of legacy formats like "${key}" to adhere to logical property naming.`,
-          fix: (fixer) => {
+          fix: (fixer) =>
             // $FlowFixMe[incompatible-type] - We've already checked that key is a string and in legacyNameMapping
-            return fixer.replaceText(property.key, legacyNameMapping[key]);
-          },
-        });
-      }
-      if (typeof key !== 'string') {
-        return;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            fixer.replaceText(property.key, legacyNameMapping[key]!),
+        })
       }
 
-      const shorthandAliasesForKey = shorthandAliases[key];
+      if (typeof key !== 'string') {
+        return
+      }
+
+      const shorthandAliasesForKey = shorthandAliases[key]
 
       if (
         typeof key !== 'string' ||
+        !('value' in property.value) ||
         property.value.value === null ||
         shorthandAliasesForKey == null
       ) {
-        return;
+        return
       }
 
-      const v = property.value.value;
+      const v = property.value.value
+
       if (typeof v !== 'string' && typeof v !== 'number') {
-        return;
+        return
       }
 
-      const newValues = shorthandAliasesForKey(v, allowImportant, preferInline);
+      const newValues = shorthandAliasesForKey(v, allowImportant, preferInline)
 
       const isUnfixableError =
-        newValues.length === 1 && newValues[0]?.[1] === CANNOT_FIX;
+        newValues.length === 1 && newValues[0]?.[1] === CANNOT_FIX
 
+      /* eslint-disable @typescript-eslint/no-non-null-assertion */
       if (
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         !newValues ||
         (newValues.length === 1 &&
-          newValues[0][0] === key &&
-          (newValues[0][1] === property.value.value ||
-            newValues[0][1] === property.value?.value?.toString() ||
-            newValues[0][1] === parseInt(property.value?.value, 10)) &&
+          newValues[0]![0] === key &&
+          (newValues[0]![1] === property.value.value ||
+            newValues[0]![1] === property.value.value?.toString() ||
+            newValues[0]![1] ===
+              Number.parseInt(property.value.value as string, 10)) &&
           !isUnfixableError)
       ) {
-        return;
+        return
       }
+      /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
       context.report({
         node: property,
@@ -210,60 +213,73 @@ const stylexValidShorthands = {
         data: {
           property: key,
         },
-        fix: !isUnfixableError
-          ? (fixer) => {
-              const sourceCode = getSourceCode(context);
+        fix: isUnfixableError
+          ? null
+          : (fixer) => {
+              const sourceCode = getSourceCode(context)
 
               const startNodeIndentation = getNodeIndentation(
                 sourceCode,
                 property,
-              );
-              const newLineAndIndent = `\n${startNodeIndentation}`;
+              )
+              const newLineAndIndent = `\n${startNodeIndentation}`
 
               const newPropertiesText = newValues
                 .map(
-                  ([key, value], index) =>
-                    `${index > 0 ? newLineAndIndent : ''}${key as $FlowFixMe}: ${typeof value === 'string' ? `'${value}'` : value}`,
+                  ([iKey, value], index) =>
+                    `${index > 0 ? newLineAndIndent : ''}${iKey}: ${typeof value === 'string' ? `'${value}'` : value}`,
                 )
-                .join(',');
+                .join(',')
 
-              return fixer.replaceText(property, newPropertiesText);
-            }
-          : null,
-      });
+              return fixer.replaceText(property, newPropertiesText)
+            },
+      })
     }
 
     return {
       ImportDeclaration: importTracker.ImportDeclaration,
       CallExpression(
-        node: $ReadOnly<{ ...CallExpression, ...Rule.NodeParentExtension }>,
+        node: Readonly<CallExpression & Rule.NodeParentExtension>,
       ) {
-        const isStyleXCall = isStylexCreateCallee(node.callee);
+        const isStyleXCall = isStylexCreateCallee(node.callee)
 
         if (!isStyleXCall) {
-          return;
+          return
         }
 
-        const namespacesObj = node.arguments[0];
-        if (namespacesObj.type !== 'ObjectExpression') {
-          return;
+        const [namespacesObj] = node.arguments
+
+        if (namespacesObj?.type !== 'ObjectExpression') {
+          return
         }
 
         for (const namespaceProp of namespacesObj.properties) {
           if (namespaceProp.type !== 'Property') {
-            continue;
+            continue
           }
 
           if (namespaceProp.value.type === 'ObjectExpression') {
-            validateObject(namespaceProp.value);
+            validateObject(namespaceProp.value)
           }
         }
       },
       'Program:exit'() {
-        importTracker.clear();
+        importTracker.clear()
       },
-    };
+    }
   },
-};
+}
 
-export default stylexValidShorthands as typeof stylexValidShorthands;
+import type { CallExpression } from 'estree'
+import { CANNOT_FIX } from './utils/split-shorthands'
+import { createBlockInlineTransformer } from './utils/split-shorthands'
+import { createDirectionalTransformer } from './utils/split-shorthands'
+import createImportTracker from './utils/create-import-tracker'
+import { createSpecificTransformer } from './utils/split-shorthands'
+import getNodeIndentation from './utils/get-node-indentation'
+import getSourceCode from './utils/get-source-code'
+import type { Node } from 'estree'
+import type { ObjectExpression } from 'estree'
+import type { Property } from 'estree'
+import type { Rule } from 'eslint'
+//
