@@ -1,17 +1,7 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
-
-import type { Rule } from 'eslint'
-import type { SourceCode } from '@eslint/core'
+export { getSourceCode as default }
 
 // Fallback to legacy `getSourceCode()` for compatibility with older ESLint versions
-export default function getSourceCode(context: Rule.RuleContext): SourceCode {
+function getSourceCode(context: Rule.RuleContext): SourceCode {
   // const sourceCode =
   //   context.sourceCode ||
   //   (typeof context.getSourceCode === 'function'
@@ -27,3 +17,7 @@ export default function getSourceCode(context: Rule.RuleContext): SourceCode {
 
   return sourceCode
 }
+
+import type { Rule } from 'eslint'
+import type { SourceCode } from '@eslint/core'
+//
