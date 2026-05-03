@@ -22,6 +22,7 @@ const viteConfig = {
           setupFiles: [
             fileURLToPath(new URL('src/test/setup.ts', import.meta.url)),
           ],
+          include: ['**/*.{test,spec}.?(c|m)ts?(x)'],
         },
       },
     ],
