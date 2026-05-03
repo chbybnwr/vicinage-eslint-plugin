@@ -7,10 +7,8 @@
  * @flow strict
  */
 
-'use strict';
-
-import type { SourceCode } from 'eslint/eslint-rule';
-/*:: import { Rule } from 'eslint'; */
+import type { SourceCode } from 'eslint/eslint-rule'
+/* :: import { Rule } from 'eslint'; */
 
 // Fallback to legacy `getSourceCode()` for compatibility with older ESLint versions
 export default function getSourceCode(context: Rule.RuleContext): SourceCode {
@@ -18,11 +16,13 @@ export default function getSourceCode(context: Rule.RuleContext): SourceCode {
     context.sourceCode ||
     (typeof context.getSourceCode === 'function'
       ? context.getSourceCode()
-      : null);
+      : null)
+
   if (!sourceCode) {
     throw new Error(
       'ESLint context does not provide source code access. Please update ESLint to v>=8.40.0. See: https://eslint.org/blog/2023/09/preparing-custom-rules-eslint-v9/',
-    );
+    )
   }
-  return sourceCode;
+
+  return sourceCode
 }
