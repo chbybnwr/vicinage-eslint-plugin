@@ -17,7 +17,7 @@ ruleTester.run('valid-shorthands', rule, {
   _valid: [
     {
       code: /* js */ `
-        import { apply } from 'vicinage';
+        import { apply } from 'vicinage'
 
         apply({
           marginInlineEnd: '14px',
@@ -27,7 +27,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderRadius: 5,
@@ -38,7 +38,7 @@ ruleTester.run('valid-shorthands', rule, {
     // border: single value passes through
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           border: 'none',
@@ -48,7 +48,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           border: 'solid',
@@ -58,7 +58,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           border: 0,
@@ -68,7 +68,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           cornerShape: 'squircle',
@@ -78,7 +78,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           margin: 10,
@@ -88,7 +88,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           marginInline: 0,
@@ -98,7 +98,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           paddingInline: 0,
@@ -108,7 +108,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           marginBlock: 10,
@@ -118,7 +118,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           paddingBlock: 10,
@@ -128,7 +128,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           padding: 'calc(0.5 * 100px)',
@@ -138,7 +138,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           marginTop: '10em',
@@ -151,7 +151,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderWidth: '1px',
@@ -164,7 +164,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'rgb(0, 0, 0)',
@@ -175,7 +175,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'oklch(0.928 0.006 264.531)',
@@ -185,7 +185,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'oklab(0.9 -0.003 -0.003)',
@@ -195,7 +195,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'lch(50% 20 240)',
@@ -205,7 +205,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'lab(50% -20 -20)',
@@ -215,7 +215,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'color(display-p3 1 0.5 0)',
@@ -225,7 +225,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'hwb(240 100% 50%)',
@@ -235,7 +235,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'rgb(255 0 0 / 0.5)',
@@ -245,7 +245,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'hsl(220 3% 15% / 10%)',
@@ -255,7 +255,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'hsb(220 3% 15% / 10%)',
@@ -265,7 +265,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'oklch(0.7 0.15 180 / 0.8)',
@@ -275,7 +275,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'oklab(0.7 0.15 -0.1 / 0.8)',
@@ -285,7 +285,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'lch(70% 15 180 / 0.8)',
@@ -295,7 +295,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'lab(70% -10 20 / 0.8)',
@@ -305,7 +305,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'color(display-p3 0.7 0.2 0.1 / 0.8)',
@@ -315,7 +315,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderColor: 'hwb(220 3% 15% / 10%)',
@@ -326,7 +326,7 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ validImports: ['custom-stylex'] }],
       code: /* js */ `
-        import * as stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex'
         const styles = stylex.create({
           main: {
             marginInlineEnd: '14px',
@@ -338,7 +338,7 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ validImports: [{ from: 'a', as: 'css' }] }],
       code: /* js */ `
-        import { css } from 'a';
+        import { css } from 'a'
         const styles = css.create({
           main: {
             borderRadius: 5,
@@ -349,7 +349,7 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-row: numeric single value
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           gridRow: 1,
@@ -360,7 +360,7 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-row: compound single value, no slash
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           gridRow: 'span 2',
@@ -371,7 +371,7 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-column: string single value
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           gridColumn: '1',
@@ -382,7 +382,7 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-column: CSS keyword
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           gridColumn: 'auto',
@@ -393,7 +393,7 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-column: span value
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           gridColumn: 'span 3',
@@ -404,7 +404,7 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-template: single value, no slash
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           gridTemplate: 'none',
@@ -415,7 +415,7 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-area: CSS keyword
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           gridArea: 'auto',
@@ -426,7 +426,7 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-area: span, not custom-ident
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           gridArea: 'span 2',
@@ -437,7 +437,7 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-area: integer, not custom-ident
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           gridArea: '1',
@@ -448,7 +448,7 @@ ruleTester.run('valid-shorthands', rule, {
     // Already-longhand grid properties
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           gridRowStart: 1,
@@ -462,7 +462,7 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-column: calc() with internal slash doesn't split
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           gridColumn: 'calc(100%/3)',
@@ -475,7 +475,7 @@ ruleTester.run('valid-shorthands', rule, {
     //
     {
       code: /* js */ `
-        import { apply } from 'vicinage';
+        import { apply } from 'vicinage'
 
         function Component() {
           return <div
@@ -486,7 +486,7 @@ ruleTester.run('valid-shorthands', rule, {
         }
       `,
       output: /* js */ `
-        import { apply } from 'vicinage';
+        import { apply } from 'vicinage'
 
         function Component() {
           return <div
@@ -508,7 +508,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-        import { apply } from 'vicinage';
+        import { apply } from 'vicinage'
 
         function Component() {
           return <div
@@ -519,7 +519,7 @@ ruleTester.run('valid-shorthands', rule, {
         }
       `,
       output: /* js */ `
-        import { apply } from 'vicinage';
+        import { apply } from 'vicinage'
 
         function Component() {
           return <div
@@ -543,15 +543,15 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ preferInline: true }],
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             borderRadius: '10px 15px 20px 25px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             borderStartStartRadius: '10px',
@@ -559,7 +559,7 @@ ruleTester.run('valid-shorthands', rule, {
             borderEndEndRadius: '20px',
             borderEndStartRadius: '25px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -570,15 +570,15 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             borderRadius: '10px 15px 20px 25px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             borderTopLeftRadius: '10px',
@@ -586,7 +586,7 @@ ruleTester.run('valid-shorthands', rule, {
             borderBottomRightRadius: '20px',
             borderBottomLeftRadius: '25px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -597,15 +597,15 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             cornerShape: 'scoop notch',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             cornerStartStartShape: 'scoop',
@@ -613,7 +613,7 @@ ruleTester.run('valid-shorthands', rule, {
             cornerEndStartShape: 'scoop',
             cornerEndEndShape: 'notch',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -624,7 +624,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             marginHorizontal: '10px',
@@ -632,10 +632,10 @@ ruleTester.run('valid-shorthands', rule, {
             paddingHorizontal: '10px',
             paddingVertical: '5px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             marginInline: '10px',
@@ -643,7 +643,7 @@ ruleTester.run('valid-shorthands', rule, {
             paddingInline: '10px',
             paddingBlock: '5px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -666,24 +666,24 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             margin: '10px 10px 10px',
             marginInline: '15px 15px',
             padding: '20px 20px 20px 20px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             margin: '10px',
             marginInline: '15px',
             padding: '20px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -702,7 +702,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               borderWidth: 'var(--vertical-border-width, 10) var(--horizontal-border-width, 15)',
@@ -710,7 +710,7 @@ ruleTester.run('valid-shorthands', rule, {
           })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               borderBlockWidth: 'var(--vertical-border-width, 10)',
@@ -727,17 +727,17 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             borderWidth: 'calc(100% - 20px) calc(90% - 20px)',
             borderColor: 'var(--test-color, #ccc) linear-gradient(to right, #ff7e5f, #feb47b)',
             background: 'no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)'
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             borderBlockWidth: 'calc(100% - 20px)',
@@ -746,7 +746,7 @@ ruleTester.run('valid-shorthands', rule, {
             borderInlineColor: 'linear-gradient(to right, #ff7e5f, #feb47b)',
             background: 'no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)'
           },
-        });
+        })
       `,
       errors: [
         {
@@ -766,7 +766,7 @@ ruleTester.run('valid-shorthands', rule, {
 
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               borderWidth: '1px 2px 3px 4px',
@@ -778,10 +778,10 @@ ruleTester.run('valid-shorthands', rule, {
               borderLeft: '5px double yellow',
               borderRadius: '10px 20px 30px 40px'
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               borderTopWidth: '1px',
@@ -813,7 +813,7 @@ ruleTester.run('valid-shorthands', rule, {
               borderBottomRightRadius: '30px',
               borderBottomLeftRadius: '40px'
             },
-          });
+          })
         `,
       errors: [
         {
@@ -852,22 +852,22 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             outline: '2px dashed red',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             outlineWidth: '2px',
             outlineStyle: 'dashed',
             outlineColor: 'red',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -878,15 +878,15 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               background: '#ff0 url("image.jpg") no-repeat fixed center / cover !important',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               backgroundColor: '#ff0',
@@ -896,7 +896,7 @@ ruleTester.run('valid-shorthands', rule, {
               backgroundPosition: 'center',
               backgroundSize: 'cover',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -908,15 +908,15 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ allowImportant: true }],
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               background: '#ff0 url("image.jpg") no-repeat fixed center / cover !important',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               backgroundColor: '#ff0 !important',
@@ -926,7 +926,7 @@ ruleTester.run('valid-shorthands', rule, {
               backgroundPosition: 'center !important',
               backgroundSize: 'cover !important',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -937,17 +937,17 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               margin: '0px',
               font: 'italic small-caps bold 16px/1.5 "Helvetica Neue"',
               color: 'white',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               margin: '0px',
@@ -959,7 +959,7 @@ ruleTester.run('valid-shorthands', rule, {
               lineHeight: '1.5',
               color: 'white',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -971,15 +971,15 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ allowImportant: true }],
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               margin: '10px 12px 13px 14px !important',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               marginTop: '10px !important',
@@ -987,7 +987,7 @@ ruleTester.run('valid-shorthands', rule, {
               marginBottom: '13px !important',
               marginLeft: '14px !important',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -998,15 +998,15 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               margin: '10px 12px 13px 14px !important',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               marginTop: '10px',
@@ -1014,7 +1014,7 @@ ruleTester.run('valid-shorthands', rule, {
               marginBottom: '13px',
               marginLeft: '14px',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -1026,15 +1026,15 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ preferInline: true }],
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               margin: '10em 1em 5em 2em',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               marginTop: '10em',
@@ -1042,7 +1042,7 @@ ruleTester.run('valid-shorthands', rule, {
               marginBottom: '5em',
               marginInlineStart: '2em',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -1053,21 +1053,21 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               margin: '10em 1em',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               marginBlock: '10em',
               marginInline: '1em',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -1078,21 +1078,21 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               marginInline: '10em 1em',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               marginInlineStart: '10em',
               marginInlineEnd: '1em',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -1103,21 +1103,21 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               marginBlock: '10em 1em',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               marginBlockStart: '10em',
               marginBlockEnd: '1em',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -1128,21 +1128,21 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               paddingBlock: '10em 1em',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               paddingBlockStart: '10em',
               paddingBlockEnd: '1em',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -1153,7 +1153,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderWidth: '4px 5px 6px 7px',
@@ -1177,7 +1177,7 @@ ruleTester.run('valid-shorthands', rule, {
         },
       ],
       output: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderTopWidth: '4px',
@@ -1199,7 +1199,7 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ preferInline: true }],
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderWidth: '4px 5px 6px 7px',
@@ -1223,7 +1223,7 @@ ruleTester.run('valid-shorthands', rule, {
         },
       ],
       output: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderTopWidth: '4px',
@@ -1244,7 +1244,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               paddingTop: '10em',
@@ -1254,10 +1254,10 @@ ruleTester.run('valid-shorthands', rule, {
               paddingStart: '10em',
               paddingEnd: '1em',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               paddingTop: '10em',
@@ -1267,7 +1267,7 @@ ruleTester.run('valid-shorthands', rule, {
               paddingInlineStart: '10em',
               paddingInlineEnd: '1em',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -1290,21 +1290,21 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               padding: '10em 1em',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               paddingBlock: '10em',
               paddingInline: '1em',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -1316,21 +1316,21 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ validImports: ['custom-stylex'] }],
       code: /* js */ `
-        import * as stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex'
         const styles = stylex.create({
           main: {
             margin: '10px 12px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex'
         const styles = stylex.create({
           main: {
             marginBlock: '10px',
             marginInline: '12px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1342,21 +1342,21 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ validImports: [{ from: 'a', as: 'css' }] }],
       code: /* js */ `
-        import { css } from 'a';
+        import { css } from 'a'
         const styles = css.create({
           main: {
             padding: '5px 10px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import { css } from 'a';
+        import { css } from 'a'
         const styles = css.create({
           main: {
             paddingBlock: '5px',
             paddingInline: '10px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1367,21 +1367,21 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             borderColor: 'hsl(220 3% 15%) hsl(240 3% 20%)',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             borderBlockColor: 'hsl(220 3% 15%)',
             borderInlineColor: 'hsl(240 3% 20%)',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1392,21 +1392,21 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             borderColor: 'oklch(0.7 0.15 180) rgb(255 0 0)',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             borderBlockColor: 'oklch(0.7 0.15 180)',
             borderInlineColor: 'rgb(255 0 0)',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1418,15 +1418,15 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-area: custom-ident expands to 4 longhands
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridArea: 'header',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridColumnEnd: 'header',
@@ -1434,7 +1434,7 @@ ruleTester.run('valid-shorthands', rule, {
             gridRowEnd: 'header',
             gridRowStart: 'header',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1446,15 +1446,15 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-area: custom-ident with 2 slash-separated parts
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridArea: 'header / sidebar',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridColumnEnd: 'sidebar',
@@ -1462,7 +1462,7 @@ ruleTester.run('valid-shorthands', rule, {
             gridRowEnd: 'header',
             gridRowStart: 'header',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1474,21 +1474,21 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-area: non-custom-ident with 2 slash-separated parts
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridArea: 'span 2 / span 3',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridColumnStart: 'span 3',
             gridRowStart: 'span 2',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1500,22 +1500,22 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-area: 3 slash-separated parts
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridArea: '1 / 2 / 3',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridColumnStart: '2',
             gridRowEnd: '3',
             gridRowStart: '1',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1527,15 +1527,15 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-area: 4 slash-separated parts
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridArea: '1 / 2 / 3 / 4',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridColumnEnd: '4',
@@ -1543,7 +1543,7 @@ ruleTester.run('valid-shorthands', rule, {
             gridRowEnd: '3',
             gridRowStart: '1',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1555,22 +1555,22 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-area: custom-ident row / non-custom-ident column (2 values)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridArea: 'header / 2',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridColumnStart: '2',
             gridRowEnd: 'header',
             gridRowStart: 'header',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1582,22 +1582,22 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-area: non-custom-ident row / custom-ident column (2 values)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridArea: '1 / sidebar',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridColumnEnd: 'sidebar',
             gridColumnStart: 'sidebar',
             gridRowStart: '1',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1609,15 +1609,15 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-area: 3 values with custom-ident column-start
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridArea: '1 / sidebar / 3',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridColumnEnd: 'sidebar',
@@ -1625,7 +1625,7 @@ ruleTester.run('valid-shorthands', rule, {
             gridRowEnd: '3',
             gridRowStart: '1',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1637,21 +1637,21 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-row: 2 slash-separated parts
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridRow: '1 / 3',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridRowEnd: '3',
             gridRowStart: '1',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1663,21 +1663,21 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-row: named lines
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridRow: 'header-start / content-end',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridRowEnd: 'content-end',
             gridRowStart: 'header-start',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1689,21 +1689,21 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-row: compound value after slash
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridRow: '1 / span 2',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridRowEnd: 'span 2',
             gridRowStart: '1',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1715,21 +1715,21 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-column: 2 slash-separated parts
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridColumn: '2 / 4',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridColumnEnd: '4',
             gridColumnStart: '2',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1741,21 +1741,21 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-template: rows / columns
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridTemplate: '1fr 2fr / 100px 1fr',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridTemplateColumns: '100px 1fr',
             gridTemplateRows: '1fr 2fr',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1767,21 +1767,21 @@ ruleTester.run('valid-shorthands', rule, {
     // grid-template: with repeat() function
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridTemplate: 'auto auto / repeat(3, 1fr)',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridTemplateColumns: 'repeat(3, 1fr)',
             gridTemplateRows: 'auto auto',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1793,21 +1793,21 @@ ruleTester.run('valid-shorthands', rule, {
     // animation: duration + name
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: 'slidein 3s',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animationDuration: '3s',
             animationName: 'slidein',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1819,22 +1819,22 @@ ruleTester.run('valid-shorthands', rule, {
     // animation: duration + timing + name
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: 'slidein 3s ease-in',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animationDuration: '3s',
             animationTimingFunction: 'ease-in',
             animationName: 'slidein',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1846,22 +1846,22 @@ ruleTester.run('valid-shorthands', rule, {
     // animation: duration + delay (two time values)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: 'slidein 3s 1s',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animationDuration: '3s',
             animationDelay: '1s',
             animationName: 'slidein',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1873,15 +1873,15 @@ ruleTester.run('valid-shorthands', rule, {
     // animation: full shorthand with all properties
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: '3s ease-in 1s 2 reverse both paused slidein',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animationDuration: '3s',
@@ -1893,7 +1893,7 @@ ruleTester.run('valid-shorthands', rule, {
             animationPlayState: 'paused',
             animationName: 'slidein',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1905,22 +1905,22 @@ ruleTester.run('valid-shorthands', rule, {
     // animation: cubic-bezier timing function
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: 'slidein 300ms cubic-bezier(0.4, 0, 0.2, 1)',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animationDuration: '300ms',
             animationTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
             animationName: 'slidein',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1932,15 +1932,15 @@ ruleTester.run('valid-shorthands', rule, {
     // animation: infinite iteration count
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: 'spin 1s linear infinite',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animationDuration: '1s',
@@ -1948,7 +1948,7 @@ ruleTester.run('valid-shorthands', rule, {
             animationIterationCount: 'infinite',
             animationName: 'spin',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1961,22 +1961,22 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ allowImportant: true }],
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: 'slidein 2s ease !important',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animationDuration: '2s !important',
             animationTimingFunction: 'ease !important',
             animationName: 'slidein !important',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -1988,12 +1988,12 @@ ruleTester.run('valid-shorthands', rule, {
     // animation: comma-separated multi-animation is CANNOT_FIX
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: 'slidein 3s, fadeout 2s',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2005,22 +2005,22 @@ ruleTester.run('valid-shorthands', rule, {
     // animation: iteration count before duration
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: '2 3s slidein',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animationDuration: '3s',
             animationIterationCount: '2',
             animationName: 'slidein',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2032,21 +2032,21 @@ ruleTester.run('valid-shorthands', rule, {
     // animation: ambiguous "none" treated as animation-name (none is default fill-mode)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: '1s none',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animationDuration: '1s',
             animationName: 'none',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2058,22 +2058,22 @@ ruleTester.run('valid-shorthands', rule, {
     // animation: named keyframe with explicit none fill-mode
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: 'fadein 1s none',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animationDuration: '1s',
             animationFillMode: 'none',
             animationName: 'fadein',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2085,22 +2085,22 @@ ruleTester.run('valid-shorthands', rule, {
     // animation: alternate-reverse direction
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animation: 'bounce 1s alternate-reverse',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             animationDuration: '1s',
             animationDirection: 'alternate-reverse',
             animationName: 'bounce',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2112,22 +2112,22 @@ ruleTester.run('valid-shorthands', rule, {
     // flex: single number expands to grow/shrink/basis
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flex: 1,
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flexGrow: '1',
             flexShrink: '1',
             flexBasis: '0%',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2139,22 +2139,22 @@ ruleTester.run('valid-shorthands', rule, {
     // flex: string single number
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flex: '2',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flexGrow: '2',
             flexShrink: '1',
             flexBasis: '0%',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2166,22 +2166,22 @@ ruleTester.run('valid-shorthands', rule, {
     // flex: auto keyword
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flex: 'auto',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flexGrow: '1',
             flexShrink: '1',
             flexBasis: 'auto',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2193,22 +2193,22 @@ ruleTester.run('valid-shorthands', rule, {
     // flex: none keyword
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flex: 'none',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flexGrow: '0',
             flexShrink: '0',
             flexBasis: 'auto',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2220,22 +2220,22 @@ ruleTester.run('valid-shorthands', rule, {
     // flex: initial keyword
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flex: 'initial',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flexGrow: '0',
             flexShrink: '1',
             flexBasis: 'auto',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2247,22 +2247,22 @@ ruleTester.run('valid-shorthands', rule, {
     // flex: single basis value (with unit)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flex: '100px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flexGrow: '1',
             flexShrink: '1',
             flexBasis: '100px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2274,22 +2274,22 @@ ruleTester.run('valid-shorthands', rule, {
     // flex: two numbers (grow shrink)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flex: '1 0',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flexGrow: '1',
             flexShrink: '0',
             flexBasis: '0%',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2301,22 +2301,22 @@ ruleTester.run('valid-shorthands', rule, {
     // flex: number + basis
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flex: '1 30px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flexGrow: '1',
             flexShrink: '1',
             flexBasis: '30px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2328,22 +2328,22 @@ ruleTester.run('valid-shorthands', rule, {
     // flex: three values (grow shrink basis)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flex: '2 2 10%',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flexGrow: '2',
             flexShrink: '2',
             flexBasis: '10%',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2356,22 +2356,22 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ allowImportant: true }],
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flex: '1 0 auto !important',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flexGrow: '1 !important',
             flexShrink: '0 !important',
             flexBasis: 'auto !important',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2383,22 +2383,22 @@ ruleTester.run('valid-shorthands', rule, {
     // flex: calc() basis
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flex: '1 1 calc(100% - 20px)',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             flexGrow: '1',
             flexShrink: '1',
             flexBasis: 'calc(100% - 20px)',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2410,21 +2410,21 @@ ruleTester.run('valid-shorthands', rule, {
     // gap: single value expands to rowGap + columnGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: '10px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: '10px',
             columnGap: '10px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2436,21 +2436,21 @@ ruleTester.run('valid-shorthands', rule, {
     // gap: single numeric value expands to rowGap + columnGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: 10,
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: 10,
             columnGap: 10,
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2462,21 +2462,21 @@ ruleTester.run('valid-shorthands', rule, {
     // gap: numeric zero expands to rowGap + columnGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: 0,
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: 0,
             columnGap: 0,
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2488,21 +2488,21 @@ ruleTester.run('valid-shorthands', rule, {
     // gap: var() value expands to rowGap + columnGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: 'var(--spacing)',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: 'var(--spacing)',
             columnGap: 'var(--spacing)',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2514,21 +2514,21 @@ ruleTester.run('valid-shorthands', rule, {
     // gap: calc() value expands to rowGap + columnGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: 'calc(10px + 1rem)',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: 'calc(10px + 1rem)',
             columnGap: 'calc(10px + 1rem)',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2540,21 +2540,21 @@ ruleTester.run('valid-shorthands', rule, {
     // gap: two values splits to rowGap + columnGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: '10px 20px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: '10px',
             columnGap: '20px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2566,21 +2566,21 @@ ruleTester.run('valid-shorthands', rule, {
     // gridGap: single value expands to rowGap + columnGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridGap: '10px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: '10px',
             columnGap: '10px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2592,21 +2592,21 @@ ruleTester.run('valid-shorthands', rule, {
     // gridGap: two values splits to rowGap + columnGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridGap: '10px 20px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: '10px',
             columnGap: '20px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2618,20 +2618,20 @@ ruleTester.run('valid-shorthands', rule, {
     // gridColumnGap: legacy name fix to columnGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridColumnGap: '10px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             columnGap: '10px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2643,20 +2643,20 @@ ruleTester.run('valid-shorthands', rule, {
     // gridRowGap: legacy name fix to rowGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridRowGap: '10px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: '10px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2668,21 +2668,21 @@ ruleTester.run('valid-shorthands', rule, {
     // gap: two calc() values splits to rowGap + columnGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: 'calc(10px + 1rem) calc(20px + 2rem)',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: 'calc(10px + 1rem)',
             columnGap: 'calc(20px + 2rem)',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2694,21 +2694,21 @@ ruleTester.run('valid-shorthands', rule, {
     // gap: two identical values still splits (two values means shorthand)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: '0px 0px',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: '0px',
             columnGap: '0px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2721,21 +2721,21 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ allowImportant: true }],
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: '10px 20px !important',
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: '10px !important',
             columnGap: '20px !important',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2747,21 +2747,21 @@ ruleTester.run('valid-shorthands', rule, {
     // gridGap: single numeric value expands to rowGap + columnGap
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gridGap: 10,
           },
-        });
+        })
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             rowGap: 10,
             columnGap: 10,
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2773,12 +2773,12 @@ ruleTester.run('valid-shorthands', rule, {
     // gap: with comma returns CANNOT_FIX (no autofix)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: '10px, 20px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2790,12 +2790,12 @@ ruleTester.run('valid-shorthands', rule, {
     // gap: with slash returns CANNOT_FIX (no autofix)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: '10px / 20px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2807,12 +2807,12 @@ ruleTester.run('valid-shorthands', rule, {
     // gap: three values returns CANNOT_FIX (no autofix)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             gap: '10px 20px 30px',
           },
-        });
+        })
       `,
       errors: [
         {
@@ -2823,7 +2823,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           border: '1px solid red'
@@ -2831,7 +2831,7 @@ ruleTester.run('valid-shorthands', rule, {
       })
     `,
       output: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderWidth: '1px',
@@ -2849,7 +2849,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           border: '2px dashed blue'
@@ -2857,7 +2857,7 @@ ruleTester.run('valid-shorthands', rule, {
       })
     `,
       output: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderWidth: '2px',
@@ -2875,22 +2875,22 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               borderStart: '1px solid red',
               borderEnd: '2px dashed blue',
             },
-          });
+          })
         `,
       output: /* js */ `
-          import * as stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex'
           const styles = stylex.create({
             main: {
               borderInlineStart: '1px solid red',
               borderInlineEnd: '2px dashed blue',
             },
-          });
+          })
         `,
       errors: [
         {
@@ -2905,7 +2905,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderStart: 'none',
@@ -2913,7 +2913,7 @@ ruleTester.run('valid-shorthands', rule, {
       })
     `,
       output: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderInlineStart: 'none',
@@ -2929,7 +2929,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderEnd: 'none',
@@ -2937,7 +2937,7 @@ ruleTester.run('valid-shorthands', rule, {
       })
     `,
       output: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderInlineEnd: 'none',
@@ -2953,7 +2953,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           main: {
             border: '1px solid'
@@ -2969,7 +2969,7 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           border: '1px solid rgba(0, 0, 0, 0.5)'
@@ -2977,7 +2977,7 @@ ruleTester.run('valid-shorthands', rule, {
       })
     `,
       output: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderWidth: '1px',
@@ -2996,7 +2996,7 @@ ruleTester.run('valid-shorthands', rule, {
     {
       options: [{ allowImportant: true }],
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           border: '1px solid red !important'
@@ -3004,7 +3004,7 @@ ruleTester.run('valid-shorthands', rule, {
       })
     `,
       output: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
+      import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         main: {
           borderWidth: '1px !important',
