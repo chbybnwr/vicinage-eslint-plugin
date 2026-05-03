@@ -1,7 +1,7 @@
 export { rules }
 
 const rules = {
-  // 'no-conflicting-props': noConflictingProps,
+  'no-conflicting-props': noConflictingProps,
   // 'no-lookahead-selectors': noLookaheadSelectors,
   // 'no-nonstandard-styles': noNonStandardStyles,
   // 'sort-keys': sortKeys,
@@ -9,7 +9,7 @@ const rules = {
   // 'valid-styles': validStyles,
 }
 
-// import noConflictingProps from './no-conflicting-props'
+import noConflictingProps from './no-conflicting-props'
 // import noLookaheadSelectors from './no-lookahead-selectors'
 // import noNonStandardStyles from './no-nonstandard-styles'
 // import sortKeys from './sort-keys'

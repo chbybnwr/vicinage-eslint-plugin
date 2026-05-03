@@ -4,12 +4,12 @@ function createImportTracker(
   importsToLookFor: (string | { from: string; as: string })[],
 ): {
   ImportDeclaration: (node: ImportDeclarationNode) => void
-  isStylexDefaultImport: (name: string) => boolean
-  isStylexNamedImport: (importName: string, name: string) => boolean
+  isDefaultImport: (name: string) => boolean
+  isNamedImport: (importName: string, name: string) => boolean
   clear: () => void
 } {
-  const styleXDefaultImports = new Set<string>()
-  const styleXNamedImports = new Map<string, Set<string>>()
+  const defaultImports = new Set<string>()
+  const namedImports = new Map<string, Set<string>>()
 
   function ImportDeclaration(node: ImportDeclarationNode) {
     if (
@@ -37,7 +37,7 @@ function createImportTracker(
           specifier.type === 'ImportDefaultSpecifier' ||
           specifier.type === 'ImportNamespaceSpecifier'
         ) {
-          styleXDefaultImports.add(specifier.local.name)
+          defaultImports.add(specifier.local.name)
         }
 
         if (
@@ -46,11 +46,11 @@ function createImportTracker(
         ) {
           const importName = specifier.imported.name
 
-          if (!styleXNamedImports.has(importName)) {
-            styleXNamedImports.set(importName, new Set())
+          if (!namedImports.has(importName)) {
+            namedImports.set(importName, new Set())
           }
 
-          styleXNamedImports.get(importName)?.add(specifier.local.name)
+          namedImports.get(importName)?.add(specifier.local.name)
         }
       }
     }
@@ -62,29 +62,29 @@ function createImportTracker(
           specifier.imported.type === 'Identifier' &&
           specifier.imported.name === foundImportSource.as
         ) {
-          styleXDefaultImports.add(specifier.local.name)
+          defaultImports.add(specifier.local.name)
         }
       }
     }
   }
 
-  function isStylexDefaultImport(name: string): boolean {
-    return styleXDefaultImports.has(name)
+  function isDefaultImport(name: string): boolean {
+    return defaultImports.has(name)
   }
 
-  function isStylexNamedImport(importName: string, name: string): boolean {
-    return styleXNamedImports.get(importName)?.has(name) ?? false
+  function isNamedImport(importName: string, name: string): boolean {
+    return namedImports.get(importName)?.has(name) ?? false
   }
 
   function clear() {
-    styleXDefaultImports.clear()
-    styleXNamedImports.clear()
+    defaultImports.clear()
+    namedImports.clear()
   }
 
   return {
     ImportDeclaration,
-    isStylexDefaultImport,
-    isStylexNamedImport,
+    isDefaultImport,
+    isNamedImport,
     clear,
   }
 }

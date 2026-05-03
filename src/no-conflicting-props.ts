@@ -1,58 +1,55 @@
-export { stylexNoConflictingProps as default }
+export { noConflictingProps as default }
 
-const stylexNoConflictingProps: Rule.RuleModule = {
+const defaultValidImports = ['vicinage']
+
+const noConflictingProps: Rule.RuleModule = {
   meta: {
     type: 'problem',
     docs: {
       description:
-        'Disallow using `className` or `style` props on elements that spread `stylex.props()`',
-      // category: 'Best Practices',
+        'Disallow using `className` or `style` props on elements that spread `apply()`',
       recommended: true,
     },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          validImports: {
-            type: 'array',
-            items: {
-              oneOf: [
-                { type: 'string' },
-                {
-                  type: 'object',
-                  properties: {
-                    from: { type: 'string' },
-                    as: { type: 'string' },
-                  },
-                },
-              ],
-            },
-            default: ['stylex', '@stylexjs/stylex'],
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
+    // schema: [
+    //   {
+    //     type: 'object',
+    //     properties: {
+    //       validImports: {
+    //         type: 'array',
+    //         items: {
+    //           oneOf: [
+    //             { type: 'string' },
+    //             {
+    //               type: 'object',
+    //               properties: {
+    //                 from: { type: 'string' },
+    //                 as: { type: 'string' },
+    //               },
+    //             },
+    //           ],
+    //         },
+    //         default: defaultValidImports,
+    //       },
+    //     },
+    //     additionalProperties: false,
+    //   },
+    // ],
   },
   create: (context: Rule.RuleContext) => {
-    const options = context.options as { validImports: string[] }[]
+    // const options = context.options as { validImports: string[] }[]
+    // const validImports = options[0]?.validImports ?? defaultValidImports
+    // const importTracker = createImportTracker(validImports)
+    const importTracker = createImportTracker(defaultValidImports)
 
-    const validImports = options[0]?.validImports ?? [
-      'stylex',
-      '@stylexjs/stylex',
-    ]
-
-    const importTracker = createImportTracker(validImports)
-
-    function isStylexPropsCallee(node: Node) {
+    function isApplyCallee(node: Node) {
       return (
         (node.type === 'MemberExpression' &&
           node.object.type === 'Identifier' &&
-          importTracker.isStylexDefaultImport(node.object.name) &&
+          importTracker.isDefaultImport(node.object.name) &&
           node.property.type === 'Identifier' &&
-          node.property.name === 'props') ||
+          node.property.name === 'apply') ||
         (node.type === 'Identifier' &&
-          importTracker.isStylexNamedImport('props', node.name))
+          importTracker.isNamedImport('apply', node.name))
       )
     }
 
@@ -64,14 +61,14 @@ const stylexNoConflictingProps: Rule.RuleModule = {
           return
         }
 
-        const hasStylexPropsSpread = node.attributes.some(
+        const hasPropsSpread = node.attributes.some(
           (attr) =>
             attr.type === 'JSXSpreadAttribute' &&
             attr.argument.type === 'CallExpression' &&
-            isStylexPropsCallee(attr.argument.callee),
+            isApplyCallee(attr.argument.callee),
         )
 
-        if (!hasStylexPropsSpread) {
+        if (!hasPropsSpread) {
           return
         }
 
@@ -86,7 +83,7 @@ const stylexNoConflictingProps: Rule.RuleModule = {
               // $FlowFixMe[incompatible-type]
               node: attr,
               message:
-                'The `{{propName}}` prop should not be used when spreading `stylex.props()` to avoid conflicts.',
+                'The `{{propName}}` prop should not be used when spreading `apply()` to avoid conflicts.',
               data: { propName: attr.name.name },
             })
           } else if (
@@ -104,7 +101,7 @@ const stylexNoConflictingProps: Rule.RuleModule = {
                   // $FlowFixMe[incompatible-type]
                   node: prop,
                   message:
-                    'The `{{propName}}` prop should not be used when spreading `stylex.props()` to avoid conflicts.',
+                    'The `{{propName}}` prop should not be used when spreading `apply()` to avoid conflicts.',
                   data: { propName: prop.key.name },
                 })
               }
