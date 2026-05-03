@@ -1166,7 +1166,7 @@ function splitSpecificShorthands(
 
     const [first] = groups
 
-    if (first != null) {
+    if (groups.length === 1 && first != null) {
       if (isCustomIdent(first)) {
         return [
           ['gridColumnEnd', applyImportant(first, importantSuffix)],
@@ -1207,7 +1207,7 @@ function splitSpecificShorthands(
     const gapValues = gapSplit.parts.map((part) => part.text)
     const [first, second] = gapValues
 
-    if (gapValues.length === 0 || (first != null && second == null)) {
+    if (gapValues.length <= 1) {
       const val = isNumber
         ? Number(rawValue)
         : applyImportant(first ?? rawValue, importantSuffix)
@@ -1218,7 +1218,7 @@ function splitSpecificShorthands(
       ]
     }
 
-    if (first != null && second != null) {
+    if (gapValues.length === 2 && first != null && second != null) {
       return [
         ['rowGap', applyImportant(first, importantSuffix)],
         ['columnGap', applyImportant(second, importantSuffix)],
