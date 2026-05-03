@@ -12,16 +12,18 @@ const ruleTester = new RuleTester({
 
 ruleTester.run('valid-shorthands', rule, {
   valid: [
+    //
+  ],
+  _valid: [
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
-      const styles = stylex.create({
-        main: {
+        import { apply } from 'vicinage';
+
+        apply({
           marginInlineEnd: '14px',
           marginInlineStart: '14px',
-        },
-      })
-    `,
+        })
+      `,
     },
     {
       code: /* js */ `
@@ -470,25 +472,32 @@ ruleTester.run('valid-shorthands', rule, {
     },
   ],
   invalid: [
+    //
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          main: {
-            margin: '10px 12px 13px 14px',
-          },
-        });
+        import { apply } from 'vicinage';
+
+        function Component() {
+          return <div
+            {...apply({
+              margin: '10px 12px 13px 14px',
+            })}
+          />
+        }
       `,
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          main: {
-            marginTop: '10px',
-            marginRight: '12px',
-            marginBottom: '13px',
-            marginLeft: '14px',
-          },
-        });
+        import { apply } from 'vicinage';
+
+        function Component() {
+          return <div
+            {...apply({
+              marginTop: '10px',
+              marginRight: '12px',
+              marginBottom: '13px',
+              marginLeft: '14px',
+            })}
+          />
+        }
       `,
       errors: [
         {
@@ -499,23 +508,29 @@ ruleTester.run('valid-shorthands', rule, {
     },
     {
       code: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
-      const styles = stylex.create({
-        main: {
-          borderRight: '4px solid var(--fds-gray-10)'
-        },
-      })
-    `,
+        import { apply } from 'vicinage';
+
+        function Component() {
+          return <div
+            {...apply({
+              borderRight: '4px solid var(--fds-gray-10)'
+            })}
+          />
+        }
+      `,
       output: /* js */ `
-      import * as stylex from '@stylexjs/stylex';
-      const styles = stylex.create({
-        main: {
-          borderRightWidth: '4px',
-          borderRightStyle: 'solid',
-          borderRightColor: 'var(--fds-gray-10)'
-        },
-      })
-    `,
+        import { apply } from 'vicinage';
+
+        function Component() {
+          return <div
+            {...apply({
+              borderRightWidth: '4px',
+              borderRightStyle: 'solid',
+              borderRightColor: 'var(--fds-gray-10)'
+            })}
+          />
+        }
+      `,
       errors: [
         {
           message:
@@ -523,6 +538,8 @@ ruleTester.run('valid-shorthands', rule, {
         },
       ],
     },
+  ],
+  _invalid: [
     {
       options: [{ preferInline: true }],
       code: /* js */ `
