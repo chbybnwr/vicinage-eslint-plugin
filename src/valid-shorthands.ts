@@ -63,29 +63,29 @@ const validShorthands: Rule.RuleModule = {
       description:
         'Require shorthand properties to be split into individual properties',
       recommended: false,
-      url: 'https://github.com/facebook/stylex/tree/main/packages/@stylexjs/eslint-plugin',
+      url: 'https://github.com/chbybnwr/vicinage-eslint-plugin/',
     },
     fixable: 'code',
     schema: [
       {
         type: 'object',
         properties: {
-          validImports: {
-            type: 'array',
-            items: {
-              oneOf: [
-                { type: 'string' },
-                {
-                  type: 'object',
-                  properties: {
-                    from: { type: 'string' },
-                    as: { type: 'string' },
-                  },
-                },
-              ],
-            },
-            default: ['vicinage'],
-          },
+          // validImports: {
+          //   type: 'array',
+          //   items: {
+          //     oneOf: [
+          //       { type: 'string' },
+          //       {
+          //         type: 'object',
+          //         properties: {
+          //           from: { type: 'string' },
+          //           as: { type: 'string' },
+          //         },
+          //       },
+          //     ],
+          //   },
+          //   default: ['vicinage'],
+          // },
           allowImportant: {
             type: 'boolean',
             default: false,
@@ -101,18 +101,18 @@ const validShorthands: Rule.RuleModule = {
   },
   create: (context: Rule.RuleContext) => {
     const {
-      validImports = ['vicinage'],
+      // validImports = ['vicinage'],
       allowImportant = false,
       preferInline = false,
     } = (context.options[0] ?? {}) as {
-      validImports?: string[]
+      // validImports?: string[]
       allowImportant?: boolean
       preferInline?: boolean
     }
 
-    const importTracker = createImportTracker(validImports)
+    const importTracker = createImportTracker(['vicinage'])
 
-    function isStylexCreateCallee(node: Node) {
+    function isApplyCallee(node: Node) {
       return (
         // (node.type === 'MemberExpression' &&
         //   node.object.type === 'Identifier' &&
@@ -209,7 +209,7 @@ const validShorthands: Rule.RuleModule = {
 
       context.report({
         node: property,
-        message: `Property shorthands using multiple values like "${key}: ${String(property.value.value)}" are not supported in StyleX. Separate into individual properties.`,
+        message: `Property shorthands using multiple values like "${key}: ${String(property.value.value)}" are not supported in Vicinage. Separate into individual properties.`,
         data: {
           property: key,
         },
@@ -242,7 +242,7 @@ const validShorthands: Rule.RuleModule = {
       CallExpression: (
         node: Readonly<CallExpression & Rule.NodeParentExtension>,
       ) => {
-        if (!isStylexCreateCallee(node.callee)) {
+        if (!isApplyCallee(node.callee)) {
           return
         }
 
