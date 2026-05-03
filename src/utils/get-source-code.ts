@@ -19,5 +19,5 @@ function getSourceCode(context: Rule.RuleContext): SourceCode {
 }
 
 import type { Rule } from 'eslint'
-import type { SourceCode } from '@eslint/core'
+import type { SourceCode } from 'eslint'
 //
