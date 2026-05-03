@@ -7,11 +7,10 @@
  * @flow strict
  */
 
-'use strict';
-
-import type { Token } from 'eslint/eslint-ast';
-import type { SourceCode } from 'eslint/eslint-rule';
-import type { Comment, Node } from 'estree';
+import type { Comment } from 'estree'
+import type { Node } from 'estree'
+import type { SourceCode } from 'eslint/eslint-rule'
+import type { Token } from 'eslint/eslint-ast'
 
 function isSameLine(
   aNode: Node | Comment | Token,
@@ -19,7 +18,7 @@ function isSameLine(
 ): boolean {
   return Boolean(
     aNode.loc && bNode.loc && aNode.loc?.start.line === bNode.loc?.start.line,
-  );
+  )
 }
 
 export default function getNodeIndentation(
@@ -28,20 +27,20 @@ export default function getNodeIndentation(
 ): string {
   const tokenBefore = sourceCode.getTokenBefore(node, {
     includeComments: false,
-  });
+  })
 
   const isTokenBeforeSameLineAsNode =
-    !!tokenBefore && isSameLine(tokenBefore, node);
+    Boolean(tokenBefore) && isSameLine(tokenBefore, node)
 
   const sliceStart =
     isTokenBeforeSameLineAsNode && tokenBefore?.loc
       ? tokenBefore.loc.end.column
-      : 0;
+      : 0
 
   return node?.loc
     ? sourceCode.lines[node.loc.start.line - 1].slice(
         sliceStart,
         node.loc.start.column,
       )
-    : '';
+    : ''
 }
