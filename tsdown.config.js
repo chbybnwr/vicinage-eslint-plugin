@@ -1,5 +1,3 @@
-import { fileURLToPath } from 'node:url'
-
 export { tsdownConfig as default }
 
 /** @type {import('tsdown').UserConfig} */
@@ -12,10 +10,13 @@ const tsdownConfig = {
     '#': fileURLToPath(new URL('src', import.meta.url)),
   },
 
-  dts: {
-    tsconfig: 'tsconfig.build.json',
-  },
+  // dts: {
+  //   tsconfig: 'tsconfig.build.json',
+  // },
 
   minify: true,
   fixedExtension: false,
 }
+
+import { fileURLToPath } from 'node:url'
+//

@@ -5,7 +5,7 @@
     "@txe/tsconfig/tsconfig.library.json",
     "@txe/tsconfig/tsconfig.bundled.json"
   ],
-  "include": ["src"],
+  "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec*.*", "src/test/**/*"],
 
   "compilerOptions": {
@@ -15,6 +15,8 @@
     "outDir": "./dist/",
 
     "skipLibCheck": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "./lib/",
 
     "paths": {
       "#/*": ["./src/*"]
