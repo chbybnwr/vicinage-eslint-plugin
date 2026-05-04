@@ -240,7 +240,7 @@ eslintTester.run('sort-keys', rule, {
     //     options: [{ validImports: [{ from: 'a', as: 'css' }] }],
     //     code: /* js */ `
     //     import { css } from 'a'
-    //     const styles = css.create(
+    //     css.apply(
     //       {
     //         borderColor: 'black',
     //         display: 'flex',
@@ -257,7 +257,7 @@ eslintTester.run('sort-keys', rule, {
     //     ],
     //     code: /* js */ `
     //     import { css } from 'a'
-    //     const styles = css.create(
+    //     css.apply(
     //       {
     //         display: 'flex',
     //         borderColor: 'black',
@@ -943,7 +943,7 @@ eslintTester.run('sort-keys', rule, {
     //   //   options: [{ validImports: [{ from: 'a', as: 'css' }] }],
     //   //   code: /* js */ `
     //   //     import { css } from 'a'
-    //   //     const styles = css.create(
+    //   //     css.apply(
     //   //       {
     //   //         animationDuration: '100ms',
     //   //         padding: 10,
@@ -953,7 +953,7 @@ eslintTester.run('sort-keys', rule, {
     //   //   `,
     //   //   output: /* js */ `
     //   //     import { css } from 'a'
-    //   //     const styles = css.create(
+    //   //     css.apply(
     //   //       {
     //   //         padding: 10,
     //   //         animationDuration: '100ms',
@@ -977,7 +977,7 @@ eslintTester.run('sort-keys', rule, {
     //   //   ],
     //   //   code: /* js */ `
     //   //     import { css } from 'a'
-    //   //     const styles = css.create(
+    //   //     css.apply(
     //   //       {
     //   //         padding: 10,
     //   //         animationDuration: '100ms',
@@ -987,7 +987,7 @@ eslintTester.run('sort-keys', rule, {
     //   //   `,
     //   //   output: /* js */ `
     //   //     import { css } from 'a'
-    //   //     const styles = css.create(
+    //   //     css.apply(
     //   //       {
     //   //         padding: 10,
     //   //         fontSize: 12,
