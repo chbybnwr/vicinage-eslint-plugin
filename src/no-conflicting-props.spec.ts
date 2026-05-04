@@ -223,6 +223,36 @@ ruleTester.run('no-conflicting-props', rule, {
         },
       ],
     },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+
+        function Component() {
+          return <div {...apply()} class="foo" />
+        }
+      `,
+      errors: [
+        {
+          message:
+            'The `class` prop should not be used when spreading `apply()` to avoid conflicts.',
+        },
+      ],
+    },
+    {
+      code: /* js */ `
+        import { apply as applySheet } from 'vicinage'
+
+        function Component() {
+          return <div {...applySheet()} class="foo" />
+        }
+      `,
+      errors: [
+        {
+          message:
+            'The `class` prop should not be used when spreading `apply()` to avoid conflicts.',
+        },
+      ],
+    },
     //   {
     //     options: [{ validImports: ['custom-styler'] }],
     //     code: /* js */ `

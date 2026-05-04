@@ -1,6 +1,7 @@
 export { noConflictingProps as default }
 
 const defaultValidImports = ['vicinage']
+const stylingProps = new Set(['style', 'class', 'className'])
 
 const noConflictingProps: Rule.RuleModule = {
   meta: {
@@ -84,7 +85,7 @@ const noConflictingProps: Rule.RuleModule = {
             attr.type === 'JSXAttribute' &&
             attr.name.type === 'JSXIdentifier' &&
             'name' in attr.name &&
-            (attr.name.name === 'className' || attr.name.name === 'style')
+            stylingProps.has(attr.name.name)
           ) {
             context.report({
               // $FlowFixMe[incompatible-type]
@@ -102,7 +103,7 @@ const noConflictingProps: Rule.RuleModule = {
                 prop.type === 'Property' &&
                 !prop.computed &&
                 prop.key.type === 'Identifier' &&
-                (prop.key.name === 'className' || prop.key.name === 'style')
+                stylingProps.has(prop.key.name)
               ) {
                 context.report({
                   // $FlowFixMe[incompatible-type]
