@@ -1,16 +1,5 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
-
-'use strict';
-
 // Based on https://github.com/kutsan/stylelint-config-clean-order/tree/v7.0.0
-const CLEAN_ORDER_PRIORITIES: $ReadOnlyArray<string> = [
+const CLEAN_ORDER_PRIORITIES: readonly string[] = [
   '', // index 0 - unused
 
   // Priority 1: composes
@@ -484,6 +473,6 @@ const CLEAN_ORDER_PRIORITIES: $ReadOnlyArray<string> = [
   'viewTimelineAxis',
   'viewTimelineInset',
   'viewTransitionName',
-];
+]
 
-export default CLEAN_ORDER_PRIORITIES;
+export default CLEAN_ORDER_PRIORITIES

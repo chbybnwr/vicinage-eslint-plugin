@@ -3,6 +3,7 @@ longhands
 Neue
 oklab
 oklch
+quasis
 slidein
 squircle
 stylex

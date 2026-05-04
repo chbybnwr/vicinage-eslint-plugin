@@ -1,16 +1,5 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
-
-'use strict';
-
 // Based on https://github.com/stormwarning/stylelint-config-recess-order/blob/293c244a8aea70f4abd81f0daa6653cae1c89351/groups.js
-const RECESS_ORDER_PRIORITIES: $ReadOnlyArray<string> = [
+const RECESS_ORDER_PRIORITIES: readonly string[] = [
   'composes',
 
   'all',
@@ -538,6 +527,6 @@ const RECESS_ORDER_PRIORITIES: $ReadOnlyArray<string> = [
   'breakInside',
   'widows',
   'orphans',
-];
+]
 
-export default RECESS_ORDER_PRIORITIES;
+export default RECESS_ORDER_PRIORITIES

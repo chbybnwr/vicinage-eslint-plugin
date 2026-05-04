@@ -1,29 +1,19 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
+import rule from './sort-keys'
+import { RuleTester } from 'eslint'
 
-'use strict';
-
-jest.disableAutomock();
-
-const { RuleTester: ESLintTester } = require('eslint');
-const rule = require('../src/sort-keys');
-
-const eslintTester = new ESLintTester({
-  parser: require.resolve('hermes-eslint'),
-  parserOptions: {
-    ecmaVersion: 6,
-    sourceType: 'module',
+const eslintTester = new RuleTester({
+  languageOptions: {
+    parserOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
   },
-});
+})
 
-eslintTester.run('sort-keys', rule.default, {
+eslintTester.run('sort-keys', rule, {
   valid: [
     {
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
@@ -43,7 +33,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean' }],
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
@@ -62,7 +52,7 @@ eslintTester.run('sort-keys', rule.default, {
     `,
     },
     {
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
@@ -80,7 +70,7 @@ eslintTester.run('sort-keys', rule.default, {
       });`,
     },
     {
-      code: `
+      code: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const obj = { fontSize: '12px' };
       const styles = cr({
@@ -96,7 +86,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean' }],
-      code: `
+      code: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const obj = { fontSize: '12px' };
       const styles = cr({
@@ -112,7 +102,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'recess' }],
-      code: `
+      code: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const obj = { fontSize: '12px' };
       const styles = cr({
@@ -127,7 +117,7 @@ eslintTester.run('sort-keys', rule.default, {
     `,
     },
     {
-      code: `
+      code: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const styles = cr({
         button: {
@@ -138,7 +128,7 @@ eslintTester.run('sort-keys', rule.default, {
     `,
     },
     {
-      code: `
+      code: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const styles = cr({
         button: {
@@ -152,7 +142,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ allowLineSeparatedGroups: true }],
-      code: `
+      code: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const styles = cr({
         button: {
@@ -167,7 +157,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean', allowLineSeparatedGroups: true }],
-      code: `
+      code: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const styles = cr({
         button: {
@@ -182,7 +172,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'recess', allowLineSeparatedGroups: true }],
-      code: `
+      code: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const styles = cr({
         button: {
@@ -197,7 +187,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ minKeys: 5 }],
-      code: `
+      code: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const styles = cr({
         button: {
@@ -211,7 +201,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ validImports: ['a'] }],
-      code: `
+      code: /* js */ `
       import { create as cr } from 'a';
       const styles = cr({
         button: {
@@ -223,7 +213,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ validImports: ['a'], order: 'clean' }],
-      code: `
+      code: /* js */ `
       import { create as cr } from 'a';
       const styles = cr({
         button: {
@@ -235,7 +225,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ validImports: ['a'], order: 'recess' }],
-      code: `
+      code: /* js */ `
       import { create as cr } from 'a';
       const styles = cr({
         button: {
@@ -247,7 +237,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ validImports: [{ from: 'a', as: 'css' }] }],
-      code: `
+      code: /* js */ `
       import { css } from 'a';
       const styles = css.create({
         button: {
@@ -264,7 +254,7 @@ eslintTester.run('sort-keys', rule.default, {
           order: 'clean',
         },
       ],
-      code: `
+      code: /* js */ `
       import { css } from 'a';
       const styles = css.create({
         button: {
@@ -275,7 +265,7 @@ eslintTester.run('sort-keys', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import { keyframes } from 'stylex';
         const someAnimation = keyframes({
           '0%': {
@@ -291,7 +281,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean' }],
-      code: `
+      code: /* js */ `
         import { keyframes } from 'stylex';
         const someAnimation = keyframes({
           '0%': {
@@ -307,7 +297,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'recess' }],
-      code: `
+      code: /* js */ `
         import { keyframes } from 'stylex';
         const someAnimation = keyframes({
           '0%': {
@@ -322,7 +312,7 @@ eslintTester.run('sort-keys', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const someAnimation = stylex.keyframes({
           '0%': {
@@ -338,7 +328,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean' }],
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const someAnimation = stylex.keyframes({
           '0%': {
@@ -353,7 +343,7 @@ eslintTester.run('sort-keys', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         nav: {
@@ -368,7 +358,7 @@ eslintTester.run('sort-keys', rule.default, {
   ],
   invalid: [
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -378,7 +368,7 @@ eslintTester.run('sort-keys', rule.default, {
           }
         });
       `,
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -397,7 +387,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean' }],
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -407,7 +397,7 @@ eslintTester.run('sort-keys', rule.default, {
           }
         });
       `,
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -425,7 +415,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const obj = { fontSize: '12px' };
         const styles = stylex.create({
@@ -438,7 +428,7 @@ eslintTester.run('sort-keys', rule.default, {
           }
         });
       `,
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const obj = { fontSize: '12px' };
         const styles = stylex.create({
@@ -460,7 +450,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean' }],
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const obj = { fontSize: '12px' };
         const styles = stylex.create({
@@ -473,7 +463,7 @@ eslintTester.run('sort-keys', rule.default, {
           }
         });
       `,
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const obj = { fontSize: '12px' };
         const styles = stylex.create({
@@ -497,7 +487,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import { create } from 'stylex';
         const styles = create({
           button: {
@@ -507,7 +497,7 @@ eslintTester.run('sort-keys', rule.default, {
           }
         });
       `,
-      output: `
+      output: /* js */ `
         import { create } from 'stylex';
         const styles = create({
           button: {
@@ -526,7 +516,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean' }],
-      code: `
+      code: /* js */ `
         import { create } from 'stylex';
         const styles = create({
           button: {
@@ -536,7 +526,7 @@ eslintTester.run('sort-keys', rule.default, {
           }
         });
       `,
-      output: `
+      output: /* js */ `
         import { create } from 'stylex';
         const styles = create({
           button: {
@@ -553,7 +543,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const someAnimation = stylex.keyframes({
           '0%': {
@@ -566,7 +556,7 @@ eslintTester.run('sort-keys', rule.default, {
           },
         });
       `,
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const someAnimation = stylex.keyframes({
           '0%': {
@@ -588,7 +578,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean' }],
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const someAnimation = stylex.keyframes({
           '0%': {
@@ -601,7 +591,7 @@ eslintTester.run('sort-keys', rule.default, {
           },
         });
       `,
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const someAnimation = stylex.keyframes({
           '0%': {
@@ -622,7 +612,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import { keyframes as kf } from 'stylex';
         const someAnimation = kf({
           '0%': {
@@ -635,7 +625,7 @@ eslintTester.run('sort-keys', rule.default, {
           },
         });
       `,
-      output: `
+      output: /* js */ `
         import { keyframes as kf } from 'stylex';
         const someAnimation = kf({
           '0%': {
@@ -657,7 +647,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean' }],
-      code: `
+      code: /* js */ `
         import { keyframes as kf } from 'stylex';
         const someAnimation = kf({
           '0%': {
@@ -670,7 +660,7 @@ eslintTester.run('sort-keys', rule.default, {
           },
         });
       `,
-      output: `
+      output: /* js */ `
         import { keyframes as kf } from 'stylex';
         const someAnimation = kf({
           '0%': {
@@ -691,7 +681,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import { create } from 'stylex';
       const styles = create({
         main: {
@@ -704,7 +694,7 @@ eslintTester.run('sort-keys', rule.default, {
           borderRadius: 10,
         },
       });`,
-      output: `
+      output: /* js */ `
       import { create } from 'stylex';
       const styles = create({
         main: {
@@ -730,7 +720,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean' }],
-      code: `
+      code: /* js */ `
       import { create } from 'stylex';
       const styles = create({
         main: {
@@ -743,7 +733,7 @@ eslintTester.run('sort-keys', rule.default, {
           borderRadius: 10,
         },
       });`,
-      output: `
+      output: /* js */ `
       import { create } from 'stylex';
       const styles = create({
         main: {
@@ -768,7 +758,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import { create } from 'stylex';
       const styles = create({
         main: {
@@ -780,7 +770,7 @@ eslintTester.run('sort-keys', rule.default, {
           },
         },
       });`,
-      output: `
+      output: /* js */ `
       import { create } from 'stylex';
       const styles = create({
         main: {
@@ -799,7 +789,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import { create } from 'stylex';
       const styles = create({
         foo: {
@@ -814,7 +804,7 @@ eslintTester.run('sort-keys', rule.default, {
         }
       });
       `,
-      output: `
+      output: /* js */ `
       import { create } from 'stylex';
       const styles = create({
         foo: {
@@ -838,7 +828,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean' }],
-      code: `
+      code: /* js */ `
       import { create } from 'stylex';
       const styles = create({
         foo: {
@@ -853,7 +843,7 @@ eslintTester.run('sort-keys', rule.default, {
         }
       });
       `,
-      output: `
+      output: /* js */ `
       import { create } from 'stylex';
       const styles = create({
         foo: {
@@ -876,7 +866,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
@@ -887,7 +877,7 @@ eslintTester.run('sort-keys', rule.default, {
         }
       })
       `,
-      output: `
+      output: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
@@ -906,13 +896,13 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: { backgroundColor: 'red', alignItems: 'center', }
       })
       `,
-      output: `
+      output: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: { alignItems: 'center', backgroundColor: 'red', }
@@ -926,7 +916,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: { // foo
@@ -938,7 +928,7 @@ eslintTester.run('sort-keys', rule.default, {
         }
       })
       `,
-      output: `
+      output: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: { // foo
@@ -958,7 +948,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
@@ -974,7 +964,7 @@ eslintTester.run('sort-keys', rule.default, {
         }
       })
       `,
-      output: `
+      output: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
@@ -998,7 +988,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
@@ -1007,7 +997,7 @@ eslintTester.run('sort-keys', rule.default, {
         }
       })
       `,
-      output: `
+      output: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
@@ -1024,7 +1014,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
@@ -1035,7 +1025,7 @@ eslintTester.run('sort-keys', rule.default, {
         }
       })
       `,
-      output: `
+      output: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
@@ -1054,7 +1044,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
@@ -1065,7 +1055,7 @@ eslintTester.run('sort-keys', rule.default, {
         }
       })
       `,
-      output: `
+      output: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
@@ -1085,7 +1075,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ allowLineSeparatedGroups: true }],
-      code: `
+      code: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const styles = cr({
         button: {
@@ -1099,7 +1089,7 @@ eslintTester.run('sort-keys', rule.default, {
         }
       });
       `,
-      output: `
+      output: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const styles = cr({
         button: {
@@ -1122,7 +1112,7 @@ eslintTester.run('sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean', allowLineSeparatedGroups: true }],
-      code: `
+      code: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const styles = cr({
         button: {
@@ -1136,7 +1126,7 @@ eslintTester.run('sort-keys', rule.default, {
         }
       });
       `,
-      output: `
+      output: /* js */ `
       import { create as cr } from '@stylexjs/stylex';
       const styles = cr({
         button: {
@@ -1160,71 +1150,71 @@ eslintTester.run('sort-keys', rule.default, {
         },
       ],
     },
+    // {
+    //   options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+    //   code: /* js */ `
+    //     import { css } from 'a';
+    //     const styles = css.create({
+    //       main: {
+    //         animationDuration: '100ms',
+    //         padding: 10,
+    //         fontSize: 12,
+    //       }
+    //     });
+    //   `,
+    //   output: /* js */ `
+    //     import { css } from 'a';
+    //     const styles = css.create({
+    //       main: {
+    //         padding: 10,
+    //         animationDuration: '100ms',
+    //         fontSize: 12,
+    //       }
+    //     });
+    //   `,
+    //   errors: [
+    //     {
+    //       message:
+    //         'StyleX property key "padding" should be above "animationDuration"',
+    //     },
+    //   ],
+    // },
+    // {
+    //   options: [
+    //     {
+    //       validImports: [{ from: 'a', as: 'css' }],
+    //       order: 'clean',
+    //     },
+    //   ],
+    //   code: /* js */ `
+    //     import { css } from 'a';
+    //     const styles = css.create({
+    //       main: {
+    //         padding: 10,
+    //         animationDuration: '100ms',
+    //         fontSize: 12,
+    //       }
+    //     });
+    //   `,
+    //   output: /* js */ `
+    //     import { css } from 'a';
+    //     const styles = css.create({
+    //       main: {
+    //         padding: 10,
+    //         fontSize: 12,
+    //         animationDuration: '100ms',
+    //       }
+    //     });
+    //   `,
+    //   errors: [
+    //     {
+    //       message:
+    //         'StyleX property key "fontSize" should be above "animationDuration"',
+    //     },
+    //   ],
+    // },
     {
-      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
-      code: `
-        import { css } from 'a';
-        const styles = css.create({
-          main: {
-            animationDuration: '100ms',
-            padding: 10,
-            fontSize: 12,
-          }
-        });
-      `,
-      output: `
-        import { css } from 'a';
-        const styles = css.create({
-          main: {
-            padding: 10,
-            animationDuration: '100ms',
-            fontSize: 12,
-          }
-        });
-      `,
-      errors: [
-        {
-          message:
-            'StyleX property key "padding" should be above "animationDuration"',
-        },
-      ],
-    },
-    {
-      options: [
-        {
-          validImports: [{ from: 'a', as: 'css' }],
-          order: 'clean',
-        },
-      ],
-      code: `
-        import { css } from 'a';
-        const styles = css.create({
-          main: {
-            padding: 10,
-            animationDuration: '100ms',
-            fontSize: 12,
-          }
-        });
-      `,
-      output: `
-        import { css } from 'a';
-        const styles = css.create({
-          main: {
-            padding: 10,
-            fontSize: 12,
-            animationDuration: '100ms',
-          }
-        });
-      `,
-      errors: [
-        {
-          message:
-            'StyleX property key "fontSize" should be above "animationDuration"',
-        },
-      ],
-    },
-    {
-      code: `
+      code: /* js */ `
       import { create, when } from '@stylexjs/stylex';
       const styles = create({
         base: {
@@ -1236,7 +1226,7 @@ eslintTester.run('sort-keys', rule.default, {
         },
       });
       `,
-      output: `
+      output: /* js */ `
       import { create, when } from '@stylexjs/stylex';
       const styles = create({
         base: {
@@ -1255,7 +1245,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import { create, when } from '@stylexjs/stylex';
       const styles = create({
         base: {
@@ -1267,7 +1257,7 @@ eslintTester.run('sort-keys', rule.default, {
         },
       });
       `,
-      output: `
+      output: /* js */ `
       import { create, when } from '@stylexjs/stylex';
       const styles = create({
         base: {
@@ -1286,7 +1276,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import { create, when } from '@stylexjs/stylex';
       const styles = create({
         base: {
@@ -1298,7 +1288,7 @@ eslintTester.run('sort-keys', rule.default, {
         },
       });
       `,
-      output: `
+      output: /* js */ `
       import { create, when } from '@stylexjs/stylex';
       const styles = create({
         base: {
@@ -1321,7 +1311,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import { create, when } from '@stylexjs/stylex';
       const styles = create({
         base: {
@@ -1333,7 +1323,7 @@ eslintTester.run('sort-keys', rule.default, {
         },
       });
       `,
-      output: `
+      output: /* js */ `
       import { create, when } from '@stylexjs/stylex';
       const styles = create({
         base: {
@@ -1353,7 +1343,7 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import { create, when } from '@stylexjs/stylex';
       const styles = create({
         base: {
@@ -1365,7 +1355,7 @@ eslintTester.run('sort-keys', rule.default, {
         },
       });
       `,
-      output: `
+      output: /* js */ `
       import { create, when } from '@stylexjs/stylex';
       const styles = create({
         base: {
@@ -1385,4 +1375,4 @@ eslintTester.run('sort-keys', rule.default, {
       ],
     },
   ],
-});
+})

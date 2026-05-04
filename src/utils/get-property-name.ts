@@ -1,125 +1,132 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
-
-'use strict';
-
-import type { ChainExpression, Node, Property } from 'estree';
+import type { ChainExpression } from 'estree'
+import type { Node } from 'estree'
+import type { Property } from 'estree'
 
 function isNullLiteral(node: Node) {
   return (
     node.type === 'Literal' &&
     node.value === null &&
-    !node.regex &&
-    !node.bigint
-  );
+    !('regex' in node) &&
+    !('bigint' in node)
+  )
 }
 
 function getStaticStringValue(node: Node): string | null {
   switch (node.type) {
-    case 'Literal':
+    case 'Literal': {
       if (node.value === null) {
         if (isNullLiteral(node)) {
-          return String(node.value); // "null"
+          return String(node.value) // "null"
         }
-        if (node.regex) {
-          return `/${node.regex.pattern}/${node.regex.flags}`;
+
+        if ('regex' in node) {
+          return `/${node.regex.pattern}/${node.regex.flags}`
         }
-        if (node.bigint) {
-          return node.bigint;
+
+        if ('bigint' in node) {
+          return node.bigint
         }
 
         // Otherwise, this is an unknown literal. The function will return null.
       } else {
-        return String(node.value);
+        return String(node.value)
       }
-      break;
-    case 'TemplateLiteral':
+
+      break
+    }
+
+    case 'TemplateLiteral': {
       if (node.expressions.length === 0 && node.quasis.length === 1) {
-        return node.quasis[0].value.cooked || null;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return node.quasis[0]!.value.cooked ?? null
       }
-      break;
+
+      break
+    }
 
     // no default
   }
 
-  return null;
+  return null
 }
 
 function getStaticPropertyName(node: Node | ChainExpression): string | null {
-  let prop;
+  // eslint-disable-next-line init-declarations
+  let prop
 
-  if (node.type === 'ChainExpression' && node.expression) {
-    return getStaticPropertyName(node.expression);
+  if (node.type === 'ChainExpression') {
+    return getStaticPropertyName(node.expression)
   }
 
-  switch (node && node.type) {
+  switch (node.type) {
     case 'Property':
-    case 'PropertyDefinition':
-    case 'MethodDefinition':
-      prop = node.key;
-      break;
 
-    case 'MemberExpression':
-      prop = node.property;
-      break;
+    // fallthrough
+    case 'PropertyDefinition':
+
+    // fallthrough
+    case 'MethodDefinition': {
+      prop = node.key
+
+      break
+    }
+
+    case 'MemberExpression': {
+      prop = node.property
+
+      break
+    }
 
     // no default
   }
 
   if (prop) {
-    if (prop.type === 'Identifier' && !node.computed) {
-      return prop.name;
+    if (prop.type === 'Identifier' && !('computed' in node)) {
+      return prop.name
     }
 
     if (prop.type === 'CallExpression') {
-      const callee = getCalleeName(prop.callee);
-      if (!callee) return null;
+      const callee = getCalleeName(prop.callee)
+      if (!callee) return null
 
       if (callee.startsWith('stylex.when') || callee.startsWith('when')) {
-        const relation = callee.split('.').pop();
-        const arg = prop.arguments[0];
-        if (!arg) return null;
+        const relation = callee.split('.').pop()
+        const [arg] = prop.arguments
+        if (!arg) return null
 
-        return `:when:${relation ?? ''}${getStaticStringValue(arg) ?? ''}`;
+        return `:when:${relation ?? ''}${getStaticStringValue(arg) ?? ''}`
       }
     }
 
-    return getStaticStringValue(prop);
+    return getStaticStringValue(prop)
   }
 
-  return null;
+  return null
 }
 
 function getCalleeName(node: Node): string | null {
-  const parts: string[] = [];
-  let current = node;
+  const parts: string[] = []
+  let current = node
 
-  while (current && current.type === 'MemberExpression') {
+  while (current.type === 'MemberExpression') {
     if (current.property.type === 'Identifier') {
-      parts.unshift(current.property.name);
+      parts.unshift(current.property.name)
     }
 
-    current = current.object;
+    current = current.object
   }
 
-  if (current && current.type === 'Identifier') {
-    parts.unshift(current.name);
+  if (current.type === 'Identifier') {
+    parts.unshift(current.name)
   }
 
-  return parts.length > 0 ? parts.join('.') : null;
+  return parts.length > 0 ? parts.join('.') : null
 }
 
 export default function getPropertyName(
-  node: $ReadOnly<{ ...Property, ... }>,
+  node: Readonly<Property>,
 ): string | null {
-  // $FlowFixMe[incompatible-type]
-  const staticName = getStaticPropertyName(node);
+  const staticName = getStaticPropertyName(node)
 
-  return staticName !== null ? staticName : node.key.name || null;
+  return staticName ?? (node.key as { name: string | null }).name ?? null
 }
