@@ -209,7 +209,7 @@ const validShorthands: Rule.RuleModule = {
 
       context.report({
         node: property,
-        message: `Property shorthands using multiple values like "${key}: ${String(property.value.value)}" are not supported. Separate into individual properties.`,
+        message: `Property shorthands using multiple values like "${key}: ${String(property.value.value)}" are not supported in Vicinage. Separate into individual properties.`,
         data: {
           property: key,
         },
