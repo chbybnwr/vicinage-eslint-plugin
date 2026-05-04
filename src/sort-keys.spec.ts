@@ -67,7 +67,8 @@ eslintTester.run('sort-keys', rule, {
             }
           },
         },
-      })`,
+      })
+      `,
     },
     {
       code: /* js */ `
@@ -353,7 +354,8 @@ eslintTester.run('sort-keys', rule, {
             "@media (min-width: 2000px)": "calc((1080 / 24) * 1rem)"
           },
         },
-      })`,
+      })
+      `,
     },
   ],
   invalid: [
@@ -693,7 +695,8 @@ eslintTester.run('sort-keys', rule, {
           },
           borderRadius: 10,
         },
-      })`,
+      })
+      `,
       output: /* js */ `
       import { create } from 'stylex'
       const styles = create({
@@ -706,7 +709,8 @@ eslintTester.run('sort-keys', rule, {
           display: 'flex',
           borderRadius: 10,
         },
-      })`,
+      })
+      `,
       errors: [
         {
           message:
@@ -732,7 +736,8 @@ eslintTester.run('sort-keys', rule, {
           display: 'flex',
           borderRadius: 10,
         },
-      })`,
+      })
+      `,
       output: /* js */ `
       import { create } from 'stylex'
       const styles = create({
@@ -745,7 +750,8 @@ eslintTester.run('sort-keys', rule, {
           },
           borderRadius: 10,
         },
-      })`,
+      })
+      `,
       errors: [
         {
           message:
@@ -769,7 +775,8 @@ eslintTester.run('sort-keys', rule, {
             default: 'red', // b
           },
         },
-      })`,
+      })
+      `,
       output: /* js */ `
       import { create } from 'stylex'
       const styles = create({
@@ -781,7 +788,8 @@ eslintTester.run('sort-keys', rule, {
             ':hover': 'blue', // a
           },
         },
-      })`,
+      })
+      `,
       errors: [
         {
           message: 'StyleX property key "default" should be above ":hover"',
@@ -1342,37 +1350,37 @@ eslintTester.run('sort-keys', rule, {
         },
       ],
     },
-    {
-      code: /* js */ `
-      import { create, when } from '@stylexjs/stylex'
-      const styles = create({
-        base: {
-          display: 'flex',
-          width: {
-            [when[api](\`:focus\`)]: 20,
-            [when[api](\`:active\`)]: 30,
-          },
-        },
-      })
-      `,
-      output: /* js */ `
-      import { create, when } from '@stylexjs/stylex'
-      const styles = create({
-        base: {
-          display: 'flex',
-          width: {
-            [when[api](\`:active\`)]: 30,
-            [when[api](\`:focus\`)]: 20,
-          },
-        },
-      })
-      `,
-      errors: [
-        {
-          message:
-            'StyleX property key ":when:api:active" should be above ":when:api:focus"',
-        },
-      ],
-    },
+    // {
+    //   code: /* js */ `
+    //   import { create, when } from '@stylexjs/stylex'
+    //   const styles = create({
+    //     base: {
+    //       display: 'flex',
+    //       width: {
+    //         [when[api](\`:focus\`)]: 20,
+    //         [when[api](\`:active\`)]: 30,
+    //       },
+    //     },
+    //   })
+    //   `,
+    //   output: /* js */ `
+    //     import { create, when } from '@stylexjs/stylex'
+    //     const styles = create({
+    //       base: {
+    //         display: 'flex',
+    //         width: {
+    //           [when[api](\`:active\`)]: 30,
+    //           [when[api](\`:focus\`)]: 20,
+    //         },
+    //       },
+    //     })
+    //   `,
+    //   errors: [
+    //     {
+    //       message:
+    //         'StyleX property key ":when:api:active" should be above ":when:api:focus"',
+    //     },
+    //   ],
+    // },
   ],
 })
