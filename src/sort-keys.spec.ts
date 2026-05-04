@@ -68,7 +68,7 @@ eslintTester.run('sort-keys', rule, {
             },
           },
         )
-        `,
+      `,
     },
     {
       code: /* js */ `
@@ -291,7 +291,7 @@ eslintTester.run('sort-keys', rule, {
               fontSize: 12,
             }
           )
-        `,
+      `,
       output: /* js */ `
           import * as vicinage from 'vicinage'
           vicinage.apply(
@@ -301,7 +301,7 @@ eslintTester.run('sort-keys', rule, {
               fontSize: 12,
             }
           )
-        `,
+      `,
       errors: [
         {
           message:
@@ -320,7 +320,7 @@ eslintTester.run('sort-keys', rule, {
               fontSize: 12,
             }
           )
-        `,
+      `,
       output: /* js */ `
           import * as vicinage from 'vicinage'
           vicinage.apply(
@@ -330,7 +330,7 @@ eslintTester.run('sort-keys', rule, {
               animationDuration: '100ms',
             }
           )
-        `,
+      `,
       errors: [
         {
           message:
@@ -351,7 +351,7 @@ eslintTester.run('sort-keys', rule, {
               borderColor: 'red', // ok
             }
           )
-        `,
+      `,
       output: /* js */ `
           import * as vicinage from 'vicinage'
           const obj = { fontSize: '12px' }
@@ -364,7 +364,7 @@ eslintTester.run('sort-keys', rule, {
               alignSelf: 'center',
             }
           )
-        `,
+      `,
       errors: [
         {
           message:
@@ -386,7 +386,7 @@ eslintTester.run('sort-keys', rule, {
               alignSelf: 'center',
             }
           )
-        `,
+      `,
       output: /* js */ `
           import * as vicinage from 'vicinage'
           const obj = { fontSize: '12px' }
@@ -399,7 +399,7 @@ eslintTester.run('sort-keys', rule, {
               borderColor: 'red', // ok
             }
           )
-        `,
+      `,
       errors: [
         {
           message: 'Style property key "display" should be above "alignItems"',
@@ -420,7 +420,7 @@ eslintTester.run('sort-keys', rule, {
               borderColor: 'red',
             }
           )
-        `,
+      `,
       output: /* js */ `
           import { apply } from 'vicinage'
           apply(
@@ -430,7 +430,7 @@ eslintTester.run('sort-keys', rule, {
               display: 'flex',
             }
           )
-        `,
+      `,
       errors: [
         {
           message: 'Style property key "borderColor" should be above "display"',
@@ -448,7 +448,7 @@ eslintTester.run('sort-keys', rule, {
               borderColor: 'red',
             }
           )
-        `,
+      `,
       output: /* js */ `
           import { apply } from 'vicinage'
           apply(
@@ -458,7 +458,7 @@ eslintTester.run('sort-keys', rule, {
               borderColor: 'red',
             }
           )
-        `,
+      `,
       errors: [
         {
           message: 'Style property key "display" should be above "alignItems"',
@@ -479,7 +479,7 @@ eslintTester.run('sort-keys', rule, {
             borderRadius: 10,
           },
         )
-        `,
+      `,
       output: /* js */ `
         import { apply } from 'vicinage'
         apply(
@@ -493,7 +493,7 @@ eslintTester.run('sort-keys', rule, {
             borderRadius: 10,
           },
         )
-        `,
+      `,
       errors: [
         {
           message: 'Style property key "borderColor" should be above "display"',
@@ -519,7 +519,7 @@ eslintTester.run('sort-keys', rule, {
             borderRadius: 10,
           },
         )
-        `,
+      `,
       output: /* js */ `
         import { apply } from 'vicinage'
         apply(
@@ -533,7 +533,7 @@ eslintTester.run('sort-keys', rule, {
             borderRadius: 10,
           },
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -557,7 +557,7 @@ eslintTester.run('sort-keys', rule, {
             },
           },
         )
-        `,
+      `,
       output: /* js */ `
         import { apply } from 'vicinage'
         apply(
@@ -570,7 +570,7 @@ eslintTester.run('sort-keys', rule, {
             },
           },
         )
-        `,
+      `,
       errors: [
         {
           message: 'Style property key "default" should be above ":hover"',
@@ -592,7 +592,7 @@ eslintTester.run('sort-keys', rule, {
             },
           }
         )
-        `,
+      `,
       output: /* js */ `
         import { apply } from 'vicinage'
         apply(
@@ -607,7 +607,7 @@ eslintTester.run('sort-keys', rule, {
             display: 'flex',
           }
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -631,7 +631,7 @@ eslintTester.run('sort-keys', rule, {
             display: 'flex',
           }
         )
-        `,
+      `,
       output: /* js */ `
         import { apply } from 'vicinage'
         apply(
@@ -646,7 +646,7 @@ eslintTester.run('sort-keys', rule, {
             },
           }
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -665,7 +665,7 @@ eslintTester.run('sort-keys', rule, {
             alignItems: 'center' // eee
           }
         )
-        `,
+      `,
       output: /* js */ `
         import * as vicinage from 'vicinage'
         vicinage.apply(
@@ -676,7 +676,7 @@ eslintTester.run('sort-keys', rule, {
             backgroundColor: 'red', // foo
           }
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -690,13 +690,13 @@ eslintTester.run('sort-keys', rule, {
         vicinage.apply(
           { backgroundColor: 'red', alignItems: 'center', }
         )
-        `,
+      `,
       output: /* js */ `
         import * as vicinage from 'vicinage'
         vicinage.apply(
           { alignItems: 'center', backgroundColor: 'red', }
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -716,7 +716,7 @@ eslintTester.run('sort-keys', rule, {
             // qux
           }
         )
-        `,
+      `,
       output: /* js */ `
         import * as vicinage from 'vicinage'
         vicinage.apply(
@@ -728,7 +728,7 @@ eslintTester.run('sort-keys', rule, {
             // qux
           }
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -752,7 +752,7 @@ eslintTester.run('sort-keys', rule, {
             alignItems: 'center'
           }
         )
-        `,
+      `,
       output: /* js */ `
         import * as vicinage from 'vicinage'
         vicinage.apply(
@@ -768,7 +768,7 @@ eslintTester.run('sort-keys', rule, {
             backgroundColor: 'red',
           }
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -785,7 +785,7 @@ eslintTester.run('sort-keys', rule, {
             alignItems: 'center'       // baz
           }
         )
-        `,
+      `,
       output: /* js */ `
         import * as vicinage from 'vicinage'
         vicinage.apply(
@@ -794,7 +794,7 @@ eslintTester.run('sort-keys', rule, {
             backgroundColor: 'red',             //       foo
           }
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -813,7 +813,7 @@ eslintTester.run('sort-keys', rule, {
             alignItems: 'center'
           }
         )
-        `,
+      `,
       output: /* js */ `
         import * as vicinage from 'vicinage'
         vicinage.apply(
@@ -824,7 +824,7 @@ eslintTester.run('sort-keys', rule, {
             */ backgroundColor: 'red',
           }
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -843,7 +843,7 @@ eslintTester.run('sort-keys', rule, {
             alignItems: 'center'
           }
         )
-        `,
+      `,
       output: /* js */ `
         import * as vicinage from 'vicinage'
         vicinage.apply(
@@ -854,7 +854,7 @@ eslintTester.run('sort-keys', rule, {
             backgroundColor: 'red',
           }
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -877,7 +877,7 @@ eslintTester.run('sort-keys', rule, {
             borderColor: 'black',
           }
         )
-        `,
+      `,
       output: /* js */ `
         import { apply as applySheet } from 'vicinage'
         applySheet(
@@ -891,7 +891,7 @@ eslintTester.run('sort-keys', rule, {
             alignSelf: 'center',
           }
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -914,7 +914,7 @@ eslintTester.run('sort-keys', rule, {
             alignSelf: 'center',
           }
         )
-        `,
+      `,
       output: /* js */ `
         import { apply as applySheet } from 'vicinage'
         applySheet(
@@ -928,7 +928,7 @@ eslintTester.run('sort-keys', rule, {
             borderColor: 'black',
           }
         )
-        `,
+      `,
       errors: [
         {
           message: 'Style property key "display" should be above "alignItems"',
@@ -1015,7 +1015,7 @@ eslintTester.run('sort-keys', rule, {
             },
           },
         )
-        `,
+      `,
       output: /* js */ `
         import { apply } from 'vicinage'
         import { when } from '@stylexjs/stylex'
@@ -1028,7 +1028,7 @@ eslintTester.run('sort-keys', rule, {
             },
           },
         )
-        `,
+      `,
       errors: [
         {
           message: 'Style property key "default" should be above ":hover"',
@@ -1048,7 +1048,7 @@ eslintTester.run('sort-keys', rule, {
             },
           },
         )
-        `,
+      `,
       output: /* js */ `
         import { apply } from 'vicinage'
         import { when } from '@stylexjs/stylex'
@@ -1061,7 +1061,7 @@ eslintTester.run('sort-keys', rule, {
             },
           },
         )
-        `,
+      `,
       errors: [
         {
           message: 'Style property key ":hover" should be above ":focus"',
@@ -1081,7 +1081,7 @@ eslintTester.run('sort-keys', rule, {
             display: 'flex',
           },
         )
-        `,
+      `,
       output: /* js */ `
         import { apply } from 'vicinage'
         import { when } from '@stylexjs/stylex'
@@ -1094,7 +1094,7 @@ eslintTester.run('sort-keys', rule, {
             },
           },
         )
-        `,
+      `,
       errors: [
         {
           message:
@@ -1118,7 +1118,7 @@ eslintTester.run('sort-keys', rule, {
             },
           },
         )
-        `,
+      `,
       output: /* js */ `
         import { apply } from 'vicinage'
         import { when } from '@stylexjs/stylex'
@@ -1131,7 +1131,7 @@ eslintTester.run('sort-keys', rule, {
             },
           },
         )
-        `,
+      `,
       errors: [
         {
           message:
