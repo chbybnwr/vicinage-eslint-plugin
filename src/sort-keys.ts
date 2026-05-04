@@ -21,7 +21,7 @@ const sortKeys: Rule.RuleModule = {
     docs: {
       description: 'Require style properties to be sorted by key',
       recommended: false,
-      url: 'https://github.com/facebook/stylex/tree/main/packages/@stylexjs/eslint-plugin',
+      url: 'https://github.com/chbybnwr/vicinage-eslint-plugin',
     },
     fixable: 'code',
     schema: [
@@ -42,7 +42,7 @@ const sortKeys: Rule.RuleModule = {
                 },
               ],
             },
-            default: ['stylex', '@stylexjs/stylex'],
+            default: ['vicinage'],
           },
           order: {
             enum: ['default', 'clean', 'recess'],
@@ -64,42 +64,47 @@ const sortKeys: Rule.RuleModule = {
   },
   create(context: Rule.RuleContext) {
     const {
-      // validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
+      // validImports: importsToLookFor = ['vicinage'],
       order = 'default',
       minKeys = 2,
       allowLineSeparatedGroups = false,
     }: Schema = (context.options[0] ?? {}) as Schema
 
-    const importTracker = createImportTracker(['stylex', '@stylexjs/stylex'])
+    const importTracker = createImportTracker(['vicinage'])
 
-    function isStylexCallee(node: Node) {
+    function isApplyCallee(node: Node) {
       return (
         (node.type === 'MemberExpression' &&
           node.object.type === 'Identifier' &&
           importTracker.isDefaultImport(node.object.name) &&
           node.property.type === 'Identifier' &&
-          (node.property.name === 'create' ||
-            node.property.name === 'keyframes')) ||
+          node.property.name === 'apply') ||
         (node.type === 'Identifier' &&
-          (importTracker.isNamedImport('create', node.name) ||
-            importTracker.isNamedImport('keyframes', node.name)))
+          importTracker.isNamedImport('apply', node.name))
       )
     }
 
-    function isStylexDeclaration(node: Readonly<Node>) {
+    function isStyleDeclaration(node: Readonly<Node>) {
       return (
         node.type === 'CallExpression' &&
-        isStylexCallee(node.callee) &&
+        isApplyCallee(node.callee) &&
         node.arguments.length === 1
       )
     }
 
     let stack: Stack | null = null
-    let isInsideStyleXCreateCall = false
+    let isInsideApplyCall = false
     let objectExpressionNestingLevel = -1
 
     return {
-      ImportDeclaration: importTracker.ImportDeclaration,
+      Program: (node) => {
+        for (const part of node.body) {
+          if (part.type === 'ImportDeclaration') {
+            // eslint-disable-next-line new-cap
+            importTracker.ImportDeclaration(part)
+          }
+        }
+      },
 
       CallExpression: (
         node: Readonly<CallExpression & Rule.NodeParentExtension>,
@@ -107,7 +112,7 @@ const sortKeys: Rule.RuleModule = {
         const [arg] = node.arguments
 
         if (
-          !isStylexDeclaration(node) ||
+          !isStyleDeclaration(node) ||
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           !('properties' in arg!) ||
           arg.properties.length === 0
@@ -115,16 +120,16 @@ const sortKeys: Rule.RuleModule = {
           return
         }
 
-        isInsideStyleXCreateCall = true
+        isInsideApplyCall = true
       },
 
       ObjectExpression: (node: ObjectExpression) => {
-        if (isInsideStyleXCreateCall) {
+        if (isInsideApplyCall) {
           // eslint-disable-next-line no-plusplus
           objectExpressionNestingLevel++
         }
 
-        if (objectExpressionNestingLevel > 0) {
+        if (objectExpressionNestingLevel >= 0) {
           stack = {
             upper: stack,
             prevNode: null,
@@ -136,15 +141,11 @@ const sortKeys: Rule.RuleModule = {
       },
 
       'ObjectExpression:exit'() {
-        if (
-          isInsideStyleXCreateCall &&
-          objectExpressionNestingLevel > 0 &&
-          stack
-        ) {
+        if (isInsideApplyCall && objectExpressionNestingLevel >= 0 && stack) {
           stack = stack.upper
         }
 
-        if (isInsideStyleXCreateCall) {
+        if (isInsideApplyCall) {
           // eslint-disable-next-line no-plusplus
           objectExpressionNestingLevel--
         }
@@ -152,8 +153,8 @@ const sortKeys: Rule.RuleModule = {
 
       SpreadElement(node: Readonly<SpreadElement & Rule.NodeParentExtension>) {
         if (
-          isInsideStyleXCreateCall &&
-          objectExpressionNestingLevel > 0 &&
+          isInsideApplyCall &&
+          objectExpressionNestingLevel >= 0 &&
           node.parent.type === 'ObjectExpression' &&
           stack
         ) {
@@ -164,8 +165,8 @@ const sortKeys: Rule.RuleModule = {
       // eslint-disable-next-line complexity
       Property(node: Readonly<Property & Rule.NodeParentExtension>) {
         if (
-          !isInsideStyleXCreateCall ||
-          objectExpressionNestingLevel < 1 ||
+          !isInsideApplyCall ||
+          objectExpressionNestingLevel < 0 ||
           node.parent.type === 'ObjectPattern' ||
           stack === null
         ) {
@@ -240,7 +241,7 @@ const sortKeys: Rule.RuleModule = {
             node,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             loc: node.key.loc!,
-            message: `StyleX property key "${currName}" should be above "${prevName}"`,
+            message: `Style property key "${currName}" should be above "${prevName}"`,
             // $FlowFixMe[incompatible-type]
             fix: createFix({
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -251,13 +252,15 @@ const sortKeys: Rule.RuleModule = {
           })
         }
       },
+
       'CallExpression:exit'(
         node: Readonly<CallExpression & Rule.NodeParentExtension>,
       ) {
-        if (isInsideStyleXCreateCall && isStylexDeclaration(node)) {
-          isInsideStyleXCreateCall = false
+        if (isInsideApplyCall && isStyleDeclaration(node)) {
+          isInsideApplyCall = false
         }
       },
+
       'Program:exit'() {
         importTracker.clear()
       },
@@ -297,7 +300,9 @@ function isValidOrder(
   const curr = getPropertyPriorityAndType(currName, order!)
 
   if (prev.type !== 'string' || curr.type !== 'string') {
-    if (prev.priority === curr.priority) return prevName <= currName
+    if (prev.priority === curr.priority) {
+      return prevName <= currName
+    }
 
     return prev.priority <= curr.priority
   }
