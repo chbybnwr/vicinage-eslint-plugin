@@ -12,9 +12,6 @@ const ruleTester = new RuleTester({
 
 ruleTester.run('valid-shorthands', rule, {
   valid: [
-    //
-    // ],
-    // _valid: [
     {
       code: /* js */ `
         import { apply } from 'vicinage'
@@ -430,7 +427,40 @@ ruleTester.run('valid-shorthands', rule, {
     },
   ],
   invalid: [
-    //
+    {
+      code: /* js */ `
+        function Component() {
+          return <div
+            {...apply({
+              margin: '10px 12px 13px 14px',
+            })}
+          />
+        }
+
+        import { apply } from 'vicinage'
+      `,
+      output: /* js */ `
+        function Component() {
+          return <div
+            {...apply({
+              marginTop: '10px',
+              marginRight: '12px',
+              marginBottom: '13px',
+              marginLeft: '14px',
+            })}
+          />
+        }
+
+        import { apply } from 'vicinage'
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "margin: 10px 12px 13px 14px" are not supported here. Separate into individual properties.',
+        },
+      ],
+    },
+
     {
       code: /* js */ `
         import { apply } from 'vicinage'
@@ -522,8 +552,6 @@ ruleTester.run('valid-shorthands', rule, {
         },
       ],
     },
-    // ],
-    // _invalid: [
     {
       code: /* js */ `
         import { apply } from 'vicinage'

@@ -165,6 +165,21 @@ ruleTester.run('no-conflicting-props', rule, {
     //   },
     {
       code: /* js */ `
+        function Component() {
+          return <div {...apply()} style={{ margin: 10 }} />
+        }
+
+        import { apply } from 'vicinage'
+      `,
+      errors: [
+        {
+          message:
+            'The `style` prop should not be used when spreading `apply()` to avoid conflicts.',
+        },
+      ],
+    },
+    {
+      code: /* js */ `
         import { apply } from 'vicinage'
 
         function Component() {

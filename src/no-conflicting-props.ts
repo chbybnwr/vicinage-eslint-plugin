@@ -54,7 +54,14 @@ const noConflictingProps: Rule.RuleModule = {
     }
 
     return {
-      ImportDeclaration: importTracker.ImportDeclaration,
+      Program: (node) => {
+        for (const part of node.body) {
+          if (part.type === 'ImportDeclaration') {
+            // eslint-disable-next-line new-cap
+            importTracker.ImportDeclaration(part)
+          }
+        }
+      },
 
       JSXOpeningElement: (node: Node | JSXOpeningElement) => {
         if (!(node.type === 'JSXOpeningElement')) {
