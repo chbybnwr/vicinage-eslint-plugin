@@ -13,7 +13,7 @@ opening your ESLint configuration file and adding the plugin and rules.
 
 ```js
 import { defineConfig } from 'eslint/config'
-import * as vicinage from '@vicinage/eslint-plugin'
+import vicinage from '@vicinage/eslint-plugin'
 
 export default defineConfig([
   {
