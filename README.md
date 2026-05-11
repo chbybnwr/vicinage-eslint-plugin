@@ -1,4 +1,4 @@
-# @vicinage/eslint-plugin
+# @vicinage/eslint-plugin &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/chbybnwr/vicinage-eslint-plugin/blob/prototype/LICENSE) [![npm version](https://img.shields.io/npm/v/@vicinage/eslint-plugin.svg?style=flat)](https://www.npmjs.com/package/@vicinage/eslint-plugin)
 
 ## Installation
 
