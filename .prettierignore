@@ -1,3 +1,5 @@
 /etc/
 pnpm-lock.yaml
 src/test/**/target.tsx
+# TODO: remove after migration
+src/**/*.js

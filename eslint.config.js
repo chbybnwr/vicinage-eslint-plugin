@@ -7,6 +7,8 @@ const eslintConfig = defineConfig([
     '**/etc/**',
     '**/lib/**',
     '**/temp/**',
+    // TODO: remove after migration
+    'src/**/*.js',
   ]),
 
   {

@@ -4,7 +4,12 @@ export { cSpellConfig as default }
 const cSpellConfig = {
   version: '0.2',
   language: 'en',
-  ignorePaths: ['./etc/**/*', './pnpm-lock.yaml'],
+  ignorePaths: [
+    './etc/**/*',
+    './pnpm-lock.yaml',
+    // TODO: remove after migration
+    'src/**/*.js',
+  ],
   useGitignore: true,
   dictionaries: ['dictionary'],
 
