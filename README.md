@@ -18,23 +18,21 @@ import vicinage from '@vicinage/eslint-plugin'
 export default defineConfig([
   {
     files: ['**/*.{jsx,tsx}'],
-    plugins: { vicinage },
-    rules: {
-      'vicinage/no-conflicting-props': 'error',
-      'vicinage/valid-shorthands': 'error',
-      'vicinage/sort-keys': 'warn',
-    },
+    extends: [
+      vicinage.configs.recommended,
+      //
+    ],
   },
 ])
 ```
 
 ## All the rules
 
-### @vicinage/sort-keys
+### vicinage/sort-keys
 
 This rule helps to sort the style property keys according to property priorities.
 
-### @vicinage/valid-shorthands
+### vicinage/valid-shorthands
 
 This ESLint rule enforces the use of individual longhand CSS properties in place
 of multi-value shorthands when using `apply` for reasons of consistency
@@ -81,7 +79,7 @@ This rule has a few custom config options that can be set.
 }
 ```
 
-### `@vicinage/no-conflicting-props`
+### vicinage/no-conflicting-props
 
 This rule disallows using `className` or `style` props or `class` attribute on elements that spread
 `apply()` to avoid conflicts and unexpected behavior.
