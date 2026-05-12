@@ -1,6 +1,6 @@
 {
   "name": "@vicinage/eslint-plugin",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Vicinage eslint plugin.",
   "license": "MIT",
   "repository": {
