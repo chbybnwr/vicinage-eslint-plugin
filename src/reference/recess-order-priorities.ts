@@ -138,7 +138,7 @@ const RECESS_ORDER_PRIORITIES: readonly string[] = [
   'textOverflow',
   'WebkitLineClamp',
   'lineClamp',
-  'scrollBehaviour',
+  'scrollBehavior',
 
   // overscroll behavior
   'overscrollBehavior',
