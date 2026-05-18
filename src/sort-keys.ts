@@ -88,7 +88,7 @@ const sortKeys: Rule.RuleModule = {
       return (
         node.type === 'CallExpression' &&
         isApplyCallee(node.callee) &&
-        node.arguments.length === 1
+        node.arguments.length > 0
       )
     }
 
@@ -109,13 +109,11 @@ const sortKeys: Rule.RuleModule = {
       CallExpression: (
         node: Readonly<CallExpression & Rule.NodeParentExtension>,
       ) => {
-        const [arg] = node.arguments
-
         if (
           !isStyleDeclaration(node) ||
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          !('properties' in arg!) ||
-          arg.properties.length === 0
+          !node.arguments.some(
+            (arg) => 'properties' in arg && arg.properties.length > 0,
+          )
         ) {
           return
         }

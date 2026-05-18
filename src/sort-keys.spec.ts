@@ -283,6 +283,86 @@ eslintTester.run('sort-keys', rule, {
   invalid: [
     {
       code: /* js */ `
+        import * as vicinage from 'vicinage'
+        import { textSize } from 'solarwindcss'
+
+        vicinage.apply(
+          textSize.xl,
+          {
+            animationDuration: '100ms',
+            padding: 10,
+            fontSize: 12,
+          }
+        )
+      `,
+      output: /* js */ `
+        import * as vicinage from 'vicinage'
+        import { textSize } from 'solarwindcss'
+
+        vicinage.apply(
+          textSize.xl,
+          {
+            padding: 10,
+            animationDuration: '100ms',
+            fontSize: 12,
+          }
+        )
+    `,
+      errors: [
+        {
+          message:
+            'Style property key "padding" should be above "animationDuration"',
+        },
+      ],
+    },
+    {
+      code: /* js */ `
+        import * as vicinage from 'vicinage'
+        import { textSize } from 'solarwindcss'
+
+        vicinage.apply(
+          {
+            animationDuration: '100ms',
+            padding: 10,
+            fontSize: 12,
+          },
+          {
+            animationDuration: '100ms',
+            padding: 10,
+            fontSize: 12,
+          }
+        )
+      `,
+      output: /* js */ `
+        import * as vicinage from 'vicinage'
+        import { textSize } from 'solarwindcss'
+
+        vicinage.apply(
+          {
+            padding: 10,
+            animationDuration: '100ms',
+            fontSize: 12,
+          },
+          {
+            padding: 10,
+            animationDuration: '100ms',
+            fontSize: 12,
+          }
+        )
+      `,
+      errors: [
+        {
+          message:
+            'Style property key "padding" should be above "animationDuration"',
+        },
+        {
+          message:
+            'Style property key "padding" should be above "animationDuration"',
+        },
+      ],
+    },
+    {
+      code: /* js */ `
           import * as vicinage from 'vicinage'
           vicinage.apply(
             {
