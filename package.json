@@ -42,6 +42,7 @@
     "postcss-value-parser": "^4.2.0"
   },
   "devDependencies": {
+    "@chbybnwr/tsconfig": "github:chbybnwr/tsconfig#v0.1.1",
     "@eslint/config-helpers": "^0.6.0",
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^1.2.0",
@@ -49,7 +50,6 @@
     "@microsoft/api-extractor": "^7.58.7",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@txe/eslint-plugin-x": "~0.2.1",
-    "@txe/tsconfig": "file:modules/txe-tsconfig-0.1.0.tgz",
     "@types/estree": "^1.0.8",
     "@types/node": "^25.6.0",
     "@typescript-eslint/parser": "^8.59.1",

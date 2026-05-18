@@ -21,6 +21,9 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
     devDependencies:
+      '@chbybnwr/tsconfig':
+        specifier: github:chbybnwr/tsconfig#v0.1.1
+        version: https://codeload.github.com/chbybnwr/tsconfig/tar.gz/642e42bd201c9b071761b39f1b559c0a1c765b5e
       '@eslint/config-helpers':
         specifier: ^0.6.0
         version: 0.6.0
@@ -42,9 +45,6 @@ importers:
       '@txe/eslint-plugin-x':
         specifier: ~0.2.1
         version: 0.2.1(eslint@10.3.0)(typescript@6.0.3)
-      '@txe/tsconfig':
-        specifier: file:modules/txe-tsconfig-0.1.0.tgz
-        version: file:modules/txe-tsconfig-0.1.0.tgz
       '@types/estree':
         specifier: ^1.0.8
         version: 1.0.8
@@ -146,6 +146,10 @@ packages:
   '@bcoe/v8-coverage@1.0.2':
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
+
+  '@chbybnwr/tsconfig@https://codeload.github.com/chbybnwr/tsconfig/tar.gz/642e42bd201c9b071761b39f1b559c0a1c765b5e':
+    resolution: {gitHosted: true, tarball: https://codeload.github.com/chbybnwr/tsconfig/tar.gz/642e42bd201c9b071761b39f1b559c0a1c765b5e}
+    version: 0.1.1
 
   '@cspell/cspell-bundled-dicts@10.0.0':
     resolution: {integrity: sha512-ci410HEkng2582oOjlRHQtlGXwh+rUC/mVcN9dObLHpKhvPgzn2S6vT56pARstxxZpcCUG/oLhn3dCqdJlVzmA==}
@@ -659,10 +663,6 @@ packages:
 
   '@txe/eslint-plugin-x@0.2.1':
     resolution: {integrity: sha512-eMysmg7eSclvg/CR5z68e72i4USj4hecSo+Jcch/9vsS8Vr50wQdFajHl0xCMbCcpM9GkdmAQjoMeo0SxE5tKg==}
-
-  '@txe/tsconfig@file:modules/txe-tsconfig-0.1.0.tgz':
-    resolution: {integrity: sha512-Pt2vrazQ0OzFSMZ/ct9xlus1W3KGYcoK+E/xbFavpofhH0sBNKOc1qXQ2oK38TXcC2NdfUr05tnjQwsNuh4ELA==, tarball: file:modules/txe-tsconfig-0.1.0.tgz}
-    version: 0.1.0
 
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
@@ -2313,6 +2313,8 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
+  '@chbybnwr/tsconfig@https://codeload.github.com/chbybnwr/tsconfig/tar.gz/642e42bd201c9b071761b39f1b559c0a1c765b5e': {}
+
   '@cspell/cspell-bundled-dicts@10.0.0':
     dependencies:
       '@cspell/dict-ada': 4.1.1
@@ -2819,8 +2821,6 @@ snapshots:
       - eslint
       - supports-color
       - typescript
-
-  '@txe/tsconfig@file:modules/txe-tsconfig-0.1.0.tgz': {}
 
   '@tybys/wasm-util@0.10.1':
     dependencies:
