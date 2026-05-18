@@ -318,7 +318,6 @@ eslintTester.run('sort-keys', rule, {
     {
       code: /* js */ `
         import * as vicinage from 'vicinage'
-        import { textSize } from 'solarwindcss'
 
         vicinage.apply(
           {
@@ -335,7 +334,6 @@ eslintTester.run('sort-keys', rule, {
       `,
       output: /* js */ `
         import * as vicinage from 'vicinage'
-        import { textSize } from 'solarwindcss'
 
         vicinage.apply(
           {
