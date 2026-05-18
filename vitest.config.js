@@ -1,9 +1,7 @@
-/// <reference types="vitest/config" />
+export { vitestConfig as default }
 
-export { viteConfig as default }
-
-/** @type {import("vite").UserConfig} */
-const viteConfig = {
+/** @type {import("vitest/config").ViteUserConfig} */
+const vitestConfig = {
   test: {
     coverage: {
       exclude: ['src/test/**/*'],
