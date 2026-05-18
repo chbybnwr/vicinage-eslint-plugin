@@ -11,6 +11,9 @@ const rules: Plugin['rules'] = {
   // 'valid-styles': validStyles,
 }
 
+/**
+ * @public
+ */
 const plugin: Plugin = {
   meta: { name, version },
   rules,
