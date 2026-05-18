@@ -307,7 +307,7 @@ eslintTester.run('sort-keys', rule, {
             fontSize: 12,
           }
         )
-    `,
+      `,
       errors: [
         {
           message:
