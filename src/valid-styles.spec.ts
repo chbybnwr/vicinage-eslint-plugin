@@ -182,6 +182,7 @@ ruleTester.run('valid-styles', rule, {
       `,
     },
     {
+      /* spellchecker: disable */
       code: /* js */ `
         import * as stlx from '${engine}'
         const fadeIn = stlx.keyframes({
@@ -196,6 +197,7 @@ ruleTester.run('valid-styles', rule, {
             animationName: fadeIn,
         })
       `,
+      /* spellchecker: enable */
     },
     {
       code: /* js */ `
@@ -812,10 +814,12 @@ ruleTester.run('valid-styles', rule, {
       ],
     },
     {
+      /* spellchecker: disable */
       code: /* js */ `
         import { apply } from 'vicinage'
         apply({textAlin: 'left'})
       `,
+      /* spellchecker: enable */
       errors: [
         {
           message: 'This is not a key that is allowed',
@@ -843,10 +847,12 @@ ruleTester.run('valid-styles', rule, {
       ],
     },
     {
+      /* spellchecker: disable */
       code: /* js */ `
         import { apply } from 'vicinage'
         apply({['textAlin']: 'left'})
       `,
+      /* spellchecker: enable */
       errors: [
         {
           message: 'This is not a key that is allowed',
@@ -863,10 +869,13 @@ ruleTester.run('valid-styles', rule, {
       ],
     },
     {
+      /* spellchecker: disable */
       code: /* js */ `
         import { apply } from 'vicinage'
         apply({textAlign: 'lfet'})
       `,
+      /* spellchecker: enable */
+
       errors: [
         {
           message: message`
@@ -886,6 +895,7 @@ ruleTester.run('valid-styles', rule, {
           `,
           suggestions: [
             {
+              /* cspell:disable-next-line */
               desc: 'Did you mean "left"? Replace "lfet" with "left"',
               output: /* js */ `
         import { apply } from 'vicinage'
@@ -2432,12 +2442,12 @@ ruleTester.run('valid-styles [restrictions]', rule, {
       ],
     },
     // test for backgroundBlendMode with invalid blend mode value in comma-separated list
-    // 'darke' should be 'darken'
+    // 'darke' should be 'darken' // cspell:disable-line
     {
       code: /* js */ `
         import { apply } from 'vicinage'
         apply({
-            backgroundBlendMode: 'multiply, darke, exclusion',
+            backgroundBlendMode: 'multiply, darke, exclusion', // cspell:disable-line
         })
       `,
       errors: [
@@ -2521,7 +2531,7 @@ ruleTester.run('valid-styles [restrictions]', rule, {
              apply({
                  float: {
                    default: 'left',
-                   [when.ancestor(':hover')]: 'dsdfdsdfsdfsdfsdfsdf',
+                   [when.ancestor(':hover')]: 'dsdfdsdfsdfsdfsdfsdf', // cspell:disable-line
                    [when.descendant(':focus')]: 30,
                    [when.siblingAfter(':active')]: 40,
                  },
