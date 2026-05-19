@@ -12,51 +12,51 @@ const ruleTester = new RuleTester({
 
 ruleTester.run('no-conflicting-props', rule, {
   valid: [
-    // {
-    //   code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div {...styler.apply()} />
-    //       }
-    //     `,
-    // },
-    //   {
-    //     code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div className="foo" />
-    //       }
-    //     `,
-    //   },
-    //   {
-    //     code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div style={{ color: 'red' }} />
-    //       }
-    //     `,
-    //   },
-    //   {
-    //     code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div {...styler.apply()} data-testid="test" />
-    //       }
-    //     `,
-    //   },
-    //   {
-    //     code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div {...otherProps} className="foo" />
-    //       }
-    //     `,
-    //   },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div {...styler.apply()} />
+        }
+      `,
+    },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div className="foo" />
+        }
+      `,
+    },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div style={{ color: 'red' }} />
+        }
+      `,
+    },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div {...styler.apply()} data-testid="test" />
+        }
+      `,
+    },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div {...otherProps} className="foo" />
+        }
+      `,
+    },
     {
       code: /* js */ `
         import { apply } from 'vicinage'
@@ -66,58 +66,58 @@ ruleTester.run('no-conflicting-props', rule, {
         }
       `,
     },
-    //   {
-    //     options: [{ validImports: ['custom-styler'] }],
-    //     code: /* js */ `
-    //       import * as styler from 'custom-styler'
+    // {
+    //   options: [{ validImports: ['custom-styler'] }],
+    //   code: /* js */ `
+    //     import * as styler from 'custom-styler'
     //
-    //       function Component() {
-    //         return <div {...styler.apply()} />
-    //       }
-    //     `,
-    //   },
-    //   {
-    //     options: [{ validImports: [{ from: 'a', as: 'css' }] }],
-    //     code: /* js */ `
-    //       import { css } from 'a'
-    //       function Component() {
-    //         return <div {...css.apply()} />
-    //       }
-    //     `,
-    //   },
+    //     function Component() {
+    //       return <div {...styler.apply()} />
+    //     }
+    //   `,
+    // },
+    // {
+    //   options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+    //   code: /* js */ `
+    //     import { css } from 'a'
+    //     function Component() {
+    //       return <div {...css.apply()} />
+    //     }
+    //   `,
+    // },
   ],
 
   invalid: [
-    //   {
-    //     code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div {...styler.apply()} className="foo" />
-    //       }
-    //     `,
-    //     errors: [
-    //       {
-    //         message:
-    //           'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div {...styler.apply()} style={{ margin: 10 }} />
-    //       }
-    //     `,
-    //     errors: [
-    //       {
-    //         message:
-    //           'The `style` prop should not be used when spreading `apply()` to avoid conflicts.',
-    //       },
-    //     ],
-    //   },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div {...styler.apply()} className="foo" />
+        }
+      `,
+      errors: [
+        {
+          message:
+            'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
+        },
+      ],
+    },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div {...styler.apply()} style={{ margin: 10 }} />
+        }
+      `,
+      errors: [
+        {
+          message:
+            'The `style` prop should not be used when spreading `apply()` to avoid conflicts.',
+        },
+      ],
+    },
     {
       code: /* js */ `
         import { apply } from 'vicinage'
@@ -133,36 +133,36 @@ ruleTester.run('no-conflicting-props', rule, {
         },
       ],
     },
-    //   {
-    //     code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div className="foo" {...styler.apply()} />
-    //       }
-    //     `,
-    //     errors: [
-    //       {
-    //         message:
-    //           'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div style={{ margin: 10 }} {...styler.apply()} />
-    //       }
-    //     `,
-    //     errors: [
-    //       {
-    //         message:
-    //           'The `style` prop should not be used when spreading `apply()` to avoid conflicts.',
-    //       },
-    //     ],
-    //   },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div className="foo" {...styler.apply()} />
+        }
+      `,
+      errors: [
+        {
+          message:
+            'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
+        },
+      ],
+    },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div style={{ margin: 10 }} {...styler.apply()} />
+        }
+      `,
+      errors: [
+        {
+          message:
+            'The `style` prop should not be used when spreading `apply()` to avoid conflicts.',
+        },
+      ],
+    },
     {
       code: /* js */ `
         function Component() {
@@ -253,87 +253,87 @@ ruleTester.run('no-conflicting-props', rule, {
         },
       ],
     },
-    //   {
-    //     options: [{ validImports: ['custom-styler'] }],
-    //     code: /* js */ `
-    //       import * as styler from 'custom-styler'
+    // {
+    //   options: [{ validImports: ['custom-styler'] }],
+    //   code: /* js */ `
+    //     import * as styler from 'custom-styler'
     //
-    //       function Component() {
-    //         return <div {...styler.apply()} className="foo" />
-    //       }
-    //     `,
-    //     errors: [
-    //       {
-    //         message:
-    //           'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     options: [{ validImports: [{ from: 'a', as: 'css' }] }],
-    //     code: /* js */ `
-    //       import { css } from 'a'
-    //
-    //       function Component() {
-    //         return <div {...css.apply()} className="foo" />
-    //       }
-    //     `,
-    //     errors: [
-    //       {
-    //         message:
-    //           'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div {...styler.apply()} className="foo" style={{ margin: 10 }} />
-    //       }
-    //     `,
-    //     errors: [
-    //       {
-    //         message:
-    //           'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
-    //       },
-    //       {
-    //         message:
-    //           'The `style` prop should not be used when spreading `apply()` to avoid conflicts.',
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div {...styler.apply()} {...{ className: 'foo' }} />
-    //       }
-    //     `,
-    //     errors: [
-    //       {
-    //         message:
-    //           'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     code: /* js */ `
-    //       import * as styler from 'vicinage'
-    //
-    //       function Component() {
-    //         return <div {...styler.apply()} {...{ style: { margin: 10 } }} />
-    //       }
-    //     `,
-    //     errors: [
-    //       {
-    //         message:
-    //           'The `style` prop should not be used when spreading `apply()` to avoid conflicts.',
-    //       },
-    //     ],
+    //     function Component() {
+    //       return <div {...styler.apply()} className="foo" />
+    //     }
+    //   `,
+    //   errors: [
+    //     {
+    //       message:
+    //         'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
+    //     },
+    //   ],
     // },
+    // {
+    //   options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+    //   code: /* js */ `
+    //     import { css } from 'a'
+    //
+    //     function Component() {
+    //       return <div {...css.apply()} className="foo" />
+    //     }
+    //   `,
+    //   errors: [
+    //     {
+    //       message:
+    //         'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
+    //     },
+    //   ],
+    // },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div {...styler.apply()} className="foo" style={{ margin: 10 }} />
+        }
+      `,
+      errors: [
+        {
+          message:
+            'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
+        },
+        {
+          message:
+            'The `style` prop should not be used when spreading `apply()` to avoid conflicts.',
+        },
+      ],
+    },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div {...styler.apply()} {...{ className: 'foo' }} />
+        }
+      `,
+      errors: [
+        {
+          message:
+            'The `className` prop should not be used when spreading `apply()` to avoid conflicts.',
+        },
+      ],
+    },
+    {
+      code: /* js */ `
+        import * as styler from 'vicinage'
+
+        function Component() {
+          return <div {...styler.apply()} {...{ style: { margin: 10 } }} />
+        }
+      `,
+      errors: [
+        {
+          message:
+            'The `style` prop should not be used when spreading `apply()` to avoid conflicts.',
+        },
+      ],
+    },
   ],
 })
 

@@ -1017,69 +1017,69 @@ eslintTester.run('sort-keys', rule, {
         },
       ],
     },
-    //   // {
-    //   //   options: [{ validImports: [{ from: 'a', as: 'css' }] }],
-    //   //   code: /* js */ `
-    //   //     import { css } from 'a'
-    //   //     css.apply(
-    //   //       {
-    //   //         animationDuration: '100ms',
-    //   //         padding: 10,
-    //   //         fontSize: 12,
-    //   //       }
-    //   //     )
-    //   //   `,
-    //   //   output: /* js */ `
-    //   //     import { css } from 'a'
-    //   //     css.apply(
-    //   //       {
-    //   //         padding: 10,
-    //   //         animationDuration: '100ms',
-    //   //         fontSize: 12,
-    //   //       }
-    //   //     )
-    //   //   `,
-    //   //   errors: [
-    //   //     {
-    //   //       message:
-    //   //         'Style property key "padding" should be above "animationDuration"',
-    //   //     },
-    //   //   ],
-    //   // },
-    //   // {
-    //   //   options: [
-    //   //     {
-    //   //       validImports: [{ from: 'a', as: 'css' }],
-    //   //       order: 'clean',
-    //   //     },
-    //   //   ],
-    //   //   code: /* js */ `
-    //   //     import { css } from 'a'
-    //   //     css.apply(
-    //   //       {
-    //   //         padding: 10,
-    //   //         animationDuration: '100ms',
-    //   //         fontSize: 12,
-    //   //       }
-    //   //     )
-    //   //   `,
-    //   //   output: /* js */ `
-    //   //     import { css } from 'a'
-    //   //     css.apply(
-    //   //       {
-    //   //         padding: 10,
-    //   //         fontSize: 12,
-    //   //         animationDuration: '100ms',
-    //   //       }
-    //   //     )
-    //   //   `,
-    //   //   errors: [
-    //   //     {
-    //   //       message:
-    //   //         'Style property key "fontSize" should be above "animationDuration"',
-    //   //     },
-    //   //   ],
-    //   // },
+    // {
+    //   options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+    //   code: /* js */ `
+    //     import { css } from 'a'
+    //     css.apply(
+    //       {
+    //         animationDuration: '100ms',
+    //         padding: 10,
+    //         fontSize: 12,
+    //       }
+    //     )
+    //   `,
+    //   output: /* js */ `
+    //     import { css } from 'a'
+    //     css.apply(
+    //       {
+    //         padding: 10,
+    //         animationDuration: '100ms',
+    //         fontSize: 12,
+    //       }
+    //     )
+    //   `,
+    //   errors: [
+    //     {
+    //       message:
+    //         'Style property key "padding" should be above "animationDuration"',
+    //     },
+    //   ],
+    // },
+    // {
+    //   options: [
+    //     {
+    //       validImports: [{ from: 'a', as: 'css' }],
+    //       order: 'clean',
+    //     },
+    //   ],
+    //   code: /* js */ `
+    //     import { css } from 'a'
+    //     css.apply(
+    //       {
+    //         padding: 10,
+    //         animationDuration: '100ms',
+    //         fontSize: 12,
+    //       }
+    //     )
+    //   `,
+    //   output: /* js */ `
+    //     import { css } from 'a'
+    //     css.apply(
+    //       {
+    //         padding: 10,
+    //         fontSize: 12,
+    //         animationDuration: '100ms',
+    //       }
+    //     )
+    //   `,
+    //   errors: [
+    //     {
+    //       message:
+    //         'Style property key "fontSize" should be above "animationDuration"',
+    //     },
+    //   ],
+    // },
     {
       code: /* js */ `
         import { apply } from 'vicinage'
