@@ -34,14 +34,14 @@ ruleTester.run('valid-styles', rule, {
       import * as stylex from '@stylexjs/stylex'
       const styles = stylex.create({
         validStyle: {
-          marginInlineStart: "10px",
-          marginInlineEnd: "5px",
-          marginInline: "15px",
-          marginBlock: "20px",
-          paddingInlineStart: "8px",
-          paddingInlineEnd: "12px",
-          paddingInline: "10px",
-          paddingBlock: "16px",
+          marginInlineStart: '10px',
+          marginInlineEnd: '5px',
+          marginInline: '15px',
+          marginBlock: '20px',
+          paddingInlineStart: '8px',
+          paddingInlineEnd: '12px',
+          paddingInline: '10px',
+          paddingBlock: '16px',
         },
       })
     `,
@@ -50,14 +50,14 @@ ruleTester.run('valid-styles', rule, {
 
       const styles = stylex.create({
         validStyle: {
-          marginInlineStart: "10px",
-          marginInlineEnd: "5px",
-          marginInline: "15px",
-          marginBlock: "20px",
-          paddingInlineStart: "8px",
-          paddingInlineEnd: "12px",
-          paddingInline: "10px",
-          paddingBlock: "16px",
+          marginInlineStart: '10px',
+          marginInlineEnd: '5px',
+          marginInline: '15px',
+          marginBlock: '20px',
+          paddingInlineStart: '8px',
+          paddingInlineEnd: '12px',
+          paddingInline: '10px',
+          paddingBlock: '16px',
         },
       })
     `,
@@ -224,9 +224,9 @@ ruleTester.run('valid-styles', rule, {
         const styles = stylex.create({
           base: {
             width: {
-              "@starting-style": {
+              '@starting-style': {
                 default: 10,
-                ":hover": 20,
+                ':hover': 20,
               }
             },
           },
@@ -241,8 +241,8 @@ ruleTester.run('valid-styles', rule, {
           base: {
             width: {
               default: 10,
-              [when.descendant(":focus")]: 20,
-              [when.siblingAfter(":active")]: 30,
+              [when.descendant(':focus')]: 20,
+              [when.siblingAfter(':active')]: 30,
             },
           },
         })
@@ -256,8 +256,8 @@ ruleTester.run('valid-styles', rule, {
           base: {
             width: {
               default: 10,
-              [when.descendant(":focus")]: 20,
-              [when.siblingAfter(":active")]: 30,
+              [when.descendant(':focus')]: 20,
+              [when.siblingAfter(':active')]: 30,
             },
           },
         })
@@ -271,8 +271,8 @@ ruleTester.run('valid-styles', rule, {
           base: {
             width: {
               default: 10,
-              [stylex.when.descendant(":focus")]: 20,
-              [stylex.when.siblingAfter(":active")]: 30,
+              [stylex.when.descendant(':focus')]: 20,
+              [stylex.when.siblingAfter(':active')]: 30,
             },
           },
         })
@@ -289,8 +289,8 @@ ruleTester.run('valid-styles', rule, {
           base: {
             backgroundColor: {
               default: colors.bg,
-              [stylex.when.descendant(":focus")]: colors.bgFocus,
-              [stylex.when.siblingAfter(":active")]: colors.bgActive,
+              [stylex.when.descendant(':focus')]: colors.bgFocus,
+              [stylex.when.siblingAfter(':active')]: colors.bgActive,
             },
           },
         })
@@ -305,8 +305,8 @@ ruleTester.run('valid-styles', rule, {
             '::after': {
               backgroundColor: {
                 default: 'transparent',
-                [stylex.when.descendant(":focus")]: 'blue',
-                [stylex.when.siblingAfter(":active")]: 'red',
+                [stylex.when.descendant(':focus')]: 'blue',
+                [stylex.when.siblingAfter(':active')]: 'red',
               },
             },
           },
@@ -325,8 +325,8 @@ ruleTester.run('valid-styles', rule, {
             '::after': {
               backgroundColor: {
                 default: colors.bg,
-                [stylex.when.descendant(":focus")]: colors.bgFocus,
-                [stylex.when.siblingAfter(":active")]: colors.bgActive,
+                [stylex.when.descendant(':focus')]: colors.bgFocus,
+                [stylex.when.siblingAfter(':active')]: colors.bgActive,
               },
             },
           },
@@ -342,11 +342,11 @@ ruleTester.run('valid-styles', rule, {
     // test for literals as namespaces
     /* js */ `
       import * as stylex from '@stylexjs/stylex'
-      stylex.create({"default-1": {marginInlineStart: 5}})
+      stylex.create({'default-1': {marginInlineStart: 5}})
     `,
     /* js */ `
       import * as stylex from '@stylexjs/stylex'
-      stylex.create({["default-1"]: {marginInlineStart: 5}})
+      stylex.create({['default-1']: {marginInlineStart: 5}})
     `,
     // test for numbers as namespaces
     /* js */ `
@@ -918,9 +918,9 @@ ruleTester.run('valid-styles', rule, {
         const isMobile = false
         const styles = stylex.create({
           container: {
-            color: "blue" || "green",
+            color: 'blue' || 'green',
             zIndex: zIndexConst ?? 10,
-            width: isMobile ? (widthConst || "100%") : (widthConst2 ?? "200%"),
+            width: isMobile ? (widthConst || '100%') : (widthConst2 ?? '200%'),
           }
         })
       `,
@@ -1108,7 +1108,7 @@ ruleTester.run('valid-styles', rule, {
     {
       code: /* js */ `
         import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {["textAlin"]: 'left'}})
+        stylex.create({default: {['textAlin']: 'left'}})
       `,
       errors: [
         {
@@ -1118,7 +1118,7 @@ ruleTester.run('valid-styles', rule, {
               desc: 'Did you mean "textAlign"?',
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {["textAlign"]: 'left'}})
+        stylex.create({default: {['textAlign']: 'left'}})
       `,
             },
           ],
@@ -1330,7 +1330,7 @@ revert`,
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           default: {
-            border: "1px solid blue",
+            border: '1px solid blue',
           }
         })
       `,
@@ -1347,11 +1347,10 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -1389,11 +1388,10 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -1414,7 +1412,7 @@ revert`,
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           default: {
-            border: "solid blue 1px",
+            border: 'solid blue 1px',
           }
         })
       `,
@@ -1431,11 +1429,10 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -1456,7 +1453,7 @@ revert`,
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           default: {
-            border: "blue 1px solid",
+            border: 'blue 1px solid',
           }
         })
       `,
@@ -1473,11 +1470,10 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -1498,7 +1494,7 @@ revert`,
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           default: {
-            border: "1px blue solid",
+            border: '1px blue solid',
           }
         })
       `,
@@ -1515,11 +1511,10 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -1540,7 +1535,7 @@ revert`,
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           default: {
-            border: "1px solid",
+            border: '1px solid',
           }
         })
       `,
@@ -1556,11 +1551,10 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -1580,7 +1574,7 @@ revert`,
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           default: {
-            border: "1px var(--foo)",
+            border: '1px var(--foo)',
           }
         })
       `,
@@ -1596,11 +1590,10 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -1620,7 +1613,7 @@ revert`,
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           default: {
-            border: "1px",
+            border: '1px',
           }
         })
       `,
@@ -1635,11 +1628,10 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -1658,7 +1650,7 @@ revert`,
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           default: {
-            border: "none",
+            border: 'none',
           }
         })
       `,
@@ -1673,11 +1665,10 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -1711,11 +1702,10 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' set to a number with 'borderWidth' instead?",
+              desc: `Replace 'border' set to a number with 'borderWidth' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -1749,11 +1739,10 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' set to a number with 'borderWidth' instead?",
+              desc: `Replace 'border' set to a number with 'borderWidth' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -1792,11 +1781,10 @@ revert`,
       ],
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' set to a number with 'borderWidth' instead?",
+              desc: `Replace 'border' set to a number with 'borderWidth' instead?`,
               output: /* js */ `
         import * as stylex from 'custom-import'
         const styles = stylex.create({
@@ -2583,8 +2571,8 @@ revert`,
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           invalidStyle: {
-            margin: "10",
-            height: "10",
+            margin: '10',
+            height: '10',
           },
         })
       `,
@@ -2601,13 +2589,13 @@ revert`,
             'revert',
           suggestions: [
             {
-              desc: "Replace string '10' with number 10?",
+              desc: `Replace string '10' with number 10?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           invalidStyle: {
             margin: 10,
-            height: "10",
+            height: '10',
           },
         })
       `,
@@ -2634,12 +2622,12 @@ revert`,
             'revert',
           suggestions: [
             {
-              desc: "Replace string '10' with number 10?",
+              desc: `Replace string '10' with number 10?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           invalidStyle: {
-            margin: "10",
+            margin: '10',
             height: 10,
           },
         })
@@ -2654,37 +2642,37 @@ revert`,
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           invalidStyle: {
-            margin: "10",
-            marginTop: "10.1",
-            marginRight: "-10",
-            marginBottom: "-1.0",
-            marginLeft: "-0.10",
-            padding: "0.1234",
-            paddingTop: "100000",
-            paddingRight: "10",
-            paddingBottom: "10",
-            paddingLeft: "10",
-            width: "10",
-            height: "10",
-            minWidth: "10",
-            maxWidth: "10",
-            minHeight: "10",
-            maxHeight: "10",
-            top: "10",
-            right: "10",
-            bottom: "10",
-            left: "10",
-            inset: "10",
-            borderWidth: "10",
-            borderTopWidth: "10",
-            borderRightWidth: "10",
-            borderBottomWidth: "10",
-            borderLeftWidth: "10",
-            gap: "10",
-            rowGap: "10",
-            columnGap: "10",
-            lineHeight: "10",
-            outlineWidth: "10",
+            margin: '10',
+            marginTop: '10.1',
+            marginRight: '-10',
+            marginBottom: '-1.0',
+            marginLeft: '-0.10',
+            padding: '0.1234',
+            paddingTop: '100000',
+            paddingRight: '10',
+            paddingBottom: '10',
+            paddingLeft: '10',
+            width: '10',
+            height: '10',
+            minWidth: '10',
+            maxWidth: '10',
+            minHeight: '10',
+            maxHeight: '10',
+            top: '10',
+            right: '10',
+            bottom: '10',
+            left: '10',
+            inset: '10',
+            borderWidth: '10',
+            borderTopWidth: '10',
+            borderRightWidth: '10',
+            borderBottomWidth: '10',
+            borderLeftWidth: '10',
+            gap: '10',
+            rowGap: '10',
+            columnGap: '10',
+            lineHeight: '10',
+            outlineWidth: '10',
           },
         })
       `,
@@ -3176,41 +3164,41 @@ revert`,
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
           invalidStyle: {
-            margin: "10",
-            marginTop: "10.1",
-            marginRight: "-10",
-            marginBottom: "-1.0",
-            marginLeft: "-0.10",
-            padding: "0.1234",
-            paddingTop: "100000",
-            paddingRight: "10",
-            paddingBottom: "10",
-            paddingLeft: "10",
-            width: "10",
-            height: "10",
-            minWidth: "10",
-            maxWidth: "10",
-            minHeight: "10",
-            maxHeight: "10",
-            top: "10",
-            right: "10",
-            bottom: "10",
-            left: "10",
-            inset: "10",
-            borderWidth: "10",
-            borderTopWidth: "10",
-            borderRightWidth: "10",
-            borderBottomWidth: "10",
-            borderLeftWidth: "10",
-            gap: "10",
-            rowGap: "10",
-            columnGap: "10",
-            lineHeight: "10",
-            outlineWidth: "10",
+            margin: '10',
+            marginTop: '10.1',
+            marginRight: '-10',
+            marginBottom: '-1.0',
+            marginLeft: '-0.10',
+            padding: '0.1234',
+            paddingTop: '100000',
+            paddingRight: '10',
+            paddingBottom: '10',
+            paddingLeft: '10',
+            width: '10',
+            height: '10',
+            minWidth: '10',
+            maxWidth: '10',
+            minHeight: '10',
+            maxHeight: '10',
+            top: '10',
+            right: '10',
+            bottom: '10',
+            left: '10',
+            inset: '10',
+            borderWidth: '10',
+            borderTopWidth: '10',
+            borderRightWidth: '10',
+            borderBottomWidth: '10',
+            borderLeftWidth: '10',
+            gap: '10',
+            rowGap: '10',
+            columnGap: '10',
+            lineHeight: '10',
+            outlineWidth: '10',
           },
         })
       `.replace(
-                    `${property}: "${original}"`,
+                    `${property}: '${original}'`,
                     `${property}: ${replacement ?? original}`,
                   ),
                 },
@@ -3419,8 +3407,7 @@ revert`,
       `,
       errors: [
         {
-          message:
-            "backgroundBlendMode values must be separated by a comma and a space (', ')",
+          message: `backgroundBlendMode values must be separated by a comma and a space (', ')`,
           suggestions: [
             {
               desc: 'Replace comma with a comma and a space (", ")',
@@ -3446,7 +3433,7 @@ revert`,
                base: {
                  width: {
                    default: 10,
-                   [when.descendant(":focus")]: 20,
+                   [when.descendant(':focus')]: 20,
                  },
                },
              })
@@ -3466,9 +3453,9 @@ revert`,
                base: {
                  float: {
                    default: 'left',
-                   [stylex.when.ancestor(":hover")]: 'dsdfdsdfsdfsdfsdfsdf',
-                   [stylex.when.descendant(":focus")]: 30,
-                   [stylex.when.siblingAfter(":active")]: 40,
+                   [stylex.when.ancestor(':hover')]: 'dsdfdsdfsdfsdfsdfsdf',
+                   [stylex.when.descendant(':focus')]: 30,
+                   [stylex.when.siblingAfter(':active')]: 40,
                  },
                },
              })
@@ -3497,7 +3484,7 @@ revert`,
                base: {
                  float: {
                    default: 'left',
-                   [when.descendant(":focus")]: 'invalid-value',
+                   [when.descendant(':focus')]: 'invalid-value',
                  },
                },
              })
@@ -3517,10 +3504,10 @@ revert`,
         const styles = stylex.create({
           base: {
             width: 10,
-            [stylex.when.descendant(":focus")]: {
+            [stylex.when.descendant(':focus')]: {
               width: 20,
             },
-            [stylex.when.siblingAfter(":active")]: {
+            [stylex.when.siblingAfter(':active')]: {
               width: 30,
             },
           },
@@ -3593,7 +3580,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
             'gridArea value must be one of:\nThis property is not supported in legacy StyleX resolution.',
           suggestions: [
             {
-              desc: "Split 'gridArea' shorthand into individual longhand properties?",
+              desc: `Split 'gridArea' shorthand into individual longhand properties?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -3636,7 +3623,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
             'gridColumn value must be one of:\nThis property is not supported in legacy StyleX resolution.',
           suggestions: [
             {
-              desc: "Split 'gridColumn' shorthand into individual longhand properties?",
+              desc: `Split 'gridColumn' shorthand into individual longhand properties?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -3677,7 +3664,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
             'gridRow value must be one of:\nThis property is not supported in legacy StyleX resolution.',
           suggestions: [
             {
-              desc: "Split 'gridRow' shorthand into individual longhand properties?",
+              desc: `Split 'gridRow' shorthand into individual longhand properties?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -3718,7 +3705,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
             'gridTemplate value must be one of:\nThis property is not supported in legacy StyleX resolution.',
           suggestions: [
             {
-              desc: "Split 'gridTemplate' shorthand into individual longhand properties?",
+              desc: `Split 'gridTemplate' shorthand into individual longhand properties?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -3759,7 +3746,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
             'gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.',
           suggestions: [
             {
-              desc: "Split 'gridGap' shorthand into individual longhand properties?",
+              desc: `Split 'gridGap' shorthand into individual longhand properties?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -3800,7 +3787,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
             'gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.',
           suggestions: [
             {
-              desc: "Split 'gridGap' shorthand into individual longhand properties?",
+              desc: `Split 'gridGap' shorthand into individual longhand properties?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -3861,7 +3848,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
             'gridArea value must be one of:\nThis property is not supported in legacy StyleX resolution.',
           suggestions: [
             {
-              desc: "Split 'gridArea' shorthand into individual longhand properties?",
+              desc: `Split 'gridArea' shorthand into individual longhand properties?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -3896,7 +3883,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
             /^animation value must be one of:\n`animation` is not recommended/u,
           suggestions: [
             {
-              desc: "Split 'animation' shorthand into individual longhand properties?",
+              desc: `Split 'animation' shorthand into individual longhand properties?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -3939,7 +3926,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
           message: /^font value must be one of:\n`font` is not recommended/u,
           suggestions: [
             {
-              desc: "Split 'font' shorthand into individual longhand properties?",
+              desc: `Split 'font' shorthand into individual longhand properties?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -3982,7 +3969,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
           message: /^font value must be one of:\n`font` is not recommended/u,
           suggestions: [
             {
-              desc: "Split 'font' shorthand into individual longhand properties?",
+              desc: `Split 'font' shorthand into individual longhand properties?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
@@ -4042,11 +4029,10 @@ ruleTester.run('valid-styles [autofixers]', rule, {
       `,
       errors: [
         {
-          message:
-            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
           suggestions: [
             {
-              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
               output: /* js */ `
         import * as stylex from '@stylexjs/stylex'
         const styles = stylex.create({
