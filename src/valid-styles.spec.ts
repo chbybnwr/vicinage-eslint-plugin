@@ -13,6 +13,17 @@ const ruleTester = new RuleTester({
   },
 })
 
+function message(strings: TemplateStringsArray): string {
+  const [block] = strings
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return block!
+    .trim()
+    .split('\n')
+    .map((line) => line.trim())
+    .join('\n')
+}
+
 ruleTester.run('valid-styles', rule, {
   valid: [
     // test for local static variables
@@ -1132,19 +1143,21 @@ ruleTester.run('valid-styles', rule, {
       `,
       errors: [
         {
-          message: `textAlign value must be one of:
-start
-end
-left
-right
-center
-justify
-match-parent
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            textAlign value must be one of:
+            start
+            end
+            left
+            right
+            center
+            justify
+            match-parent
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
           suggestions: [
             {
               desc: 'Did you mean "left"? Replace "lfet" with "left"',
@@ -1164,18 +1177,20 @@ revert`,
       `,
       errors: [
         {
-          message: `fontWeight value must be one of:
-normal
-bold
-bolder
-lighter
-a number between 1 and 1000
-a CSS Variable
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            fontWeight value must be one of:
+            normal
+            bold
+            bolder
+            lighter
+            a number between 1 and 1000
+            a CSS Variable
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
         },
       ],
     },
@@ -1186,13 +1201,15 @@ revert`,
       `,
       errors: [
         {
-          message: `content value must be one of:
-a string literal
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            content value must be one of:
+            a string literal
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
         },
       ],
     },
@@ -1225,19 +1242,21 @@ revert`,
       options: [{ allowOuterPseudoAndMedia: true }],
       errors: [
         {
-          message: `textAlign value must be one of:
-start
-end
-left
-right
-center
-justify
-match-parent
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            textAlign value must be one of:
+            start
+            end
+            left
+            right
+            center
+            justify
+            match-parent
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
           suggestions: [
             {
               desc: 'Did you mean "left"? Replace "lfet" with "left"',
@@ -1313,14 +1332,16 @@ revert`,
       `,
       errors: [
         {
-          message: `animationName value must be one of:
-none
-a \`keyframes(...)\` function call, a reference to it or a many such valid
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            animationName value must be one of:
+            none
+            a \`keyframes(...)\` function call, a reference to it or a many such valid
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
           suggestions: [],
         },
       ],
@@ -2375,14 +2396,16 @@ ruleTester.run('valid-styles [restrictions]', rule, {
       ],
       errors: [
         {
-          message: `display value must be one of:
-block
-flex
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            display value must be one of:
+            block
+            flex
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
         },
       ],
     },
@@ -2428,8 +2451,10 @@ revert`,
       ],
       errors: [
         {
-          message: `grid value must be one of:
-grid properties disallowed for testing`,
+          message: message`
+            grid value must be one of:
+            grid properties disallowed for testing
+          `,
         },
       ],
     },
@@ -2455,8 +2480,10 @@ grid properties disallowed for testing`,
       ],
       errors: [
         {
-          message: `gridTemplateColumns value must be one of:
-grid properties disallowed for testing`,
+          message: message`
+            gridTemplateColumns value must be one of:
+            grid properties disallowed for testing
+          `,
         },
       ],
     },
@@ -2477,8 +2504,10 @@ grid properties disallowed for testing`,
       ],
       errors: [
         {
-          message: `grid value must be one of:
-This property is not supported in legacy StyleX resolution.`,
+          message: message`
+            grid value must be one of:
+            This property is not supported in legacy StyleX resolution.
+          `,
         },
       ],
     },
@@ -2522,17 +2551,19 @@ This property is not supported in legacy StyleX resolution.`,
       `,
       errors: [
         {
-          message: `textUnderlineOffset value must be one of:
-auto
-a number literal or math expression
-a number ending in px, mm, in, pc, pt
-a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax
-A string literal representing a percentage (e.g. 100%)
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            textUnderlineOffset value must be one of:
+            auto
+            a number literal or math expression
+            a number ending in px, mm, in, pc, pt
+            a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax
+            A string literal representing a percentage (e.g. 100%)
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
         },
       ],
     },
@@ -3216,15 +3247,17 @@ revert`,
       `,
       errors: [
         {
-          message: `positionTryFallbacks value must be one of:
-none
-a CSS Variable
-a \`positionTry(...)\` function call, a reference to it, or a list of references
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            positionTryFallbacks value must be one of:
+            none
+            a CSS Variable
+            a \`positionTry(...)\` function call, a reference to it, or a list of references
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
         },
       ],
     },
@@ -3254,15 +3287,17 @@ revert`,
       `,
       errors: [
         {
-          message: `positionTryFallbacks value must be one of:
-none
-a CSS Variable
-position try fallbacks must be separated by a comma and a space (", ")
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            positionTryFallbacks value must be one of:
+            none
+            a CSS Variable
+            position try fallbacks must be separated by a comma and a space (", ")
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
         },
       ],
     },
@@ -3292,15 +3327,17 @@ revert`,
       `,
       errors: [
         {
-          message: `positionTryFallbacks value must be one of:
-none
-a CSS Variable
-position try fallbacks must be separated by a comma and a space (", ")
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            positionTryFallbacks value must be one of:
+            none
+            a CSS Variable
+            position try fallbacks must be separated by a comma and a space (", ")
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
         },
       ],
     },
@@ -3332,28 +3369,30 @@ revert`,
       `,
       errors: [
         {
-          message: `backgroundBlendMode value must be one of:
-normal
-multiply
-screen
-overlay
-darken
-lighten
-color-dodge
-color-burn
-hard-light
-soft-light
-difference
-exclusion
-hue
-saturation
-color
-luminosity
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            backgroundBlendMode value must be one of:
+            normal
+            multiply
+            screen
+            overlay
+            darken
+            lighten
+            color-dodge
+            color-burn
+            hard-light
+            soft-light
+            difference
+            exclusion
+            hue
+            saturation
+            color
+            luminosity
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
         },
       ],
     },
@@ -3370,28 +3409,30 @@ revert`,
       `,
       errors: [
         {
-          message: `backgroundBlendMode value must be one of:
-normal
-multiply
-screen
-overlay
-darken
-lighten
-color-dodge
-color-burn
-hard-light
-soft-light
-difference
-exclusion
-hue
-saturation
-color
-luminosity
-null
-initial
-inherit
-unset
-revert`,
+          message: message`
+            backgroundBlendMode value must be one of:
+            normal
+            multiply
+            screen
+            overlay
+            darken
+            lighten
+            color-dodge
+            color-burn
+            hard-light
+            soft-light
+            difference
+            exclusion
+            hue
+            saturation
+            color
+            luminosity
+            null
+            initial
+            inherit
+            unset
+            revert
+          `,
         },
       ],
     },
