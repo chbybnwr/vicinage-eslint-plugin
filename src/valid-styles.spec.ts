@@ -2051,10 +2051,10 @@ revert`,
       `,
       errors: [
         {
-          message: /^color value must be one of:\n/,
+          message: /^color value must be one of:\n/u,
         },
         {
-          message: /^fontSize value must be one of:\n/,
+          message: /^fontSize value must be one of:\n/u,
         },
         {
           message:
@@ -2078,10 +2078,10 @@ revert`,
           ],
         },
         {
-          message: /^zIndex value must be one of:\n/,
+          message: /^zIndex value must be one of:\n/u,
         },
         {
-          message: /^display value must be one of:\n/,
+          message: /^display value must be one of:\n/u,
         },
       ],
     },
@@ -2127,7 +2127,7 @@ const styles = stylex.create({
       `,
       errors: [
         {
-          message: /^display value must be one of:\n/,
+          message: /^display value must be one of:\n/u,
         },
       ],
     },
@@ -2143,7 +2143,7 @@ const styles = stylex.create({
       `,
       errors: [
         {
-          message: /^fontWeight value must be one of:\n/,
+          message: /^fontWeight value must be one of:\n/u,
         },
         {
           message: 'This is not a key that is allowed by stylex',
@@ -3820,7 +3820,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
       errors: [
         {
           message:
-            /^animation value must be one of:\n`animation` is not recommended/,
+            /^animation value must be one of:\n`animation` is not recommended/u,
           suggestions: [
             {
               desc: "Split 'animation' shorthand into individual longhand properties?",
@@ -3863,7 +3863,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
       `,
       errors: [
         {
-          message: /^font value must be one of:\n`font` is not recommended/,
+          message: /^font value must be one of:\n`font` is not recommended/u,
           suggestions: [
             {
               desc: "Split 'font' shorthand into individual longhand properties?",
@@ -3906,7 +3906,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
       `,
       errors: [
         {
-          message: /^font value must be one of:\n`font` is not recommended/,
+          message: /^font value must be one of:\n`font` is not recommended/u,
           suggestions: [
             {
               desc: "Split 'font' shorthand into individual longhand properties?",
@@ -3938,7 +3938,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
       errors: [
         {
           message:
-            /^animation value must be one of:\n`animation` is not recommended/,
+            /^animation value must be one of:\n`animation` is not recommended/u,
           suggestions: [],
         },
       ],
@@ -4007,7 +4007,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
       errors: [
         {
           message:
-            /^animation value must be one of:\n`animation` is not recommended/,
+            /^animation value must be one of:\n`animation` is not recommended/u,
         },
       ],
     },
