@@ -278,25 +278,25 @@ ruleTester.run('valid-styles', rule, {
     // test for positive numbers
     /* js */ `
       import { apply } from 'vicinage'
-      apply({default: {marginInlineStart: 5}})
+      apply({marginInlineStart: 5})
     `,
     // test for negative values.
     /* js */ `
       import { apply } from 'vicinage'
-      apply({default: {marginInlineStart: -5}})
+      apply({marginInlineStart: -5})
     `,
     // test for unitless length value 0
     /* js */ `
       import { apply } from 'vicinage'
-      apply({default: {margin: 0}})
+      apply({margin: 0})
     `,
     /* js */ `
       import { apply } from 'vicinage'
-      apply({default: {padding: '0'}})
+      apply({padding: '0'})
     `,
     /* js */ `
       import { apply } from 'vicinage'
-      apply({default: {textAlign: 'start'}})
+      apply({textAlign: 'start'})
     `,
     // test for presets
     /* js */ `
@@ -530,31 +530,31 @@ ruleTester.run('valid-styles', rule, {
     })
     `,
     // test using vars as keys in dynamic styles
-    // /* js */ `
-    // import { apply } from 'vicinage'
-    // import { tokens } from 'tokens.${token}'
-    // apply({
-    //     [tokens.position]: () => \`\${position}px\`,
-    // })
-    // `,
+    /* js */ `
+    import { apply } from 'vicinage'
+    import { tokens } from 'tokens.${token}'
+    apply({
+        [tokens.position]: () => \`\${position}px\`,
+    })
+    `,
     // // test using member expressions on function params in dynamic styles
-    // /* js */ `
-    // import { apply } from 'vicinage'
-    // apply({
-    //     backgroundColor: () => props.badgeColor,
-    //     color: () => props.color,
-    // })
-    // `,
+    /* js */ `
+    import { apply } from 'vicinage'
+    apply({
+        backgroundColor: () => props.badgeColor,
+        color: () => props.color,
+    })
+    `,
     // // test member expressions on function params with pseudo-classes
-    // /* js */ `
-    // import { apply } from 'vicinage'
-    // apply({
-    //     color: {
-    //       default: () => props.textColor,
-    //       ':hover': () => props.hoverColor,
-    //     }
-    // })
-    // `,
+    /* js */ `
+    import { apply } from 'vicinage'
+    apply({
+        color: {
+          default: () => props.textColor,
+          ':hover': () => props.hoverColor,
+        }
+    })
+    `,
     // test importing vars from paths including theme file extension
     /* js */ `
     import { apply } from 'vicinage'
@@ -655,44 +655,44 @@ ruleTester.run('valid-styles', rule, {
     })
     `,
     // test for ternary and logical expressions
-    // {
-    //   code: /* js */ `
-    //     import { apply } from 'vicinage'
-    //     apply({
-    //         color: () => condition ? 'blue' : 'red',
-    //         display: () => condition ? 'block' : 'none',
-    //         fontSize: () => condition ? '10px' : '20px',
-    //         fontWeight: () => condition ? 'bold' : 'normal',
-    //         opacity: () => condition ? 0.5 : 1,
-    //         zIndex: () => condition ? 10 + 10 : Math.max(10, 20),
-    //     })
-    //   `,
-    // },
-    // {
-    //   code: /* js */ `
-    //     import { apply } from 'vicinage'
-    //     const COLOR = 'blue'
-    //     const sizeSmall = '10px'
-    //     const sizeMedium = '20px'
-    //     const sizeLarge = '30px'
-    //     apply({
-    //         fontSize: () => condition ? sizeSmall : sizeMedium,
-    //         backgroundColor: () => conditionA ? COLOR : conditionB ? 'green' : 'yellow',
-    //         fontSize: () => conditionA ? sizeSmall : conditionB ? sizeMedium : sizeLarge,
-    //     })
-    //   `,
-    // },
-    // {
-    //   code: /* js */ `
-    //     import { apply } from 'vicinage'
-    //     const COLOR = 'blue'
-    //     apply({
-    //         backgroundColor: () => conditionA ? COLOR : conditionB ? 'green' : 'yellow',
-    //         fontSize: () => conditionA ? 14 : conditionB ? 16 : 18,
-    //         opacity: () => conditionA ? 0.5 : conditionB ? 1 : 0.2,
-    //     })
-    //   `,
-    // },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+            color: condition ? 'blue' : 'red',
+            display: condition ? 'block' : 'none',
+            fontSize: condition ? '10px' : '20px',
+            fontWeight: condition ? 'bold' : 'normal',
+            opacity: condition ? 0.5 : 1,
+            zIndex: condition ? 10 + 10 : Math.max(10, 20),
+        })
+      `,
+    },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        const COLOR = 'blue'
+        const sizeSmall = '10px'
+        const sizeMedium = '20px'
+        const sizeLarge = '30px'
+        apply({
+            fontSize: condition ? sizeSmall : sizeMedium,
+            backgroundColor: conditionA ? COLOR : conditionB ? 'green' : 'yellow',
+            fontSize: conditionA ? sizeSmall : conditionB ? sizeMedium : sizeLarge,
+        })
+      `,
+    },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        const COLOR = 'blue'
+        apply({
+            backgroundColor: conditionA ? COLOR : conditionB ? 'green' : 'yellow',
+            fontSize: conditionA ? 14 : conditionB ? 16 : 18,
+            opacity: conditionA ? 0.5 : conditionB ? 1 : 0.2,
+        })
+      `,
+    },
     {
       code: /* js */ `
         import { apply } from 'vicinage'
@@ -703,16 +703,16 @@ ruleTester.run('valid-styles', rule, {
         })
       `,
     },
-    // {
-    //   code: /* js */ `
-    //     import { apply } from 'vicinage'
-    //     apply({
-    //         '::before': {
-    //           content: () => condition ? '""' : '"*"',
-    //         },
-    //     })
-    //   `,
-    // },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+            '::before': {
+              content: condition ? '""' : '"*"',
+            },
+        })
+      `,
+    },
     {
       code: /* js */ `
         import { apply } from 'vicinage'
@@ -770,12 +770,13 @@ ruleTester.run('valid-styles', rule, {
   ],
   invalid: [
     // {
-    //   code: /* js */ `import { apply } from 'vicinage'
-    // import { FOO } from 'foo'
-    //  apply({
-    //      scrollMarginTop: FOO + 5,
-    //    },
-    //  })`,
+    //   code: /* js */ `
+    //     import { apply } from 'vicinage'
+    //     import { FOO } from 'foo'
+    //     apply({
+    //       scrollMarginTop: FOO + 5,
+    //     })
+    //   `,
     //   errors: [
     //     {
     //       message:
@@ -813,7 +814,7 @@ ruleTester.run('valid-styles', rule, {
     {
       code: /* js */ `
         import { apply } from 'vicinage'
-        apply({default: {textAlin: 'left'}})
+        apply({textAlin: 'left'})
       `,
       errors: [
         {
@@ -823,7 +824,7 @@ ruleTester.run('valid-styles', rule, {
               desc: 'Did you mean "textAlign"?',
               output: /* js */ `
         import { apply } from 'vicinage'
-        apply({default: {textAlign: 'left'}})
+        apply({textAlign: 'left'})
       `,
             },
           ],
@@ -833,7 +834,7 @@ ruleTester.run('valid-styles', rule, {
     {
       code: /* js */ `
         import { apply } from 'vicinage'
-        apply({default: {marginStart: 10}})
+        apply({marginStart: 10})
       `,
       errors: [
         {
@@ -844,7 +845,7 @@ ruleTester.run('valid-styles', rule, {
     {
       code: /* js */ `
         import { apply } from 'vicinage'
-        apply({default: {['textAlin']: 'left'}})
+        apply({['textAlin']: 'left'})
       `,
       errors: [
         {
@@ -854,7 +855,7 @@ ruleTester.run('valid-styles', rule, {
               desc: 'Did you mean "textAlign"?',
               output: /* js */ `
         import { apply } from 'vicinage'
-        apply({default: {['textAlign']: 'left'}})
+        apply({['textAlign']: 'left'})
       `,
             },
           ],
@@ -864,7 +865,7 @@ ruleTester.run('valid-styles', rule, {
     {
       code: /* js */ `
         import { apply } from 'vicinage'
-        apply({default: {textAlign: 'lfet'}})
+        apply({textAlign: 'lfet'})
       `,
       errors: [
         {
@@ -888,7 +889,7 @@ ruleTester.run('valid-styles', rule, {
               desc: 'Did you mean "left"? Replace "lfet" with "left"',
               output: /* js */ `
         import { apply } from 'vicinage'
-        apply({default: {textAlign: 'left'}})
+        apply({textAlign: 'left'})
       `,
             },
           ],
@@ -898,7 +899,7 @@ ruleTester.run('valid-styles', rule, {
     {
       code: /* js */ `
         import { apply } from 'vicinage'
-        apply({default: {fontWeight: 10001}})
+        apply({fontWeight: 10001})
       `,
       errors: [
         {
@@ -922,7 +923,7 @@ ruleTester.run('valid-styles', rule, {
     {
       code: /* js */ `
         import { apply } from 'vicinage'
-        apply({default: {content: 100 + 100}})
+        apply({content: 100 + 100})
       `,
       errors: [
         {
@@ -1255,86 +1256,87 @@ ruleTester.run('valid-styles', rule, {
       `,
     },
     // test for ternary and logical expressions
-    // {
-    //   code: /* js */ `
-    //     import { apply } from 'vicinage'
-    //     apply({
-    //         color: () => condition ? 'red' : 123,
-    //         fontSize: () => condition ? true : '10px',
-    //         transition: () => condition ? 'transform 1s' : ' ',
-    //         zIndex: () => condition ?? 'red',
-    //         display: 'invalid-display' || 'block',
-    //     })
-    //   `,
-    //   errors: [
-    //     {
-    //       message: /^color value must be one of:\n/u,
-    //     },
-    //     {
-    //       message: /^fontSize value must be one of:\n/u,
-    //     },
-    //     {
-    //       message:
-    //         'The empty string is not allowed. Use `null` to reset a style.',
-    //       suggestions: [
-    //         {
-    //           desc: 'Replace empty string with `null`?',
-    //           output: /* js */ `
-    //     import { apply } from 'vicinage'
-    //     apply({
-    //         color: () => condition ? 'red' : 123,
-    //         fontSize: () => condition ? true : '10px',
-    //         transition: () => condition ? 'transform 1s' : null,
-    //         zIndex: () => condition ?? 'red',
-    //         display: 'invalid-display' || 'block',
-    //     })
-    //   `,
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       message: /^zIndex value must be one of:\n/u,
-    //     },
-    //     {
-    //       message: /^display value must be one of:\n/u,
-    //     },
-    //   ],
-    // },
-    // {
-    //   code: /* js */ `
-    //     import { apply } from 'vicinage'
-    //     apply({
-    //         float: () => condition ? 'start' : 'inline-end',
-    //     })
-    //   `,
-    //   errors: [
-    //     {
-    //       message:
-    //         'The value "start" is not a standard CSS value for "float". Did you mean "inline-start"?',
-    //       suggestions: [
-    //         {
-    //           desc: 'Replace "start" with "inline-start"?',
-    //           output: /* js */ `
-    //     import { apply } from 'vicinage'
-    //     apply({
-    //         float: () => condition ? 'inline-start' : 'inline-end',
-    //     })`,
-    //         },
-    //       ],
-    //     },
-    //   ],
-    //   output: /* js */ `
-    //     import { apply } from 'vicinage'
-    //     apply({
-    //         float: () => condition ? 'inline-start' : 'inline-end',
-    //     })
-    //   `,
-    // },
     {
       code: /* js */ `
         import { apply } from 'vicinage'
         apply({
-            display: () => conditionA ?  conditionB ? 'grid' : 'invalid-display' : 'block',
+            color: condition ? 'red' : 123,
+            fontSize: condition ? true : '10px',
+            transition: condition ? 'transform 1s' : ' ',
+            // zIndex: condition ?? 'red',
+            display: 'invalid-display' || 'block',
+        })
+      `,
+      errors: [
+        {
+          message: /^color value must be one of:\n/u,
+        },
+        {
+          message: /^fontSize value must be one of:\n/u,
+        },
+        {
+          message:
+            'The empty string is not allowed. Use `null` to reset a style.',
+          suggestions: [
+            {
+              desc: 'Replace empty string with `null`?',
+              output: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+            color: condition ? 'red' : 123,
+            fontSize: condition ? true : '10px',
+            transition: condition ? 'transform 1s' : null,
+            // zIndex: condition ?? 'red',
+            display: 'invalid-display' || 'block',
+        })
+      `,
+            },
+          ],
+        },
+        // {
+        //   message: /^zIndex value must be one of:\n/u,
+        // },
+        {
+          message: /^display value must be one of:\n/u,
+        },
+      ],
+    },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+            float: condition ? 'start' : 'inline-end',
+        })
+      `,
+      errors: [
+        {
+          message:
+            'The value "start" is not a standard CSS value for "float". Did you mean "inline-start"?',
+          suggestions: [
+            {
+              desc: 'Replace "start" with "inline-start"?',
+              output: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+            float: condition ? 'inline-start' : 'inline-end',
+        })
+      `,
+            },
+          ],
+        },
+      ],
+      output: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+            float: condition ? 'inline-start' : 'inline-end',
+        })
+      `,
+    },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+            display: conditionA ?  conditionB ? 'grid' : 'invalid-display' : 'block',
         })
       `,
       errors: [
@@ -1347,8 +1349,8 @@ ruleTester.run('valid-styles', rule, {
       code: /* js */ `
         import { apply } from 'vicinage'
         apply({
-            fontWeight: () => condition ? sasasa : 'bold',
-            marginStart: () => condition ? '10px' : '20px',
+            fontWeight: condition ? sasasa : 'bold',
+            marginStart: condition ? '10px' : '20px',
         })
       `,
       errors: [

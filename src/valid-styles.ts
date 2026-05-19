@@ -471,6 +471,10 @@ const stylexValidStyles: Rule.RuleModule = {
       propertyKey: string,
       ruleChecker: RuleCheck,
     ): ValidationResult | null {
+      if (valueNode.type === 'ArrowFunctionExpression') {
+        return null
+      }
+
       // For: condition ? <style-value> : <style-value>
       if (valueNode.type === 'ConditionalExpression') {
         const trueCheck = validateStyleValue(
