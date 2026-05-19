@@ -2,19 +2,19 @@ export { plugin as default }
 
 const { name, version } = pkg
 
-const rules: Plugin['rules'] = {
+const rules = {
   'no-conflicting-props': noConflictingProps,
   // 'no-lookahead-selectors': noLookaheadSelectors,
   // 'no-nonstandard-styles': noNonStandardStyles,
   'sort-keys': sortKeys,
   'valid-shorthands': validShorthands,
   // 'valid-styles': validStyles,
-}
+} satisfies Plugin['rules']
 
 /**
  * @public
  */
-const plugin: Plugin = {
+const plugin = {
   meta: { name, version },
   rules,
   configs: {
@@ -31,7 +31,7 @@ const plugin: Plugin = {
       },
     },
   },
-}
+} satisfies Plugin
 
 // import validStyles from './valid-styles'
 import noConflictingProps from './no-conflicting-props'

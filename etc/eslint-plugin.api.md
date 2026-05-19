@@ -4,10 +4,40 @@
 
 ```ts
 
-import type { Plugin } from '@eslint/config-helpers';
+import { Rule } from 'eslint';
 
 // @public (undocumented)
-const plugin: Plugin;
+const plugin: {
+    meta: {
+        name: string;
+        version: string;
+    };
+    rules: {
+        'no-conflicting-props': Rule.RuleModule;
+        'sort-keys': Rule.RuleModule;
+        'valid-shorthands': Rule.RuleModule;
+        'valid-styles': Rule.RuleModule;
+    };
+    configs: {
+        recommended: {
+            plugins: {
+                vicinage: {
+                    rules: {
+                        'no-conflicting-props': Rule.RuleModule;
+                        'sort-keys': Rule.RuleModule;
+                        'valid-shorthands': Rule.RuleModule;
+                        'valid-styles': Rule.RuleModule;
+                    };
+                };
+            };
+            rules: {
+                'vicinage/no-conflicting-props': "error";
+                'vicinage/valid-shorthands': "error";
+                'vicinage/sort-keys': "warn";
+            };
+        };
+    };
+};
 export default plugin;
 
 // (No @packageDocumentation comment for this package)

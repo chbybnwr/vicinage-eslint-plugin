@@ -10,9 +10,9 @@ const tsdownConfig = {
     '#': fileURLToPath(new URL('src', import.meta.url)),
   },
 
-  // dts: {
-  //   tsconfig: 'tsconfig.build.json',
-  // },
+  deps: {
+    onlyBundle: [],
+  },
 
   minify: true,
   fixedExtension: false,
