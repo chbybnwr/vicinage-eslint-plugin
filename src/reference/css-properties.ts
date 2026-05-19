@@ -1,3 +1,9 @@
+/* eslint-disable no-magic-numbers */
+/* eslint-disable unicorn/no-useless-undefined */
+/* eslint-disable unicorn/no-keyword-prefix */
+/* eslint-disable no-shadow */
+/* eslint-disable no-undefined */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { borderSplitter } from '../utils/split-css-value'
 import type { Expression } from 'estree'
 import formatPropertiesWithNodeIndentation from '../utils/format-properties-with-node-indentation'
@@ -5,7 +11,7 @@ import getSourceCode from '../utils/get-source-code'
 import isAbsoluteLength from '../rules/is-absolute-length'
 import isCSSVariable from '../rules/is-css-variable'
 import isHexColor from '../rules/is-hex-color'
-import isNumber from '../rules/is-number'
+import { isNumber } from '../rules/is-number'
 import isPercentage from '../rules/is-percentage'
 import isRelativeLength from '../rules/is-relative-length'
 import isString from '../rules/is-string'
@@ -30,6 +36,8 @@ export type RuleResponse =
         desc: string
       }
     }
+
+// eslint-disable-next-line max-params
 export type RuleCheck = (
   node: Readonly<Expression | Pattern>,
   variables?: Variables,
@@ -51,30 +59,28 @@ const isNamedColor: RuleCheck = makeUnionRule(
 
 const isLength: RuleCheck = makeUnionRule(isAbsoluteLength, isRelativeLength)
 
-const isNonNumericString: RuleCheck = (
+function isNonNumericString(
   node: Node,
   _variables?: Variables,
   _prop?: Property,
-): RuleResponse => {
+): RuleResponse {
   if (
     node.type === 'Literal' &&
     typeof node.value === 'string' &&
-    /^[+-]?(?:\d+|\d*\.\d+)$/.test(node.value)
+    /^[+-]?(?:\d+|\d*\.\d+)$/u.test(node.value)
   ) {
     if (node.value === '0') {
       return undefined
     }
 
-    const response: NonNullable<RuleResponse> = {
+    return {
       message: 'a non-numeric string',
+      suggest: {
+        desc: `Replace string '${node.value}' with number ${Number(node.value)}?`,
+        fix: (fixer: Rule.RuleFixer): Rule.Fix | null =>
+          fixer.replaceText(node, String(Number(node.value))),
+      },
     }
-    response.suggest = {
-      desc: `Replace string '${node.value}' with number ${Number(node.value)}?`,
-      fix: (fixer: Rule.RuleFixer): Rule.Fix | null =>
-        fixer.replaceText(node, String(Number(node.value))),
-    }
-
-    return response
   }
 
   return undefined
@@ -457,7 +463,7 @@ const backgroundBlendMode: RuleCheck = (
           fix: (fixer: Rule.RuleFixer): Rule.Fix | null =>
             fixer.replaceText(
               prop,
-              `backgroundBlendMode: '${value.replace(/,(?! )/g, ', ')}'`,
+              `backgroundBlendMode: '${value.replaceAll(/,(?! )/gu, ', ')}'`,
             ),
         },
       }
@@ -477,6 +483,8 @@ const backgroundBlendMode: RuleCheck = (
       }
     }
   }
+
+  return undefined
 }
 
 const backgroundClip: RuleCheck = makeUnionRule(
@@ -494,7 +502,7 @@ const backgroundOrigin: RuleCheck = box
 const backgroundRepeat: RuleCheck = repeatStyle
 const backgroundSize: RuleCheck = bgSize
 const blockSize: RuleCheck = width
-const NUMERIC_LITERAL_VALUE_REGEX = /^[+-]?(?:\d+|\d*\.\d+)$/
+const NUMERIC_LITERAL_VALUE_REGEX = /^[+-]?(?:\d+|\d*\.\d+)$/u
 
 const NUMERIC_LITERAL_PROPERTIES = new Set([
   'lineHeight',
@@ -531,7 +539,7 @@ const serializeValue = (propertyKey: string, val: number | string): string => {
 
 const formatReplacementProperties = (
   prop: Readonly<Property>,
-  properties: ReadonlyArray<string>,
+  properties: readonly string[],
   context?: Rule.RuleContext,
 ): string => {
   const sourceCode = context == null ? undefined : getSourceCode(context)
@@ -539,14 +547,14 @@ const formatReplacementProperties = (
   return formatPropertiesWithNodeIndentation(prop, properties, sourceCode)
 }
 
-const border =
-  (suffix = ''): RuleCheck =>
-  (
+function border(suffix = ''): RuleCheck {
+  // eslint-disable-next-line max-params
+  return function (
     node: Expression | Pattern,
     _variables?: Variables,
     prop?: Property,
     context?: Rule.RuleContext,
-  ) => {
+  ) {
     const response: NonNullable<RuleResponse> = {
       message: `The 'border${suffix}' property is not supported. Use the 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' properties instead.`,
     }
@@ -607,6 +615,7 @@ const border =
 
     return response
   }
+}
 
 const borderBottomStyle: RuleCheck = brStyle
 const borderBottomWidth: RuleCheck = borderWidth
@@ -1568,18 +1577,18 @@ const voiceVolume: RuleCheck = makeUnionRule(
 const maskImage: RuleCheck = maskReference
 
 const SupportedVendorSpecificCSSProperties = {
-  MozOsxFontSmoothing: makeLiteralRule('grayscale') as RuleCheck,
-  WebkitFontSmoothing: makeLiteralRule('antialiased') as RuleCheck,
+  MozOsxFontSmoothing: makeLiteralRule('grayscale'),
+  WebkitFontSmoothing: makeLiteralRule('antialiased'),
   WebkitAppearance: appearance,
   WebkitTapHighlightColor: color,
-  WebkitOverflowScrolling: makeLiteralRule('touch') as RuleCheck,
+  WebkitOverflowScrolling: makeLiteralRule('touch'),
 
   WebkitBoxOrient: makeUnionRule(
     'horizontal',
     'vertical',
     'inline-axis',
     'block-axis',
-  ) as RuleCheck,
+  ),
   WebkitLineClamp: isStringOrNumber,
 
   WebkitMaskImage: maskImage,
@@ -1593,8 +1602,8 @@ const SupportedVendorSpecificCSSProperties = {
     'padding-box',
     'content-box',
     'text',
-  ) as RuleCheck,
-  WebkitAppRegion: makeUnionRule('drag', 'no-drag') as RuleCheck,
+  ),
+  WebkitAppRegion: makeUnionRule('drag', 'no-drag'),
 }
 
 export const convertToStandardProperties: Readonly<
@@ -1632,7 +1641,7 @@ export const convertToStandardProperties: Readonly<
   start: 'insetInlineStart',
 }
 
-export const SVGProperties: { [key: string]: RuleCheck } = {
+export const SVGProperties: Record<string, RuleCheck> = {
   colorInterpolation: makeUnionRule('auto', 'sRGB', 'linearRGB'),
   // colorRendering: color,
   fill,
@@ -1674,11 +1683,7 @@ const CSSProperties = {
   animation: showError(
     '`animation` is not recommended. Please use `animationName`, `animationDuration`, etc. instead',
   ),
-  animationComposition: makeUnionRule(
-    'replace',
-    'add',
-    'accumulate',
-  ) as RuleCheck,
+  animationComposition: makeUnionRule('replace', 'add', 'accumulate'),
   animationDelay: time,
   animationDirection: animationDirection,
   animationDuration: time,
@@ -1825,8 +1830,8 @@ const CSSProperties = {
   clipPath: clipPath,
   clipRule: clipRule,
   color: color,
-  colorAdjust: makeUnionRule('economy', 'exact') as RuleCheck,
-  colorScheme: makeUnionRule('light', 'dark', 'light dark') as RuleCheck,
+  colorAdjust: makeUnionRule('economy', 'exact'),
+  colorScheme: makeUnionRule('light', 'dark', 'light dark'),
   columnCount: columnCount,
   columnFill: columnFill,
   columnGap: columnGap,
@@ -1838,15 +1843,15 @@ const CSSProperties = {
   columnWidth: columnWidth,
   columns: columns,
   contain: contain,
-  containIntrinsicSize: makeUnionRule(isNumber, isString) as RuleCheck,
-  containIntrinsicBlockSize: makeUnionRule(isNumber, isString) as RuleCheck,
-  containIntrinsicInlineSize: makeUnionRule(isNumber, isString) as RuleCheck,
-  containIntrinsicHeight: makeUnionRule(isNumber, isString) as RuleCheck,
-  containIntrinsicWidth: makeUnionRule(isNumber, isString) as RuleCheck,
-  containerType: makeUnionRule('normal', 'size', 'inline-size') as RuleCheck,
+  containIntrinsicSize: makeUnionRule(isNumber, isString),
+  containIntrinsicBlockSize: makeUnionRule(isNumber, isString),
+  containIntrinsicInlineSize: makeUnionRule(isNumber, isString),
+  containIntrinsicHeight: makeUnionRule(isNumber, isString),
+  containIntrinsicWidth: makeUnionRule(isNumber, isString),
+  containerType: makeUnionRule('normal', 'size', 'inline-size'),
   containerName: isString,
   content: content,
-  contentVisibility: makeUnionRule('visible', 'hidden', 'auto') as RuleCheck,
+  contentVisibility: makeUnionRule('visible', 'hidden', 'auto'),
   counterIncrement: counterIncrement,
   counterReset: counterReset,
   counterSet: isString,
@@ -1878,16 +1883,11 @@ const CSSProperties = {
   fontFeatureSettings: fontFeatureSettings,
   fontKerning: fontKerning,
   fontLanguageOverride: fontLanguageOverride,
-  fontOpticalSizing: makeUnionRule('auto', 'none') as RuleCheck,
+  fontOpticalSizing: makeUnionRule('auto', 'none'),
   fontPalette: isString,
   fontSize: fontSize,
   fontSizeAdjust: fontSizeAdjust,
-  fontSmooth: makeUnionRule(
-    'auto',
-    'never',
-    'always',
-    lengthPercentage,
-  ) as RuleCheck,
+  fontSmooth: makeUnionRule('auto', 'never', 'always', lengthPercentage),
   fontStretch: fontStretch,
   fontStyle: fontStyle,
   fontSynthesis: fontSynthesis,
@@ -1895,20 +1895,15 @@ const CSSProperties = {
   fontVariantAlternates: fontVariantAlternates,
   fontVariantCaps: fontVariantCaps,
   fontVariantEastAsian: fontVariantEastAsian,
-  fontVariantEmoji: makeUnionRule(
-    'auto',
-    'text',
-    'emoji',
-    'unicode',
-  ) as RuleCheck,
+  fontVariantEmoji: makeUnionRule('auto', 'text', 'emoji', 'unicode'),
   fontVariantLigatures: fontVariantLigatures,
   fontVariantNumeric: fontVariantNumeric,
   fontVariantPosition: fontVariantPosition,
   fontVariationSettings: isString,
   fontWeight: fontWeight,
-  forcedColorAdjust: makeUnionRule('auto', 'none') as RuleCheck,
+  forcedColorAdjust: makeUnionRule('auto', 'none'),
 
-  fieldSizing: makeUnionRule('content', 'fixed') as RuleCheck,
+  fieldSizing: makeUnionRule('content', 'fixed'),
 
   gap: gap,
   glyphOrientationHorizontal: glyphOrientationHorizontal,
@@ -1942,7 +1937,7 @@ const CSSProperties = {
     'allow-end',
     'force-end',
     isString,
-  ) as RuleCheck,
+  ),
   hyphenateCharacter: isString,
   hyphens: hyphens,
   imageOrientation: imageOrientation,
@@ -2024,14 +2019,9 @@ const CSSProperties = {
   markerOffset: markerOffset,
   markerStart: markerStart,
   mask: mask,
-  maskBorderMode: makeUnionRule('alpha', 'luminance') as RuleCheck,
+  maskBorderMode: makeUnionRule('alpha', 'luminance'),
   maskBorderOutset: isString,
-  maskBorderRepeat: makeUnionRule(
-    'stretch',
-    'repeat',
-    'round',
-    'space',
-  ) as RuleCheck,
+  maskBorderRepeat: makeUnionRule('stretch', 'repeat', 'round', 'space'),
   maskBorderSlice: isString,
   maskBorderSource: isString,
   maskBorderWidth: isString,
@@ -2066,7 +2056,7 @@ const CSSProperties = {
   orphans: orphans,
   outline: outline,
   outlineColor: color,
-  outlineOffset: makeUnionRule(isNumber, isLength) as RuleCheck,
+  outlineOffset: makeUnionRule(isNumber, isLength),
   outlineStyle: makeUnionRule(
     'auto',
     'none',
@@ -2078,8 +2068,8 @@ const CSSProperties = {
     'ridge',
     'inset',
     'outset',
-  ) as RuleCheck,
-  outlineWidth: makeUnionRule(isNumber, isLength) as RuleCheck,
+  ),
+  outlineWidth: makeUnionRule(isNumber, isLength),
   blockOverflow: overflow, // TODO - Add support to Babel Plugin
   inlineOverflow: overflow, // TODO - Add support to Babel Plugin
   overflow: overflow,
@@ -2095,15 +2085,9 @@ const CSSProperties = {
   overscrollBehaviorY: overscrollBehavior,
   // Currently Unsupported
   // overscrollBehaviorBlock: overscrollBehaviorY,
-  overflowClipMargin: makeUnionRule(isNumber, isString) as RuleCheck,
+  overflowClipMargin: makeUnionRule(isNumber, isString),
 
-  paintOrder: makeUnionRule(
-    'normal',
-    'fill',
-    'stroke',
-    'markers',
-    isString,
-  ) as RuleCheck,
+  paintOrder: makeUnionRule('normal', 'fill', 'stroke', 'markers', isString),
 
   padding: length,
   paddingBlock: length,
@@ -2132,7 +2116,7 @@ const CSSProperties = {
   placeContent: isString,
   placeItems: isString,
   placeSelf: isString,
-  printColorAdjust: makeUnionRule('economy', 'exact') as RuleCheck,
+  printColorAdjust: makeUnionRule('economy', 'exact'),
 
   quotes: quotes,
   resize: resize,
@@ -2141,8 +2125,8 @@ const CSSProperties = {
   restBefore: pauseOrRest,
 
   rotate: isString, // angle
-  scale: makeUnionRule(isString, isNumber) as RuleCheck,
-  translate: makeUnionRule(isString, isNumber) as RuleCheck,
+  scale: makeUnionRule(isString, isNumber),
+  translate: makeUnionRule(isString, isNumber),
 
   rowGap: rowGap,
   rubyAlign: rubyAlign,
@@ -2150,41 +2134,37 @@ const CSSProperties = {
   rubyPosition: rubyPosition,
 
   scrollbarColor: color,
-  scrollbarGutter: makeUnionRule(
-    'auto',
-    'stable',
-    'stable both-edges',
-  ) as RuleCheck,
-  scrollbarWidth: makeUnionRule('auto', 'thin', 'none') as RuleCheck,
+  scrollbarGutter: makeUnionRule('auto', 'stable', 'stable both-edges'),
+  scrollbarWidth: makeUnionRule('auto', 'thin', 'none'),
 
   scrollBehavior: scrollBehavior,
   scrollSnapPaddingBottom: scrollSnapPaddingBottom,
   scrollSnapPaddingTop: scrollSnapPaddingTop,
   scrollSnapAlign: scrollSnapAlign,
   scrollSnapType: scrollSnapType,
-  scrollSnapStop: makeUnionRule('normal', 'always') as RuleCheck,
+  scrollSnapStop: makeUnionRule('normal', 'always'),
 
   // scrollMargin: makeUnionRule(isNumber, isString),
-  scrollMarginBlockEnd: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginBlockStart: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginBottom: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginInlineEnd: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginInlineStart: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginLeft: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginRight: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginTop: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingBlockEnd: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingBlockStart: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingBottom: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingInlineEnd: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingInlineStart: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingLeft: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingRight: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingTop: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollSnapMarginBottom: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollSnapMarginLeft: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollSnapMarginRight: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollSnapMarginTop: makeUnionRule(isNumber, isString) as RuleCheck,
+  scrollMarginBlockEnd: makeUnionRule(isNumber, isString),
+  scrollMarginBlockStart: makeUnionRule(isNumber, isString),
+  scrollMarginBottom: makeUnionRule(isNumber, isString),
+  scrollMarginInlineEnd: makeUnionRule(isNumber, isString),
+  scrollMarginInlineStart: makeUnionRule(isNumber, isString),
+  scrollMarginLeft: makeUnionRule(isNumber, isString),
+  scrollMarginRight: makeUnionRule(isNumber, isString),
+  scrollMarginTop: makeUnionRule(isNumber, isString),
+  scrollPaddingBlockEnd: makeUnionRule(isNumber, isString),
+  scrollPaddingBlockStart: makeUnionRule(isNumber, isString),
+  scrollPaddingBottom: makeUnionRule(isNumber, isString),
+  scrollPaddingInlineEnd: makeUnionRule(isNumber, isString),
+  scrollPaddingInlineStart: makeUnionRule(isNumber, isString),
+  scrollPaddingLeft: makeUnionRule(isNumber, isString),
+  scrollPaddingRight: makeUnionRule(isNumber, isString),
+  scrollPaddingTop: makeUnionRule(isNumber, isString),
+  scrollSnapMarginBottom: makeUnionRule(isNumber, isString),
+  scrollSnapMarginLeft: makeUnionRule(isNumber, isString),
+  scrollSnapMarginRight: makeUnionRule(isNumber, isString),
+  scrollSnapMarginTop: makeUnionRule(isNumber, isString),
 
   shapeImageThreshold: shapeImageThreshold,
   shapeMargin: lengthPercentage,
@@ -2212,16 +2192,16 @@ const CSSProperties = {
     'trailing-spaces',
     'edges',
     'box-decoration',
-  ) as RuleCheck,
-  textDecorationSkipInk: makeUnionRule('none', 'auto', 'all') as RuleCheck,
+  ),
+  textDecorationSkipInk: makeUnionRule('none', 'auto', 'all'),
   textDecorationStyle: makeUnionRule(
     'solid',
     'double',
     'dotted',
     'dashed',
     'wavy',
-  ) as RuleCheck,
-  textDecorationThickness: makeUnionRule(isNumber, isLength) as RuleCheck,
+  ),
+  textDecorationThickness: makeUnionRule(isNumber, isLength),
 
   textEmphasis: textEmphasis,
   textEmphasisColor: textEmphasisColor,
@@ -2236,7 +2216,7 @@ const CSSProperties = {
   textTransform: textTransform,
   textUnderlineOffset: textUnderlineOffset,
   textUnderlinePosition: textUnderlinePosition,
-  textWrap: makeUnionRule('wrap', 'nowrap', 'balance', 'pretty') as RuleCheck,
+  textWrap: makeUnionRule('wrap', 'nowrap', 'balance', 'pretty'),
 
   touchAction: touchAction,
   transform: transform,
@@ -2251,7 +2231,7 @@ const CSSProperties = {
   unicodeBidi: unicodeBidi,
   unicodeRange: unicodeRange,
   userSelect: userSelect,
-  viewTransitionName: makeUnionRule(all, isString) as RuleCheck,
+  viewTransitionName: makeUnionRule(all, isString),
   verticalAlign: verticalAlign,
   visibility: visibility,
   voiceBalance: voiceBalance,
@@ -2272,7 +2252,7 @@ const CSSProperties = {
   zIndex: zIndex,
 
   // Purposely not supported because it is not supported in Firefox.
-  zoom: makeUnionRule('normal', 'reset', isNumber, isPercentage) as RuleCheck,
+  zoom: makeUnionRule('normal', 'reset', isNumber, isPercentage),
 }
 export const CSSPropertyKeys = Object.keys(
   CSSProperties,
@@ -2282,7 +2262,7 @@ for (const key of CSSPropertyKeys) {
   CSSProperties[key] = makeUnionRule(CSSProperties[key], all)
 }
 
-export const CSSPropertyReplacements: Record<string, RuleCheck | void> = {
+export const CSSPropertyReplacements: Record<string, RuleCheck | undefined> = {
   border: border(),
   borderTop: border('Top'),
   borderBlockStart: border('Top'),
@@ -2353,9 +2333,9 @@ export const pseudoClassesAndAtRules: RuleCheck = makeUnionRule(
   makeLiteralRule(':active'),
   makeLiteralRule(':visited'),
   makeLiteralRule(':disabled'),
-  makeRegExRule(/^@media/, 'a media query'),
-  makeRegExRule(/^@container/, 'a media query'),
-  makeRegExRule(/^@supports/, 'a supports query'),
+  makeRegExRule(/^@media/u, 'a media query'),
+  makeRegExRule(/^@container/u, 'a media query'),
+  makeRegExRule(/^@supports/u, 'a supports query'),
   makeLiteralRule('@starting-style'),
 )
 

@@ -1,5 +1,19 @@
+/* eslint-disable no-magic-numbers */
+/* eslint-disable unicorn/no-array-reduce */
+/* eslint-disable no-shadow */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable max-params */
+/* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable no-continue */
+/* eslint-disable max-depth */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable unicorn/no-keyword-prefix */
+/* eslint-disable no-undefined */
+
 import { all } from './reference/css-properties'
-import { allModifiers } from './reference/css-properties'
 import type { CallExpression } from 'estree'
 import { CANNOT_FIX } from './utils/split-shorthands'
 import { CSSProperties } from './reference/css-properties'
@@ -67,6 +81,12 @@ const shorthandExpansionMap: Record<string, string> = {
 
 const LEGACY_CONDITIONAL_SHORTHAND_FIXERS = new Set(['animation', 'font'])
 
+function shouldEnableLegacyConditionalShorthandFixer(
+  propertyKey: string,
+): boolean {
+  return !LEGACY_CONDITIONAL_SHORTHAND_FIXERS.has(propertyKey)
+}
+
 const LEGACY_CONDITIONAL_REPLACEMENT_FIXERS = new Set([
   'border',
   'borderTop',
@@ -81,7 +101,7 @@ const LEGACY_CONDITIONAL_REPLACEMENT_FIXERS = new Set([
   'borderLeft',
 ])
 
-const NUMERIC_LITERAL_VALUE_REGEX = /^[+-]?(?:\d+|\d*\.\d+)$/
+const NUMERIC_LITERAL_VALUE_REGEX = /^[+-]?(?:\d+|\d*\.\d+)$/u
 
 const NUMERIC_LITERAL_PROPERTIES = new Set([
   'rowGap',
@@ -122,14 +142,13 @@ const formatExpandedProperties = (
   return formatPropertiesWithNodeIndentation(prop, properties, sourceCode)
 }
 
-const showErrorWithFix =
-  (message: string, propertyKey: string): RuleCheck =>
-  (
+function showErrorWithFix(message: string, propertyKey: string): RuleCheck {
+  return function (
     node: Readonly<Expression | Pattern>,
     _variables?: Variables,
     prop?: Readonly<Property>,
     context?: Rule.RuleContext,
-  ): RuleResponse => {
+  ): RuleResponse {
     const response: NonNullable<RuleResponse> = { message }
     const shorthandProp = shorthandExpansionMap[propertyKey]
 
@@ -172,6 +191,45 @@ const showErrorWithFix =
 
     return response
   }
+}
+
+/**
+ * Check if a file has a valid extension for StyleX variable imports.
+ *
+ * `.stylex`: used when importing `defineVars` or `defineConsts` variables. This prevents
+ *   the linter/compiler from marking imports as unresolved and allows computed
+ *   keys in those cases.
+ *
+ *  `.stylex.const`: used when importing `defineConsts` constants. This prevents
+ *   the linter/compiler from marking imports as unresolved and allows computed
+ *   keys in those cases.
+ *
+ * `.transformed`: used for files that have already been processed by a custom
+ *   transform that pre-resolve StyleX variables to silence ESLint/compiler errors.
+ *
+ */
+function isValidStylexResolvedVarsFileExtension(
+  filename: string,
+  themeFileExtension: string,
+) {
+  const baseExtensions = [
+    themeFileExtension,
+    `${themeFileExtension}.const`,
+    '.transformed',
+  ]
+  const extensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs']
+
+  return ['', ...extensions].some((ext) =>
+    baseExtensions.some((base) => filename.endsWith(`${base}${ext}`)),
+  )
+}
+
+function getOverrideErrorRule(reason: string, propertyKey: string) {
+  return shorthandExpansionMap[propertyKey] != null &&
+    shouldEnableLegacyConditionalShorthandFixer(propertyKey)
+    ? showErrorWithFix(reason, propertyKey)
+    : showError(reason)
+}
 
 const stylexValidStyles: Rule.RuleModule = {
   meta: {
@@ -179,8 +237,7 @@ const stylexValidStyles: Rule.RuleModule = {
     hasSuggestions: true,
     fixable: 'code',
     docs: {
-      descriptions: 'Enforce that you create valid stylex styles',
-      category: 'Possible Errors',
+      description: 'Enforce that you create valid stylex styles',
       recommended: true,
     },
     schema: [
@@ -237,14 +294,14 @@ const stylexValidStyles: Rule.RuleModule = {
       },
     ],
   },
-  create(context: Rule.RuleContext) {
+
+  create: (context: Rule.RuleContext) => {
     const variables = new Map<string, Expression | 'ARG'>()
     const dynamicStyleVariables = new Set<string>()
-    const options = context.options[0] || {}
-    const themeFileExtension = options.themeFileExtension || '.stylex'
 
-    const legacyReason =
-      'This property is not supported in legacy StyleX resolution.'
+    const options = context.options[0] ?? {}
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const themeFileExtension = options.themeFileExtension ?? '.stylex'
 
     type PropLimits = Record<
       string,
@@ -266,76 +323,19 @@ const stylexValidStyles: Rule.RuleModule = {
       propLimits?: PropLimits
     }
 
-    const legacyProps: PropLimits = {
-      grid: { limit: null, reason: legacyReason },
-      gridArea: { limit: null, reason: legacyReason },
-      gridColumn: { limit: null, reason: legacyReason },
-      gridRow: { limit: null, reason: legacyReason },
-      gridTemplate: { limit: null, reason: legacyReason },
-      gridGap: { limit: null, reason: legacyReason },
-      gridColumnGap: { limit: null, reason: legacyReason },
-      gridRowGap: { limit: null, reason: legacyReason },
-      'mask+([a-zA-Z])': { limit: null, reason: legacyReason },
-      blockOverflow: { limit: null, reason: legacyReason },
-      inlineOverflow: { limit: null, reason: legacyReason },
-      transitionProperty: {
-        limit: ['opacity', 'transform', 'opacity, transform', 'none'],
-        reason: legacyReason,
-      },
-    }
-
     const {
       validStylexImports = ['stylex', '@stylexjs/stylex'],
       allowRawCSSVars = true,
       propLimits = {},
-    }: Schema = context.options[0] || {}
+    }: Schema = context.options[0] ?? {}
 
     const validImports = new Set(['vicinage'])
-
-    const allowOuterPseudoAndMedia = false
-    const isLegacyExpandShorthands = false
-
-    const shouldEnableLegacyConditionalShorthandFixer = (
-      propertyKey: string,
-    ): boolean =>
-      isLegacyExpandShorthands ||
-      !LEGACY_CONDITIONAL_SHORTHAND_FIXERS.has(propertyKey)
-
-    /**
-     * Check if a file has a valid extension for StyleX variable imports.
-     *
-     * `.stylex`: used when importing `defineVars` or `defineConsts` variables. This prevents
-     *   the linter/compiler from marking imports as unresolved and allows computed
-     *   keys in those cases.
-     *
-     *  `.stylex.const`: used when importing `defineConsts` constants. This prevents
-     *   the linter/compiler from marking imports as unresolved and allows computed
-     *   keys in those cases.
-     *
-     * `.transformed`: used for files that have already been processed by a custom
-     *   transform that pre-resolve StyleX variables to silence ESLint/compiler errors.
-     *
-     */
-    function isValidStylexResolvedVarsFileExtension(
-      filename: string,
-      themeFileExtension: string,
-    ) {
-      const baseExtensions = [
-        themeFileExtension,
-        `${themeFileExtension}.const`,
-        '.transformed',
-      ]
-      const extensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs']
-
-      return ['', ...extensions].some((ext) =>
-        baseExtensions.some((base) => filename.endsWith(`${base}${ext}`)),
-      )
-    }
 
     const stylexResolvedVarsTokenImports = new Set<string>()
 
     // Track same-file defineVars/defineVarsNested/defineConstsNested declarations.
     const currentFilename =
+      // @ts-expect-error FIXME: please
       context.getFilename == null ? '' : context.getFilename()
     const isStylexFile = isValidStylexResolvedVarsFileExtension(
       currentFilename,
@@ -348,10 +348,7 @@ const stylexValidStyles: Rule.RuleModule = {
     const styleXPositionTryImports = new Set<string>()
     const styleXWhenImports = new Set<string>()
 
-    const overrides: PropLimits = {
-      ...(isLegacyExpandShorthands ? legacyProps : {}),
-      ...propLimits,
-    }
+    const overrides: PropLimits = propLimits
 
     const CSSPropertiesWithOverrides: Record<string, RuleCheck> = {
       ...CSSProperties,
@@ -368,13 +365,10 @@ const stylexValidStyles: Rule.RuleModule = {
         all,
       ),
     }
-    const getOverrideErrorRule = (reason: string, propertyKey: string) =>
-      shorthandExpansionMap[propertyKey] != null &&
-      shouldEnableLegacyConditionalShorthandFixer(propertyKey)
-        ? showErrorWithFix(reason, propertyKey)
-        : showError(reason)
 
+    // eslint-disable-next-line guard-for-in
     for (const overrideKey in overrides) {
+      // @ts-expect-error FIXME: please
       const { limit, reason } = overrides[overrideKey]
 
       if (limit === null) {
@@ -457,7 +451,7 @@ const stylexValidStyles: Rule.RuleModule = {
 
     function isStyleDeclaration(node: Readonly<Node>) {
       return (
-        node?.type === 'CallExpression' &&
+        node.type === 'CallExpression' &&
         isApplyCallee(node.callee) &&
         node.arguments.length > 0
       )
@@ -551,7 +545,8 @@ const stylexValidStyles: Rule.RuleModule = {
 
         return {
           node: valueNode,
-          loc: valueNode.loc,
+
+          loc: valueNode.loc!,
           message: `The value "${valueNode.value}" is not a standard CSS value for "${propertyKey}". Did you mean "${replacement}"?`,
           fix: (fixer) => fixer.replaceText(valueNode, `'${replacement}'`),
           suggest: [
@@ -574,11 +569,13 @@ const stylexValidStyles: Rule.RuleModule = {
         valueNode.type === 'Literal' &&
         typeof valueNode.value === 'string' &&
         isWhiteSpaceOrEmpty(valueNode.value) &&
+        // @ts-expect-error FIXME: please
         styleKey.name !== 'content'
       ) {
         return {
           node: valueNode,
-          loc: valueNode.loc,
+
+          loc: valueNode.loc!,
           message:
             'The empty string is not allowed. Use `null` to reset a style.',
           suggest: [
@@ -590,6 +587,8 @@ const stylexValidStyles: Rule.RuleModule = {
           isSpecialCase: true,
         }
       }
+
+      return null
     }
 
     function checkStyleProperty(
@@ -643,7 +642,7 @@ const stylexValidStyles: Rule.RuleModule = {
                 : null
 
           if (isStylexResolvedVarsToken(key, stylexResolvedVarsTokenImports)) {
-            return undefined
+            return
           }
 
           if (
@@ -661,9 +660,7 @@ const stylexValidStyles: Rule.RuleModule = {
 
           if (keyName.startsWith('@') || keyName.startsWith(':')) {
             if (level === 0) {
-              const ruleCheck = (
-                allowOuterPseudoAndMedia ? allModifiers : pseudoElements
-              )(key, variables)
+              const ruleCheck = pseudoElements(key, variables)
 
               if (ruleCheck !== undefined) {
                 if (keyName.startsWith('::')) {
@@ -679,9 +676,8 @@ const stylexValidStyles: Rule.RuleModule = {
                 context.report({
                   node: style.value,
                   loc: style.value.loc,
-                  message: allowOuterPseudoAndMedia
-                    ? 'Nested styles can only be used for the pseudo selectors in the allowlist and for @media queries'
-                    : 'Pseudo Classes, Media Queries and other At Rules should be nested as conditions within style properties. Only Pseudo Elements (::after) are allowed at the top-level',
+                  message:
+                    'Pseudo Classes, Media Queries and other At Rules should be nested as conditions within style properties. Only Pseudo Elements (::after) are allowed at the top-level',
                 } as Readonly<Rule.ReportDescriptor>)
 
                 return
@@ -733,7 +729,7 @@ const stylexValidStyles: Rule.RuleModule = {
         if (
           isStylexResolvedVarsToken(styleKey, stylexResolvedVarsTokenImports)
         ) {
-          return undefined
+          return
         }
 
         let isStylexWhenCall = false
@@ -800,7 +796,10 @@ const stylexValidStyles: Rule.RuleModule = {
 
         const key =
           propName ??
-          (styleKey.type === 'Identifier' ? styleKey.name : styleKey.value)
+          (styleKey.type === 'Identifier'
+            ? styleKey.name
+            : // @ts-expect-error FIXME: please
+              styleKey.value)
 
         if (typeof key !== 'string') {
           context.report({
@@ -816,7 +815,6 @@ const stylexValidStyles: Rule.RuleModule = {
         if (CSSPropertyReplacements[key] != null) {
           const propCheck: RuleCheck = CSSPropertyReplacements[key]
 
-          const val: Property = style
           const check = propCheck(style.value, variables, style, context)
 
           if (check != null) {
@@ -824,18 +822,15 @@ const stylexValidStyles: Rule.RuleModule = {
             const { suggest } = check
             let { fix } = check
 
-            if (
-              !isLegacyExpandShorthands &&
-              LEGACY_CONDITIONAL_REPLACEMENT_FIXERS.has(key)
-            ) {
+            if (LEGACY_CONDITIONAL_REPLACEMENT_FIXERS.has(key)) {
               fix = undefined
             }
 
             const diagnostic: Rule.ReportDescriptor = {
               node: style,
-              loc: style.loc,
+              loc: style.loc!,
               message,
-              fix: fix == null ? undefined : fix,
+              fix: fix ?? undefined,
               suggest: suggest == null ? undefined : [suggest],
             }
 
@@ -933,10 +928,13 @@ const stylexValidStyles: Rule.RuleModule = {
           )
 
           if (check != null) {
-            if (check.isSpecialCase) {
+            if ('isSpecialCase' in check) {
               context.report({
+                // @ts-expect-error FIXME: please
                 node: check.node,
+                // @ts-expect-error FIXME: please
                 loc: check.loc,
+                // @ts-expect-error FIXME: please
                 message: check.message,
                 fix: check.fix,
                 suggest: check.suggest,
@@ -1013,7 +1011,7 @@ const stylexValidStyles: Rule.RuleModule = {
               node: style.value,
               loc: style.value.loc,
               message: finalMessage,
-              fix: fix == null ? undefined : fix,
+              fix: fix ?? undefined,
               suggest: suggest == null ? undefined : [suggest],
             } as Rule.ReportDescriptor)
           }
@@ -1067,15 +1065,16 @@ const stylexValidStyles: Rule.RuleModule = {
           [[] as VariableDeclarator[], [] as VariableDeclarator[]],
         )
 
-        requires.forEach((decl: VariableDeclarator) => {
+        for (const decl of requires) {
           // detect requires of "stylex" and "@stylexjs/stylex"
           if (
             decl.init?.type === 'CallExpression' &&
             decl.init.callee.type === 'Identifier' &&
             decl.init.callee.name === 'require' &&
             decl.init.arguments.length === 1 &&
-            decl.init.arguments[0].type === 'Literal' &&
-            validImports.has(decl.init.arguments[0].value)
+            decl.init.arguments[0]!.type === 'Literal' &&
+            // @ts-expect-error FIXME: please
+            validImports.has(decl.init.arguments[0]!.value)
           ) {
             if (decl.id.type === 'Identifier') {
               styleXDefaultImports.add(decl.id.name)
@@ -1095,22 +1094,21 @@ const stylexValidStyles: Rule.RuleModule = {
               }
             }
           }
-        })
+        }
 
-        others
-          .filter((decl) => decl.id.type === 'Identifier')
-          .forEach((decl: VariableDeclarator) => {
-            const id: ?Identifier =
-              decl.id.type === 'Identifier' ? decl.id : null
-            const { init } = decl
+        for (const decl of others.filter(
+          (decl) => decl.id.type === 'Identifier',
+        )) {
+          const id: Identifier | null =
+            decl.id.type === 'Identifier' ? decl.id : null
+          const { init } = decl
 
-            if (id != null && init != null) {
-              variables.set(id.name, init)
-            }
-          })
+          if (id != null && init != null) {
+            variables.set(id.name, init)
+          }
+        }
       },
 
-      // eslint-disable-next-line complexity
       ImportDeclaration(node: ImportDeclaration) {
         if (
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1152,6 +1150,7 @@ const stylexValidStyles: Rule.RuleModule = {
           for (const specifier of node.specifiers) {
             if (
               specifier.type === 'ImportSpecifier' &&
+              // @ts-expect-error FIXME: please
               specifier.imported.name === 'apply'
             ) {
               styleXCreateImports.add(specifier.local.name)
@@ -1171,6 +1170,7 @@ const stylexValidStyles: Rule.RuleModule = {
 
               if (
                 specifier.type === 'ImportSpecifier' &&
+                // @ts-expect-error FIXME: please
                 specifier.imported.name === 'keyframes'
               ) {
                 styleXKeyframesImports.add(specifier.local.name)
@@ -1178,6 +1178,7 @@ const stylexValidStyles: Rule.RuleModule = {
 
               if (
                 specifier.type === 'ImportSpecifier' &&
+                // @ts-expect-error FIXME: please
                 specifier.imported.name === 'positionTry'
               ) {
                 styleXPositionTryImports.add(specifier.local.name)
@@ -1185,6 +1186,7 @@ const stylexValidStyles: Rule.RuleModule = {
 
               if (
                 specifier.type === 'ImportSpecifier' &&
+                // @ts-expect-error FIXME: please
                 specifier.imported.name === 'when'
               ) {
                 styleXWhenImports.add(specifier.local.name)
@@ -1196,6 +1198,7 @@ const stylexValidStyles: Rule.RuleModule = {
             for (const specifier of node.specifiers) {
               if (
                 specifier.type === 'ImportSpecifier' &&
+                // @ts-expect-error FIXME: please
                 specifier.imported.name === foundStylexImportSource.as
               ) {
                 styleXDefaultImports.add(specifier.local.name)
@@ -1215,10 +1218,10 @@ const stylexValidStyles: Rule.RuleModule = {
       // Track same-file token declarations in .stylex files.
       // This handles the case where defineVars/defineVarsNested/defineConstsNested
       // is defined and consumed via stylex.create in the same .stylex file.
-      ExportNamedDeclaration(node: any): void {
+      ExportNamedDeclaration(node): void {
         if (isStylexFile && node.declaration?.type === 'VariableDeclaration') {
           for (const decl of node.declaration.declarations) {
-            if (decl.id?.type === 'Identifier') {
+            if (decl.id.type === 'Identifier') {
               stylexResolvedVarsTokenImports.add(decl.id.name)
             }
           }

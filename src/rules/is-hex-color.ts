@@ -1,8 +1,7 @@
 import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
 import type { Node } from 'estree'
-import type { RuleCheck } from '../stylex-valid-styles'
-import type { RuleResponse } from '../stylex-valid-styles'
-import type { Variables } from '../stylex-valid-styles'
+import type { RuleResponse } from '#/rules/types'
+import type { Variables } from '#/rules/types'
 
 const isHexColor = makeVariableCheckingRule(
   (node: Node, _vars?: Variables): RuleResponse =>
@@ -15,4 +14,4 @@ const isHexColor = makeVariableCheckingRule(
       : { message: 'a valid hex color (#FFAADD or #FFAADDFF)' },
 )
 
-export default isHexColor as RuleCheck
+export default isHexColor

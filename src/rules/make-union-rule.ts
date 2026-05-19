@@ -13,12 +13,13 @@ import type { Variables } from '#/rules/types'
 export default function makeUnionRule(
   ...rules: readonly (number | string | RuleCheck)[]
 ): RuleCheck {
-  return (
+  // eslint-disable-next-line max-params
+  return function (
     node: Expression | Pattern,
     variables?: Variables,
     prop?: Property,
     context?: Rule.RuleContext,
-  ): RuleResponse => {
+  ): RuleResponse {
     const failedRules = []
 
     // eslint-disable-next-line no-underscore-dangle

@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 /* eslint-disable no-undefined */
 /* eslint-disable unicorn/prefer-string-slice */
 /* eslint-disable require-unicode-regexp */

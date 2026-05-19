@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 /* eslint-disable no-multi-assign */
 /* eslint-disable unicorn/prefer-single-call */
 /* eslint-disable init-declarations */
@@ -22,7 +23,7 @@ function getDistanceMin(
 }
 
 /*
- * This a fork of Gustaf Andersson's levenshtein implementation
+ * This a fork of Gustaf Andersson's levenshtein implementation // cspell:disable-line
  * https://github.com/gustf/js-levenshtein
  *
  * Includes a naive bailout using max distance for stopping early
@@ -107,9 +108,13 @@ export default function getDistance(
     for (y = 0; y < len; y += 2) {
       dy = vector[y]
       ay = vector[y + 1]
+      // @ts-expect-error FIXME: please
       d0 = getDistanceMin(dy, d0, d1, bx0, ay)
+      // @ts-expect-error FIXME: please
       d1 = getDistanceMin(d0, d1, d2, bx1, ay)
+      // @ts-expect-error FIXME: please
       d2 = getDistanceMin(d1, d2, d3, bx2, ay)
+      // @ts-expect-error FIXME: please
       dd = getDistanceMin(d2, d3, dd, bx3, ay)
       vector[y] = dd
       d3 = d2
@@ -129,6 +134,7 @@ export default function getDistance(
 
     for (y = 0; y < len; y += 2) {
       dy = vector[y]
+      // @ts-expect-error FIXME: please
       vector[y] = dd = getDistanceMin(dy, d0, dd, bx0, vector[y + 1])
 
       if (dd > max) {

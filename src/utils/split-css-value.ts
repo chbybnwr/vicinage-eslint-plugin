@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable require-unicode-regexp */
