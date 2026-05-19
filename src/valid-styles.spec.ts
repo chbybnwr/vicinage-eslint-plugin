@@ -3948,26 +3948,21 @@ ruleTester.run('valid-styles [autofixers]', rule, {
         },
       ],
     },
-    // {
-    //   code: /* js */ `
-    //     import * as stylex from '@stylexjs/stylex';
-    //     const styles = stylex.create({
-    //       default: {
-    //         font: 'bold 16px/1.5 Arial',
-    //       }
-    //     });
-    //   `,
-    //   errors: [
-    //     {
-    //       message: /^font value must be one of:\n`font` is not recommended/,
-    //       suggestions: [
-    //         {
-    //           desc: 'bruh',
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // },
+    {
+      code: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            font: 'bold 16px/1.5 Arial',
+          }
+        });
+      `,
+      errors: [
+        {
+          message: /^font value must be one of:\n`font` is not recommended/u,
+        },
+      ],
+    },
     {
       code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
