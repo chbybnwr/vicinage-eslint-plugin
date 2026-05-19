@@ -16,7 +16,7 @@ const ruleTester = new RuleTester({
 ruleTester.run('valid-styles', rule, {
   valid: [
     // test for local static variables
-    `
+    /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const start = 'start';
       const styles = stylex.create({
@@ -30,7 +30,7 @@ ruleTester.run('valid-styles', rule, {
         }
       });
     `,
-    `
+    /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         validStyle: {
@@ -45,7 +45,7 @@ ruleTester.run('valid-styles', rule, {
         },
       });
     `,
-    `
+    /* js */ `
       const stylex = require('@stylexjs/stylex');
 
       const styles = stylex.create({
@@ -61,7 +61,7 @@ ruleTester.run('valid-styles', rule, {
         },
       });
     `,
-    `
+    /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const start = 'start';
       const grayscale = 'grayscale';
@@ -76,7 +76,7 @@ ruleTester.run('valid-styles', rule, {
         }
       });
     `,
-    `
+    /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const bounce = stylex.keyframes({
         '0%': {
@@ -97,7 +97,7 @@ ruleTester.run('valid-styles', rule, {
         }
       });
     `,
-    `
+    /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         default: {
@@ -117,7 +117,7 @@ ruleTester.run('valid-styles', rule, {
         }
       });
     `,
-    `
+    /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const bounce = stylex.keyframes({
         '0%': {
@@ -350,14 +350,14 @@ ruleTester.run('valid-styles', rule, {
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {padding: '0'}});",
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'start'}});",
     // test for presets
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          textAlign: 'start',
        }
      });`,
     // test for Math
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          marginInlineStart: Math.abs(-1),
@@ -367,7 +367,7 @@ ruleTester.run('valid-styles', rule, {
        },
      })`,
     // test for locally declared constants
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
     const FOO = 5;
      stylex.create({
        default: {
@@ -375,7 +375,7 @@ ruleTester.run('valid-styles', rule, {
          scrollMarginBottom: FOO * 5,
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      const x = 5;
      stylex.create({
        default: {
@@ -386,14 +386,14 @@ ruleTester.run('valid-styles', rule, {
        },
      })`,
     // test for WebkitAppearance with 'none'
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'WebkitAppearance': 'none',
        },
      })`,
     // test for Search
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'WebkitAppearance': 'textfield',
@@ -412,7 +412,7 @@ ruleTester.run('valid-styles', rule, {
        },
      })`,
     // test for input ranges
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'WebkitAppearance': 'textfield',
@@ -434,86 +434,86 @@ ruleTester.run('valid-styles', rule, {
        },
      })`,
     // test for color
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'color': 'red',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'color': '#fff',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'color': '#fafbfc',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'color': '#fafbfcfc',
        },
      })`,
     // test for relative width
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30rem',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30em',
        },
       })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30ch',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30ex',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30vh',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30vw',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'contain': '300px',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicSize': '300px',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicSize': 'auto 300px',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        a: {
          interpolateSize: 'numeric-only',
@@ -522,28 +522,28 @@ ruleTester.run('valid-styles', rule, {
          interpolateSize: 'allow-keywords',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicInlineSize': '300px',
          'containIntrinsicBlockSize': '200px',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicInlineSize': 'auto 300px',
          'containIntrinsicBlockSize': 'auto 200px',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicWidth': '300px',
          'containIntrinsicHeight': '200px',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicWidth': 'auto 300px',
@@ -552,62 +552,62 @@ ruleTester.run('valid-styles', rule, {
      })`,
 
     // test for absolute width
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30px',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30cm',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30mm',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30in',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30pc',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30pt',
        },
      })`,
     // test for percentage
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '50%',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          fontWeight: 'var(--weight)',
        },
      })`,
-    `import * as stylex from '@stylexjs/stylex';
+    /* js */ `import * as stylex from '@stylexjs/stylex';
      stylex.create({
       default: {
         fontWeight: 'var(--🔴)',
       },
     })`,
-    `
+    /* js */ `
     import * as stylex from '@stylexjs/stylex';
     const red = 'var(--🔴)';
     stylex.create({
@@ -616,7 +616,7 @@ ruleTester.run('valid-styles', rule, {
       },
     })`,
     // test for field-sizing
-    `
+    /* js */ `
     import * as stylex from '@stylexjs/stylex';
     const red = 'var(--🔴)';
     stylex.create({
@@ -624,7 +624,7 @@ ruleTester.run('valid-styles', rule, {
         fieldSizing: 'fixed',
       },
     })`,
-    `
+    /* js */ `
     import * as stylex from '@stylexjs/stylex';
     const red = 'var(--🔴)';
     stylex.create({
@@ -633,7 +633,7 @@ ruleTester.run('valid-styles', rule, {
       },
     })`,
     // test for stylex create vars tokens
-    `
+    /* js */ `
     import * as stylex from '@stylexjs/stylex';
     import {TextTypeTokens as TextType, ColorTokens} from 'DspSharedTextTokens.stylex';
     stylex.create({
@@ -646,7 +646,7 @@ ruleTester.run('valid-styles', rule, {
     })
     `,
     // test using vars as keys
-    `
+    /* js */ `
     import * as stylex from '@stylexjs/stylex';
     import { componentVars } from './bug.stylex';
     stylex.create({
@@ -656,7 +656,7 @@ ruleTester.run('valid-styles', rule, {
     })
     `,
     // test using vars as keys in dynamic styles
-    `
+    /* js */ `
     import * as stylex from'stylex';
     import { tokens } from 'tokens.stylex';
     stylex.create({
@@ -666,7 +666,7 @@ ruleTester.run('valid-styles', rule, {
     })
     `,
     // test using member expressions on function params in dynamic styles
-    `
+    /* js */ `
     import * as stylex from 'stylex';
     stylex.create({
       badge: (props) => ({
@@ -676,7 +676,7 @@ ruleTester.run('valid-styles', rule, {
     })
     `,
     // test member expressions on function params with pseudo-classes
-    `
+    /* js */ `
     import * as stylex from 'stylex';
     stylex.create({
       root: (props) => ({
@@ -688,7 +688,7 @@ ruleTester.run('valid-styles', rule, {
     })
     `,
     // test importing vars from paths including theme file extension
-    `
+    /* js */ `
     import * as stylex from '@stylexjs/stylex';
     import { vars } from './vars.stylex';
     import { varsJs } from './vars.stylex.js';
@@ -710,7 +710,7 @@ ruleTester.run('valid-styles', rule, {
     })
     `,
     // test importing consts from paths including consts file extension
-    `
+    /* js */ `
         import * as stylex from '@stylexjs/stylex';
         import { consts } from './vars.stylex.const.js';
         import { constsJs } from './consts.stylex.const.js';
@@ -747,7 +747,7 @@ ruleTester.run('valid-styles', rule, {
       options: [{ themeFileExtension: '.css' }],
     },
     // test for positionTryFallbacks with 'none'
-    `
+    /* js */ `
     import * as stylex from '@stylexjs/stylex';
     stylex.create({
       default: {
@@ -756,7 +756,7 @@ ruleTester.run('valid-styles', rule, {
     });
     `,
     // test for positionTryFallbacks with `positionTry` references
-    `
+    /* js */ `
     import * as stylex from '@stylexjs/stylex';
     const fallback = stylex.positionTry({
       positionAnchor: '--anchor',
@@ -772,7 +772,7 @@ ruleTester.run('valid-styles', rule, {
     });
     `,
     // test for positionTryFallbacks with a template literal containing multiple `positionTry` references
-    `
+    /* js */ `
     import * as stylex from '@stylexjs/stylex';
     const fallback1 = stylex.positionTry({
       positionAnchor: '--anchor',
@@ -897,7 +897,7 @@ ruleTester.run('valid-styles', rule, {
       `,
     },
     // bare numbers for px-related properties
-    `
+    /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         default: {
@@ -2155,7 +2155,7 @@ const styles = stylex.create({
 
 ruleTester.run('valid-styles [restrictions]', rule, {
   valid: [
-    `
+    /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         default: {
