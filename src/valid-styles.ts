@@ -622,16 +622,6 @@ const stylexValidStyles: Rule.RuleModule = {
 
           const { key } = style
 
-          if (key.type === 'PrivateIdentifier') {
-            context.report({
-              node: key,
-              loc: key.loc,
-              message: 'Private properties are not allowed in stylex',
-            } as Rule.ReportDescriptor)
-
-            return
-          }
-
           const keyName =
             key.type === 'Literal'
               ? key.value
@@ -715,16 +705,6 @@ const stylexValidStyles: Rule.RuleModule = {
         }
 
         let styleKey: Expression | PrivateIdentifier = style.key
-
-        if (styleKey.type === 'PrivateIdentifier') {
-          context.report({
-            node: styleKey,
-            loc: styleKey.loc,
-            message: 'Private properties are not allowed in stylex',
-          } as Rule.ReportDescriptor)
-
-          return
-        }
 
         if (
           isStylexResolvedVarsToken(styleKey, stylexResolvedVarsTokenImports)
