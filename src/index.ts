@@ -4,7 +4,6 @@ const { name, version } = pkg
 
 const rules = {
   'no-conflicting-props': noConflictingProps,
-  // 'no-lookahead-selectors': noLookaheadSelectors,
   // 'no-nonstandard-styles': noNonStandardStyles,
   'sort-keys': sortKeys,
   'valid-shorthands': validShorthands,
@@ -34,10 +33,8 @@ const plugin = {
 } satisfies Plugin
 
 import noConflictingProps from './no-conflicting-props'
-// import validStyles from './valid-styles'
 import pkg from '../package.json'
 import type { Plugin } from '@eslint/config-helpers'
-// import noLookaheadSelectors from './no-lookahead-selectors'
 // import noNonStandardStyles from './no-nonstandard-styles'
 import sortKeys from './sort-keys'
 import validShorthands from './valid-shorthands'
