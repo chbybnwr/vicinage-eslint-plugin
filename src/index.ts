@@ -25,6 +25,7 @@ const plugin = {
       },
       rules: {
         'vicinage/no-conflicting-props': 'error',
+        'vicinage/valid-styles': 'error',
         'vicinage/valid-shorthands': 'error',
         'vicinage/sort-keys': 'warn',
       },
