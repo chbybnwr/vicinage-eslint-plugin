@@ -15,7 +15,7 @@ import type { Identifier } from 'estree'
 import type { ImportDeclaration } from 'estree'
 import isAnimationName from './rules/is-animation-name'
 import isCSSVariable from './rules/is-css-variable'
-import isNumber from './rules/is-number'
+import { isNumber } from './rules/is-number'
 import isPositionTryFallbacks from './rules/is-position-try-fallbacks'
 import isString from './rules/is-string'
 import isStylexResolvedVarsToken from './rules/is-stylex-resolved-vars-token'
@@ -187,7 +187,7 @@ const stylexValidStyles: Rule.RuleModule = {
       {
         type: 'object',
         properties: {
-          validImports: {
+          validStylexImports: {
             type: 'array',
             items: {
               oneOf: [
@@ -206,22 +206,6 @@ const stylexValidStyles: Rule.RuleModule = {
           allowRawCSSVars: {
             type: 'boolean',
             default: true,
-          },
-          allowOuterPseudoAndMedia: {
-            type: 'boolean',
-            default: false,
-          },
-          banPropsForLegacy: {
-            type: 'boolean',
-            default: false,
-          },
-          styleResolution: {
-            type: 'string',
-            enum: [
-              'application-order',
-              'property-specificity',
-              'legacy-expand-shorthands',
-            ],
           },
           propLimits: {
             type: 'object',
@@ -271,7 +255,7 @@ const stylexValidStyles: Rule.RuleModule = {
     >
 
     interface Schema {
-      validImports: (
+      validStylexImports: (
         | string
         | {
             from: string
@@ -279,12 +263,6 @@ const stylexValidStyles: Rule.RuleModule = {
           }
       )[]
       allowRawCSSVars: boolean
-      allowOuterPseudoAndMedia: boolean
-      banPropsForLegacy: boolean
-      styleResolution?:
-        | 'application-order'
-        | 'property-specificity'
-        | 'legacy-expand-shorthands'
       propLimits?: PropLimits
     }
 
@@ -307,16 +285,15 @@ const stylexValidStyles: Rule.RuleModule = {
     }
 
     const {
-      validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
+      validStylexImports = ['stylex', '@stylexjs/stylex'],
       allowRawCSSVars = true,
-      allowOuterPseudoAndMedia,
-      banPropsForLegacy = false,
-      styleResolution,
       propLimits = {},
     }: Schema = context.options[0] || {}
 
-    const isLegacyExpandShorthands =
-      styleResolution === 'legacy-expand-shorthands' || banPropsForLegacy
+    const validImports = new Set(['vicinage'])
+
+    const allowOuterPseudoAndMedia = false
+    const isLegacyExpandShorthands = false
 
     const shouldEnableLegacyConditionalShorthandFixer = (
       propertyKey: string,
@@ -467,22 +444,22 @@ const stylexValidStyles: Rule.RuleModule = {
       }
     }
 
-    function isStylexCallee(node: Node) {
+    function isApplyCallee(node: Node) {
       return (
         (node.type === 'MemberExpression' &&
           node.object.type === 'Identifier' &&
           styleXDefaultImports.has(node.object.name) &&
           node.property.type === 'Identifier' &&
-          node.property.name === 'create') ||
+          node.property.name === 'apply') ||
         (node.type === 'Identifier' && styleXCreateImports.has(node.name))
       )
     }
 
-    function isStylexDeclaration(node: Readonly<Node>) {
+    function isStyleDeclaration(node: Readonly<Node>) {
       return (
         node?.type === 'CallExpression' &&
-        isStylexCallee(node.callee) &&
-        node.arguments.length === 1
+        isApplyCallee(node.callee) &&
+        node.arguments.length > 0
       )
     }
 
@@ -599,7 +576,7 @@ const stylexValidStyles: Rule.RuleModule = {
           node: valueNode,
           loc: valueNode.loc,
           message:
-            'The empty string is not allowed by Stylex. Use `null` to reset a style.',
+            'The empty string is not allowed. Use `null` to reset a style.',
           suggest: [
             {
               desc: 'Replace empty string with `null`?',
@@ -699,7 +676,7 @@ const stylexValidStyles: Rule.RuleModule = {
                   node: style.value,
                   loc: style.value.loc,
                   message: allowOuterPseudoAndMedia
-                    ? 'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries'
+                    ? 'Nested styles can only be used for the pseudo selectors in the allowlist and for @media queries'
                     : 'Pseudo Classes, Media Queries and other At Rules should be nested as conditions within style properties. Only Pseudo Elements (::after) are allowed at the top-level',
                 } as Readonly<Rule.ReportDescriptor>)
 
@@ -880,7 +857,7 @@ const stylexValidStyles: Rule.RuleModule = {
           context.report({
             node: style.key,
             loc: style.key.loc,
-            message: 'This is not a key that is allowed by stylex',
+            message: 'This is not a key that is allowed',
             suggest:
               closestKey == null
                 ? undefined
@@ -1094,7 +1071,7 @@ const stylexValidStyles: Rule.RuleModule = {
             decl.init.callee.name === 'require' &&
             decl.init.arguments.length === 1 &&
             decl.init.arguments[0].type === 'Literal' &&
-            importsToLookFor.includes(decl.init.arguments[0].value)
+            validImports.has(decl.init.arguments[0].value)
           ) {
             if (decl.id.type === 'Identifier') {
               styleXDefaultImports.add(decl.id.name)
@@ -1105,7 +1082,7 @@ const stylexValidStyles: Rule.RuleModule = {
                 if (
                   prop.type === 'Property' &&
                   prop.key.type === 'Identifier' &&
-                  prop.key.name === 'create' &&
+                  prop.key.name === 'apply' &&
                   !prop.computed &&
                   prop.value.type === 'Identifier'
                 ) {
@@ -1128,8 +1105,11 @@ const stylexValidStyles: Rule.RuleModule = {
             }
           })
       },
+
+      // eslint-disable-next-line complexity
       ImportDeclaration(node: ImportDeclaration) {
         if (
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           node.source.type !== 'Literal' ||
           typeof node.source.value !== 'string'
         ) {
@@ -1138,40 +1118,51 @@ const stylexValidStyles: Rule.RuleModule = {
 
         const sourceValue = node.source.value
 
-        const foundImportSource = importsToLookFor.find((importSource) => {
-          if (typeof importSource === 'string') {
-            return importSource === sourceValue
-          }
+        const foundVicinageImportSource = validImports.has(sourceValue)
 
-          return importSource.from === sourceValue
-        })
+        const foundStylexImportSource = validStylexImports.find(
+          (importSource) => {
+            if (typeof importSource === 'string') {
+              return importSource === sourceValue
+            }
 
-        const isStylexImport = foundImportSource !== undefined
+            return importSource.from === sourceValue
+          },
+        )
+
+        const isVicinageImport = foundVicinageImportSource
+        const isStylexImport = foundStylexImportSource !== undefined
         const isStylexResolvedVarsImport =
           isValidStylexResolvedVarsFileExtension(
             sourceValue,
             themeFileExtension,
           )
 
-        if (!(isStylexImport || isStylexResolvedVarsImport)) {
+        if (
+          !(isVicinageImport || isStylexImport || isStylexResolvedVarsImport)
+        ) {
           return
         }
 
+        if (isVicinageImport) {
+          for (const specifier of node.specifiers) {
+            if (
+              specifier.type === 'ImportSpecifier' &&
+              specifier.imported.name === 'apply'
+            ) {
+              styleXCreateImports.add(specifier.local.name)
+            }
+          }
+        }
+
         if (isStylexImport) {
-          if (typeof foundImportSource === 'string') {
+          if (typeof foundStylexImportSource === 'string') {
             for (const specifier of node.specifiers) {
               if (
                 specifier.type === 'ImportDefaultSpecifier' ||
                 specifier.type === 'ImportNamespaceSpecifier'
               ) {
                 styleXDefaultImports.add(specifier.local.name)
-              }
-
-              if (
-                specifier.type === 'ImportSpecifier' &&
-                specifier.imported.name === 'create'
-              ) {
-                styleXCreateImports.add(specifier.local.name)
               }
 
               if (
@@ -1197,11 +1188,11 @@ const stylexValidStyles: Rule.RuleModule = {
             }
           }
 
-          if (typeof foundImportSource === 'object') {
+          if (typeof foundStylexImportSource === 'object') {
             for (const specifier of node.specifiers) {
               if (
                 specifier.type === 'ImportSpecifier' &&
-                specifier.imported.name === foundImportSource.as
+                specifier.imported.name === foundStylexImportSource.as
               ) {
                 styleXDefaultImports.add(specifier.local.name)
               }
@@ -1230,82 +1221,82 @@ const stylexValidStyles: Rule.RuleModule = {
         }
       },
       CallExpression(node: CallExpression & Rule.NodeParentExtension) {
-        if (!isStylexDeclaration(node)) {
+        if (!isStyleDeclaration(node)) {
           return
         }
 
-        const namespaces = node.arguments[0]
-
-        // const loc: ?AST['SourceLocation'] = namespaces.loc;
-        if (namespaces.type !== 'ObjectExpression') {
-          context.report({
-            node: namespaces,
-            loc: namespaces.loc,
-            message: 'Styles must be represented as JavaScript objects',
-          } as Rule.ReportDescriptor)
-
-          return
-        }
-
-        for (const namespace of namespaces.properties) {
-          if (namespace.type !== 'Property') {
-            context.report({
-              node: namespace,
-              loc: namespace.loc,
-              message: 'Styles cannot be spread objects',
-            })
+        for (const arg of node.arguments) {
+          // const loc: ?AST['SourceLocation'] = namespaces.loc;
+          if (arg.type !== 'ObjectExpression') {
             continue
           }
 
-          let styles = namespace.value
-
-          if (styles.type !== 'ObjectExpression') {
-            if (
-              styles.type === 'ArrowFunctionExpression' &&
-              (styles.body.type === 'ObjectExpression' ||
-                // $FlowFixMe[invalid-compare]
-                (styles.body.type === 'TSAsExpression' &&
-                  // $FlowFixMe[invalid-compare]
-                  styles.body.expression.type === 'ObjectExpression'))
-            ) {
-              const { params } = styles
-              styles = styles.body
-
-              // $FlowFixMe[invalid-compare]
-              if (styles.type === 'TSAsExpression') {
-                styles = styles.expression
-              }
-
-              if (params.some((param) => param.type !== 'Identifier')) {
-                for (const param of params.filter(
-                  (param) => param.type !== 'Identifier',
-                )) {
-                  context.report({
-                    node: param,
-                    loc: param.loc,
-                    message:
-                      'Dynamic Styles can only accept named parameters. Destructuring, spreading or default parameters are not allowed.',
-                  })
-                }
-
-                continue
-              }
-
-              for (const param of params) {
-                if (param.type === 'Identifier') {
-                  dynamicStyleVariables.add(param.name)
-                }
-              }
-            } else {
-              // This case should be already handled by type checking.
-              continue
-            }
+          for (const prop of arg.properties) {
+            checkStyleProperty(prop, 0, null, false)
           }
 
-          for (const prop of styles.properties)
-            checkStyleProperty(prop, 0, null, false)
-          // Reset local variables.
-          dynamicStyleVariables.clear()
+          // for (const namespace of namespaces.properties) {
+          //   if (namespace.type !== 'Property') {
+          //     context.report({
+          //       node: namespace,
+          //       loc: namespace.loc,
+          //       message: 'Styles cannot be spread objects',
+          //     })
+          //     continue
+          //   }
+
+          //   let styles = namespace.value
+
+          //   if (styles.type !== 'ObjectExpression') {
+          //     if (
+          //       styles.type === 'ArrowFunctionExpression' &&
+          //       (styles.body.type === 'ObjectExpression' ||
+          //         // $FlowFixMe[invalid-compare]
+          //         (styles.body.type === 'TSAsExpression' &&
+          //           // $FlowFixMe[invalid-compare]
+          //           styles.body.expression.type === 'ObjectExpression'))
+          //     ) {
+          //       const { params } = styles
+          //       styles = styles.body
+
+          //       // $FlowFixMe[invalid-compare]
+          //       if (styles.type === 'TSAsExpression') {
+          //         styles = styles.expression
+          //       }
+
+          //       if (params.some((param) => param.type !== 'Identifier')) {
+          //         for (const param of params.filter(
+          //           (param) => param.type !== 'Identifier',
+          //         )) {
+          //           context.report({
+          //             node: param,
+          //             loc: param.loc,
+          //             message:
+          //               'Dynamic Styles can only accept named parameters. Destructuring, spreading or default parameters are not allowed.',
+          //           })
+          //         }
+
+          //         continue
+          //       }
+
+          //       for (const param of params) {
+          //         if (param.type === 'Identifier') {
+          //           dynamicStyleVariables.add(param.name)
+          //         }
+          //       }
+          //     } else {
+          //       // This case should be already handled by type checking.
+          //       continue
+          //     }
+          //   }
+
+          //   for (const prop of styles.properties) {
+          //     checkStyleProperty(prop, 0, null, false)
+          //   }
+
+          //   // Reset local variables.
+          //   dynamicStyleVariables.clear()
+          // }
         }
       },
       'Program:exit'() {

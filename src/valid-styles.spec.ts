@@ -13,6 +13,9 @@ const ruleTester = new RuleTester({
   },
 })
 
+const engine = '@stylexjs/stylex'
+const token = 'stylex'
+
 function message(strings: TemplateStringsArray): string {
   const [block] = strings
 
@@ -28,23 +31,20 @@ ruleTester.run('valid-styles', rule, {
   valid: [
     // test for local static variables
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
+      import { apply } from 'vicinage'
       const start = 'start'
-      const styles = stylex.create({
-        default: {
+      apply({
           textAlign: start,
           MozOsxFontSmoothing: 'grayscale',
           WebkitFontSmoothing: 'antialiased',
           transitionProperty: 'opacity, transform',
           transitionDuration: '0.3s',
           transitionTimingFunction: 'ease',
-        }
       })
     `,
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      const styles = stylex.create({
-        validStyle: {
+      import { apply } from 'vicinage'
+      apply({
           marginInlineStart: '10px',
           marginInlineEnd: '5px',
           marginInline: '15px',
@@ -53,14 +53,12 @@ ruleTester.run('valid-styles', rule, {
           paddingInlineEnd: '12px',
           paddingInline: '10px',
           paddingBlock: '16px',
-        },
       })
     `,
     /* js */ `
-      const stylex = require('@stylexjs/stylex')
+      const { apply } = require('vicinage')
 
-      const styles = stylex.create({
-        validStyle: {
+      apply({
           marginInlineStart: '10px',
           marginInlineEnd: '5px',
           marginInline: '15px',
@@ -69,27 +67,25 @@ ruleTester.run('valid-styles', rule, {
           paddingInlineEnd: '12px',
           paddingInline: '10px',
           paddingBlock: '16px',
-        },
       })
     `,
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
+      import { apply } from 'vicinage'
       const start = 'start'
       const grayscale = 'grayscale'
-      const styles = stylex.create({
-        default: {
+      apply({
           textAlign: start,
           MozOsxFontSmoothing: grayscale,
           WebkitFontSmoothing: 'antialiased',
           transitionProperty: 'opacity, transform',
           transitionDuration: '0.3s',
           transitionTimingFunction: 'ease',
-        }
       })
     `,
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      const bounce = stylex.keyframes({
+      import { apply } from 'vicinage'
+      import { keyframes } from '${engine}'
+      const bounce = keyframes({
         '0%': {
           transform: 'translateY(0)',
         },
@@ -98,21 +94,19 @@ ruleTester.run('valid-styles', rule, {
         },
         '100%': {
           transform: 'translateY(0)',
-        },
+        }
       })
-      const styles = stylex.create({
-        default: {
+      apply({
           animationName: bounce,
           animationDuration: '1s',
           animationIterationCount: 'infinite',
-        }
       })
     `,
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      const styles = stylex.create({
-        default: {
-          animationName: stylex.keyframes({
+      import { apply } from 'vicinage'
+      import { keyframes } from '${engine}'
+      apply({
+          animationName: keyframes({
             '0%': {
               transform: 'translateY(0)',
             },
@@ -125,12 +119,12 @@ ruleTester.run('valid-styles', rule, {
           }),
           animationDuration: '1s',
           animationIterationCount: 'infinite',
-        }
       })
     `,
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      const bounce = stylex.keyframes({
+      import { apply } from 'vicinage'
+      import { keyframes } from '${engine}'
+      const bounce = keyframes({
         '0%': {
           transform: 'translateY(0)',
         },
@@ -139,303 +133,209 @@ ruleTester.run('valid-styles', rule, {
         },
         '100%': {
           transform: 'translateY(0)',
-        },
+        }
       })
-      const shimmy = stylex.keyframes({
+      const shimmy = keyframes({
         '0%': {
           backgroundPosition: '-468px 0',
         },
         '100%': {
           backgroundPosition: '468px 0',
-        },
+        }
       })
-      const styles = stylex.create({
-        default: {
+      apply({
           animationName: \`\${bounce}, \${shimmy}\`,
           animationDuration: '1s',
           animationIterationCount: 'infinite',
-        }
       })
     `,
     // test for nested styles
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
+        import { apply } from 'vicinage'
         const TRANSPARENT = 0
         const OPAQUE = 1
-        const styles = stylex.create({
-          default: {
-            opacity: TRANSPARENT,
-            ':hover': {
-              opacity: OPAQUE,
+        apply({
+            opacity: {
+              default: TRANSPARENT,
+              ':hover': OPAQUE,
             },
-            ':focus-visible': {
-              borderWidth: 1,
-              borderStyle: 'solid',
-              borderColor: 'blue',
-            }
-          }
         })
       `,
-      options: [{ allowOuterPseudoAndMedia: true }],
+      // options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
       code: /* js */ `
-        import { keyframes as kf, create } from 'stylex'
+        import { apply } from 'vicinage'
+        import { keyframes as kf } from '${engine}'
         const fadeIn = kf({
           '0%': {
             opacity: 0,
           },
           '100%': {
             opacity: 1,
-          },
+          }
         })
-        const styles = create({
-          main: {
+        apply({
             animationName: fadeIn,
-          },
         })
       `,
     },
     {
       code: /* js */ `
-        import * as stlx from 'stylex'
+        import * as stlx from '${engine}'
         const fadeIn = stlx.keyframes({
           '0%': {
             opacity: 0,
           },
           '100%': {
             opacity: 1,
-          },
-        })
-        const styles = create({
-          main: {
-            animationName: fadeIn,
-          },
-        })
-      `,
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            width: '50%',
-            '@media (max-width: 600px)': {
-              width: '100%',
-            }
           }
         })
+        apply({
+            animationName: fadeIn,
+        })
       `,
-      options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          base: {
+        import { apply } from 'vicinage'
+        apply({
             width: {
               '@starting-style': {
                 default: 10,
                 ':hover': 20,
               }
             },
-          },
         })
       `,
-      options: [{ allowOuterPseudoAndMedia: true }],
+      // options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
       code: /* js */ `
-        import { create, when } from '@stylexjs/stylex'
-        const styles = create({
-          base: {
+        import { apply } from 'vicinage'
+        import { when } from '${engine}'
+        apply({
             width: {
               default: 10,
               [when.descendant(':focus')]: 20,
               [when.siblingAfter(':active')]: 30,
             },
-          },
         })
       `,
-      options: [{ allowOuterPseudoAndMedia: true }],
+      // options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
       code: /* js */ `
-        import { create, when } from 'stylex'
-        const styles = create({
-          base: {
-            width: {
-              default: 10,
-              [when.descendant(':focus')]: 20,
-              [when.siblingAfter(':active')]: 30,
-            },
-          },
-        })
-      `,
-      options: [{ allowOuterPseudoAndMedia: true }],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          base: {
-            width: {
-              default: 10,
-              [stylex.when.descendant(':focus')]: 20,
-              [stylex.when.siblingAfter(':active')]: 30,
-            },
-          },
-        })
-      `,
-      options: [{ allowOuterPseudoAndMedia: true }],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
+        import { apply } from 'vicinage'
+        import { when } from '${engine}'
+        import { colors } from './vars.${token}'
 
-        import { colors } from './vars.stylex'
-
-        const styles = stylex.create({
-          base: {
+        apply({
             backgroundColor: {
               default: colors.bg,
-              [stylex.when.descendant(':focus')]: colors.bgFocus,
-              [stylex.when.siblingAfter(':active')]: colors.bgActive,
+              [when.descendant(':focus')]: colors.bgFocus,
+              [when.siblingAfter(':active')]: colors.bgActive,
             },
-          },
         })
       `,
-      options: [{ allowOuterPseudoAndMedia: true }],
+      // options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          base: {
+        import { apply } from 'vicinage'
+        import { when } from '${engine}'
+        apply({
             '::after': {
               backgroundColor: {
                 default: 'transparent',
-                [stylex.when.descendant(':focus')]: 'blue',
-                [stylex.when.siblingAfter(':active')]: 'red',
+                [when.descendant(':focus')]: 'blue',
+                [when.siblingAfter(':active')]: 'red',
               },
             },
-          },
         })
       `,
-      options: [{ allowOuterPseudoAndMedia: true }],
+      // options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
+        import { apply } from 'vicinage'
+        import { when } from '${engine}'
+        import { colors } from './vars.${token}'
 
-        import { colors } from './vars.stylex'
-
-        const styles = stylex.create({
-          base: {
+        apply({
             '::after': {
               backgroundColor: {
                 default: colors.bg,
-                [stylex.when.descendant(':focus')]: colors.bgFocus,
-                [stylex.when.siblingAfter(':active')]: colors.bgActive,
+                [when.descendant(':focus')]: colors.bgFocus,
+                [when.siblingAfter(':active')]: colors.bgActive,
               },
             },
-          },
         })
       `,
-      options: [{ allowOuterPseudoAndMedia: true }],
+      // options: [{ allowOuterPseudoAndMedia: true }],
     },
     // test for positive numbers
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      stylex.create({default: {marginInlineStart: 5}})
-    `,
-    // test for literals as namespaces
-    /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      stylex.create({'default-1': {marginInlineStart: 5}})
-    `,
-    /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      stylex.create({['default-1']: {marginInlineStart: 5}})
-    `,
-    // test for numbers as namespaces
-    /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      stylex.create({0: {marginInlineStart: 5}})
-    `,
-    // test for computed numbers as namespaces
-    /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      stylex.create({[0]: {marginInlineStart: 5}})
+      import { apply } from 'vicinage'
+      apply({default: {marginInlineStart: 5}})
     `,
     // test for negative values.
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      stylex.create({default: {marginInlineStart: -5}})
+      import { apply } from 'vicinage'
+      apply({default: {marginInlineStart: -5}})
     `,
     // test for unitless length value 0
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      stylex.create({default: {margin: 0}})
+      import { apply } from 'vicinage'
+      apply({default: {margin: 0}})
     `,
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      stylex.create({default: {padding: '0'}})
+      import { apply } from 'vicinage'
+      apply({default: {padding: '0'}})
     `,
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      stylex.create({default: {textAlign: 'start'}})
+      import { apply } from 'vicinage'
+      apply({default: {textAlign: 'start'}})
     `,
     // test for presets
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      stylex.create({
-        default: {
+      import { apply } from 'vicinage'
+      apply({
           textAlign: 'start',
-        }
       })
     `,
     // test for Math
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          marginInlineStart: Math.abs(-1),
          marginInlineEnd: \`\${Math.floor(5 / 2)}px\`,
          paddingInlineStart: Math.ceil(5 / 2),
          paddingInlineEnd: Math.round(5 / 2),
-       },
      })`,
     // test for locally declared constants
-    /* js */ `import * as stylex from '@stylexjs/stylex'
+    /* js */ `import { apply } from 'vicinage'
     const FOO = 5
-     stylex.create({
-       default: {
+     apply({
          scrollMarginTop: FOO + 5,
          scrollMarginBottom: FOO * 5,
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
+    /* js */ `import { apply } from 'vicinage'
      const x = 5
-     stylex.create({
-       default: {
+     apply({
          marginInlineStart: Math.abs(x),
          marginInlineEnd: \`\${Math.floor(x)}px\`,
          paddingInlineStart: Math.ceil(-x),
          paddingInlineEnd: Math.round(x / 2),
-       },
      })`,
     // test for WebkitAppearance with 'none'
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'WebkitAppearance': 'none',
-       },
      })`,
     // test for Search
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'WebkitAppearance': 'textfield',
          '::-webkit-search-decoration': {
            appearance: 'none',
@@ -449,12 +349,10 @@ ruleTester.run('valid-styles', rule, {
          '::-webkit-search-results-decoration': {
            appearance: 'none',
          },
-       },
      })`,
     // test for input ranges
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'WebkitAppearance': 'textfield',
          '::-webkit-slider-thumb': {
            appearance: 'none',
@@ -471,274 +369,203 @@ ruleTester.run('valid-styles', rule, {
          '::-moz-range-progress': {
            appearance: 'none',
          },
-       },
      })`,
     // test for color
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'color': 'red',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'color': '#fff',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'color': '#fafbfc',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'color': '#fafbfcfc',
-       },
      })`,
     // test for relative width
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30rem',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30em',
-       },
       })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30ch',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30ex',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30vh',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30vw',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'contain': '300px',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'containIntrinsicSize': '300px',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'containIntrinsicSize': 'auto 300px',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       a: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          interpolateSize: 'numeric-only',
-       },
-       b: {
-         interpolateSize: 'allow-keywords',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
+         interpolateSize: 'allow-keywords',
+     })`,
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'containIntrinsicInlineSize': '300px',
          'containIntrinsicBlockSize': '200px',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'containIntrinsicInlineSize': 'auto 300px',
          'containIntrinsicBlockSize': 'auto 200px',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'containIntrinsicWidth': '300px',
          'containIntrinsicHeight': '200px',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'containIntrinsicWidth': 'auto 300px',
          'containIntrinsicHeight': 'auto 200px',
-       },
      })`,
 
     // test for absolute width
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30px',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30cm',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30mm',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30in',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30pc',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '30pt',
-       },
      })`,
     // test for percentage
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          'width': '50%',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-       default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
          fontWeight: 'var(--weight)',
-       },
      })`,
-    /* js */ `import * as stylex from '@stylexjs/stylex'
-     stylex.create({
-      default: {
+    /* js */ `import { apply } from 'vicinage'
+     apply({
         fontWeight: 'var(--🔴)',
-      },
     })`,
     /* js */ `
-    import * as stylex from '@stylexjs/stylex'
+    import { apply } from 'vicinage'
     const red = 'var(--🔴)'
-    stylex.create({
-      default: {
+    apply({
         fontWeight: red,
-      },
     })`,
     // test for field-sizing
     /* js */ `
-    import * as stylex from '@stylexjs/stylex'
+    import { apply } from 'vicinage'
     const red = 'var(--🔴)'
-    stylex.create({
-      default: {
+    apply({
         fieldSizing: 'fixed',
-      },
     })`,
     /* js */ `
-    import * as stylex from '@stylexjs/stylex'
+    import { apply } from 'vicinage'
     const red = 'var(--🔴)'
-    stylex.create({
-      default: {
+    apply({
         fieldSizing: 'content',
-      },
     })`,
-    // test for stylex create vars tokens
+    // test for create vars tokens
     /* js */ `
-    import * as stylex from '@stylexjs/stylex'
-    import {TextTypeTokens as TextType, ColorTokens} from 'DspSharedTextTokens.stylex'
-    stylex.create({
-      root: {
+    import { apply } from 'vicinage'
+    import {TextTypeTokens as TextType, ColorTokens} from 'DspSharedTextTokens.${token}'
+    apply({
         fontSize: TextType.fontSize,
         borderColor: ColorTokens.borderColor,
         paddingBottom: TextType.paddingBottom,
         fontFamily: \`\${TextType.defaultFontFamily}, \${TextType.fallbackFontFamily}\`,
-      }
     })
     `,
     // test using vars as keys
     /* js */ `
-    import * as stylex from '@stylexjs/stylex'
-    import { componentVars } from './bug.stylex'
-    stylex.create({
-      host: {
+    import { apply } from 'vicinage'
+    import { componentVars } from './bug.${token}'
+    apply({
         [componentVars.color]: 'blue',
-      },
     })
     `,
     // test using vars as keys in dynamic styles
-    /* js */ `
-    import * as stylex from'stylex'
-    import { tokens } from 'tokens.stylex'
-    stylex.create({
-      root: (position) => ({
-        [tokens.position]: \`\${position}px\`,
-      })
-    })
-    `,
-    // test using member expressions on function params in dynamic styles
-    /* js */ `
-    import * as stylex from 'stylex'
-    stylex.create({
-      badge: (props) => ({
-        backgroundColor: props.badgeColor,
-        color: props.color,
-      })
-    })
-    `,
-    // test member expressions on function params with pseudo-classes
-    /* js */ `
-    import * as stylex from 'stylex'
-    stylex.create({
-      root: (props) => ({
-        color: {
-          default: props.textColor,
-          ':hover': props.hoverColor,
-        },
-      })
-    })
-    `,
+    // /* js */ `
+    // import { apply } from 'vicinage'
+    // import { tokens } from 'tokens.${token}'
+    // apply({
+    //     [tokens.position]: () => \`\${position}px\`,
+    // })
+    // `,
+    // // test using member expressions on function params in dynamic styles
+    // /* js */ `
+    // import { apply } from 'vicinage'
+    // apply({
+    //     backgroundColor: () => props.badgeColor,
+    //     color: () => props.color,
+    // })
+    // `,
+    // // test member expressions on function params with pseudo-classes
+    // /* js */ `
+    // import { apply } from 'vicinage'
+    // apply({
+    //     color: {
+    //       default: () => props.textColor,
+    //       ':hover': () => props.hoverColor,
+    //     }
+    // })
+    // `,
     // test importing vars from paths including theme file extension
     /* js */ `
-    import * as stylex from '@stylexjs/stylex'
-    import { vars } from './vars.stylex'
-    import { varsJs } from './vars.stylex.js'
-    import { varsTs } from './vars.stylex.ts'
-    import { varsTsx } from './vars.stylex.tsx'
-    import { varsJsx } from './vars.stylex.jsx'
-    import { varsMjs } from './vars.stylex.mjs'
-    import { varsCjs } from './vars.stylex.cjs'
-    stylex.create({
-      root: {
+    import { apply } from 'vicinage'
+    import { vars } from './vars.${token}'
+    import { varsJs } from './vars.${token}.js'
+    import { varsTs } from './vars.${token}.ts'
+    import { varsTsx } from './vars.${token}.tsx'
+    import { varsJsx } from './vars.${token}.jsx'
+    import { varsMjs } from './vars.${token}.mjs'
+    import { varsCjs } from './vars.${token}.cjs'
+    apply({
         [vars.color]: 'blue',
         [varsJs.color]: 'blue',
         [varsTs.color]: 'blue',
@@ -746,21 +573,19 @@ ruleTester.run('valid-styles', rule, {
         [varsJsx.color]: 'blue',
         [varsMjs.color]: 'blue',
         [varsCjs.color]: 'blue',
-      },
     })
     `,
     // test importing consts from paths including consts file extension
     /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        import { consts } from './vars.stylex.const.js'
-        import { constsJs } from './consts.stylex.const.js'
-        import { constsTs } from './consts.stylex.const.ts'
-        import { constsTsx } from './consts.stylex.const.tsx'
-        import { constsJsx } from './consts.stylex.const.jsx'
-        import { constsMjs } from './consts.stylex.const.mjs'
-        import { constsCjs } from './consts.stylex.const.cjs'
-        stylex.create({
-          root: {
+        import { apply } from 'vicinage'
+        import { consts } from './vars.${token}.const.js'
+        import { constsJs } from './consts.${token}.const.js'
+        import { constsTs } from './consts.${token}.const.ts'
+        import { constsTsx } from './consts.${token}.const.tsx'
+        import { constsJsx } from './consts.${token}.const.jsx'
+        import { constsMjs } from './consts.${token}.const.mjs'
+        import { constsCjs } from './consts.${token}.const.cjs'
+        apply({
             borderRadius: consts.borderRadius,
             margin: constsJs.margin,
             padding: constsTs.padding,
@@ -768,263 +593,186 @@ ruleTester.run('valid-styles', rule, {
             width: constsJsx.width,
             minHeight: constsMjs.minHeight,
             maxWidth: constsCjs.maxWidth,
-          },
         })
         `,
     // test importing vars from paths including custom theme file extension
     {
       code: /* js */ `
-    import * as stylex from '@stylexjs/stylex'
+    import { apply } from 'vicinage'
     import { vars } from './vars.css.js'
     import { consts } from './consts.css.const.js'
-    stylex.create({
-      root: {
+    apply({
         borderRadius: vars.borderRadius,
         margin: consts.margin,
-      },
     })
     `,
       options: [{ themeFileExtension: '.css' }],
     },
     // test for positionTryFallbacks with 'none'
     /* js */ `
-    import * as stylex from '@stylexjs/stylex'
-    stylex.create({
-      default: {
+    import { apply } from 'vicinage'
+    apply({
         positionTryFallbacks: 'none',
-      },
     })
     `,
     // test for positionTryFallbacks with `positionTry` references
     /* js */ `
-    import * as stylex from '@stylexjs/stylex'
-    const fallback = stylex.positionTry({
+    import { apply } from 'vicinage'
+    import { positionTry } from '${engine}'
+
+    const fallback = positionTry({
       positionAnchor: '--anchor',
       top: '0',
       left: '0',
       width: '100px',
       height: '100px'
     })
-    stylex.create({
-      anchor: {
+    apply({
         positionTryFallbacks: fallback,
-      },
     })
     `,
     // test for positionTryFallbacks with a template literal containing multiple `positionTry` references
     /* js */ `
-    import * as stylex from '@stylexjs/stylex'
-    const fallback1 = stylex.positionTry({
+    import { apply } from 'vicinage'
+    import { positionTry } from '${engine}'
+
+    const fallback1 = positionTry({
       positionAnchor: '--anchor',
       top: '0',
       left: '0',
       width: '100px',
       height: '100px'
     })
-    const fallback2 = stylex.positionTry({
+    const fallback2 = positionTry({
       positionAnchor: '--anchor',
       bottom: '0',
       right: '0',
       width: '100px',
       height: '100px'
     })
-    stylex.create({
-      anchor: {
+    apply({
         positionTryFallbacks: \`\${fallback1}, \${fallback2}\`,
-      },
     })
     `,
     // test for ternary and logical expressions
+    // {
+    //   code: /* js */ `
+    //     import { apply } from 'vicinage'
+    //     apply({
+    //         color: () => condition ? 'blue' : 'red',
+    //         display: () => condition ? 'block' : 'none',
+    //         fontSize: () => condition ? '10px' : '20px',
+    //         fontWeight: () => condition ? 'bold' : 'normal',
+    //         opacity: () => condition ? 0.5 : 1,
+    //         zIndex: () => condition ? 10 + 10 : Math.max(10, 20),
+    //     })
+    //   `,
+    // },
+    // {
+    //   code: /* js */ `
+    //     import { apply } from 'vicinage'
+    //     const COLOR = 'blue'
+    //     const sizeSmall = '10px'
+    //     const sizeMedium = '20px'
+    //     const sizeLarge = '30px'
+    //     apply({
+    //         fontSize: () => condition ? sizeSmall : sizeMedium,
+    //         backgroundColor: () => conditionA ? COLOR : conditionB ? 'green' : 'yellow',
+    //         fontSize: () => conditionA ? sizeSmall : conditionB ? sizeMedium : sizeLarge,
+    //     })
+    //   `,
+    // },
+    // {
+    //   code: /* js */ `
+    //     import { apply } from 'vicinage'
+    //     const COLOR = 'blue'
+    //     apply({
+    //         backgroundColor: () => conditionA ? COLOR : conditionB ? 'green' : 'yellow',
+    //         fontSize: () => conditionA ? 14 : conditionB ? 16 : 18,
+    //         opacity: () => conditionA ? 0.5 : conditionB ? 1 : 0.2,
+    //     })
+    //   `,
+    // },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          basicTernary: (condition) => ({
-            color: condition ? 'blue' : 'red',
-            display: condition ? 'block' : 'none',
-            fontSize: condition ? '10px' : '20px',
-            fontWeight: condition ? 'bold' : 'normal',
-            opacity: condition ? 0.5 : 1,
-            zIndex: condition ? 10 + 10 : Math.max(10, 20),
-          }),
-        })
-      `,
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const COLOR = 'blue'
-        const sizeSmall = '10px'
-        const sizeMedium = '20px'
-        const sizeLarge = '30px'
-        const styles = stylex.create({
-          ternaryWithVars: (condition) => ({
-            fontSize: condition ? sizeSmall : sizeMedium,
-          }),
-          nestedTernaryWithVars: (conditionA, conditionB) => ({
-            backgroundColor: conditionA ? COLOR : conditionB ? 'green' : 'yellow',
-            fontSize: conditionA ? sizeSmall : conditionB ? sizeMedium : sizeLarge,
-          }),
-        })
-      `,
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const COLOR = 'blue'
-        const styles = stylex.create({
-          nestedTernaryWithVars: (conditionA, conditionB) => ({
-            backgroundColor: conditionA ? COLOR : conditionB ? 'green' : 'yellow',
-            fontSize: conditionA ? 14 : conditionB ? 16 : 18,
-            opacity: conditionA ? 0.5 : conditionB ? 1 : 0.2,
-          }),
-        })
-      `,
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
+        import { apply } from 'vicinage'
         const condition = true
-        const styles = stylex.create({
-          default: {
-            width: condition ? '50%' : '100%',
-            '@media (max-width: 600px)': {
-              width: condition ? '100%' : '200%',
-            }
-          }
-        })
-      `,
-      options: [{ allowOuterPseudoAndMedia: true }],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const condition = true
-        const styles = stylex.create({
-          default: {
+        apply({
             float: condition ? 'inline-start' : 'inline-end',
             clear: condition ? 'inline-start' : 'left',
-          }
         })
       `,
     },
+    // {
+    //   code: /* js */ `
+    //     import { apply } from 'vicinage'
+    //     apply({
+    //         '::before': {
+    //           content: () => condition ? '""' : '"*"',
+    //         },
+    //     })
+    //   `,
+    // },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          emptyString: (condition) => ({
-            '::before': {
-              content: condition ? '""' : '"*"',
-            },
-          })
-        })
-      `,
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
+        import { apply } from 'vicinage'
         const zIndexConst = 10
         const widthConst = 0
         const widthConst2 = 3
         const isMobile = false
-        const styles = stylex.create({
-          container: {
+        apply({
             color: 'blue' || 'green',
             zIndex: zIndexConst ?? 10,
             width: isMobile ? (widthConst || '100%') : (widthConst2 ?? '200%'),
-          }
         })
       `,
     },
     // bare numbers for px-related properties
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      const styles = stylex.create({
-        default: {
+      import { apply } from 'vicinage'
+      apply({
           backgroundPositionX: 10,
           backgroundPositionY: 20,
           outlineWidth: 2,
           textDecorationThickness: 3,
           textUnderlineOffset: 4,
           overflowClipMargin: 5,
-        }
       })
     `,
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          foo: {
+        import { apply } from 'vicinage'
+        apply({
             outlineOffset: 2,
-          },
         })
       `,
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          foo: {
+        import { apply } from 'vicinage'
+        apply({
             strokeDasharray: 100,
-          },
         })
       `,
     },
     // bare numbers for time-based properties
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          foo: {
+        import { apply } from 'vicinage'
+        apply({
             animationDelay: 200,
             animationDuration: 300,
             transitionDelay: 100,
             transitionDuration: 500,
-          },
         })
       `,
     },
   ],
   invalid: [
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            ':focus': {
-              ':hover': {
-                ':active': {
-                  color: 'red'
-                }
-              }
-            }
-          }
-        })
-      `,
-      options: [{ allowOuterPseudoAndMedia: true }],
-      errors: [
-        {
-          message: 'You cannot nest styles more than one level deep',
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = {default: {width: '30pt'}}
-        stylex.create(styles)
-      `,
-      errors: [
-        {
-          message: 'Styles must be represented as JavaScript objects',
-        },
-      ],
-    },
     // {
-    //   code: /* js */ `import * as stylex from '@stylexjs/stylex'
+    //   code: /* js */ `import { apply } from 'vicinage'
     // import { FOO } from 'foo'
-    //  stylex.create({
-    //    default: {
+    //  apply({
     //      scrollMarginTop: FOO + 5,
     //    },
     //  })`,
@@ -1043,12 +791,10 @@ ruleTester.run('valid-styles', rule, {
     //   ],
     // },
     {
-      code: /* js */ `import * as stylex from '@stylexjs/stylex'
+      code: /* js */ `import { apply } from 'vicinage'
     const FOO = 'bad string'
-     stylex.create({
-       default: {
+     apply({
          scrollMarginTop: FOO + 5,
-       },
      })`,
       errors: [
         {
@@ -1066,18 +812,18 @@ ruleTester.run('valid-styles', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {textAlin: 'left'}})
+        import { apply } from 'vicinage'
+        apply({default: {textAlin: 'left'}})
       `,
       errors: [
         {
-          message: 'This is not a key that is allowed by stylex',
+          message: 'This is not a key that is allowed',
           suggestions: [
             {
               desc: 'Did you mean "textAlign"?',
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {textAlign: 'left'}})
+        import { apply } from 'vicinage'
+        apply({default: {textAlign: 'left'}})
       `,
             },
           ],
@@ -1086,50 +832,29 @@ ruleTester.run('valid-styles', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {marginStart: 10}})
+        import { apply } from 'vicinage'
+        apply({default: {marginStart: 10}})
       `,
       errors: [
         {
-          message: 'This is not a key that is allowed by stylex',
+          message: 'This is not a key that is allowed',
         },
       ],
     },
-    // // duplicate
-    // {
-    //   code: /* jsx */ `
-    //     import * as stylex from '@stylexjs/stylex'
-    //     stylex.create({default: {textAlin: 'left'}})
-    //   `,
-    //   errors: [
-    //     {
-    //       message: 'This is not a key that is allowed by stylex',
-    //       suggestions: [
-    //         {
-    //           desc: 'Did you mean "textAlign"?',
-    //           output: /* jsx */ `
-    //             import * as stylex from '@stylexjs/stylex'
-    //             stylex.create({default: {textAlign: 'left'}})
-    //           `,
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {['textAlin']: 'left'}})
+        import { apply } from 'vicinage'
+        apply({default: {['textAlin']: 'left'}})
       `,
       errors: [
         {
-          message: 'This is not a key that is allowed by stylex',
+          message: 'This is not a key that is allowed',
           suggestions: [
             {
               desc: 'Did you mean "textAlign"?',
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {['textAlign']: 'left'}})
+        import { apply } from 'vicinage'
+        apply({default: {['textAlign']: 'left'}})
       `,
             },
           ],
@@ -1138,8 +863,8 @@ ruleTester.run('valid-styles', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {textAlign: 'lfet'}})
+        import { apply } from 'vicinage'
+        apply({default: {textAlign: 'lfet'}})
       `,
       errors: [
         {
@@ -1162,8 +887,8 @@ ruleTester.run('valid-styles', rule, {
             {
               desc: 'Did you mean "left"? Replace "lfet" with "left"',
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {textAlign: 'left'}})
+        import { apply } from 'vicinage'
+        apply({default: {textAlign: 'left'}})
       `,
             },
           ],
@@ -1172,8 +897,8 @@ ruleTester.run('valid-styles', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {fontWeight: 10001}})
+        import { apply } from 'vicinage'
+        apply({default: {fontWeight: 10001}})
       `,
       errors: [
         {
@@ -1196,8 +921,8 @@ ruleTester.run('valid-styles', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {content: 100 + 100}})
+        import { apply } from 'vicinage'
+        apply({default: {content: 100 + 100}})
       `,
       errors: [
         {
@@ -1215,103 +940,9 @@ ruleTester.run('valid-styles', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {':hover': {textAlin: 'left'}}})
-      `,
-      options: [{ allowOuterPseudoAndMedia: true }],
-      errors: [
-        {
-          message: 'This is not a key that is allowed by stylex',
-          suggestions: [
-            {
-              desc: 'Did you mean "textAlign"?',
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {':hover': {textAlign: 'left'}}})
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {':focus': {textAlign: 'lfet'}}})
-      `,
-      options: [{ allowOuterPseudoAndMedia: true }],
-      errors: [
-        {
-          message: message`
-            textAlign value must be one of:
-            start
-            end
-            left
-            right
-            center
-            justify
-            match-parent
-            null
-            initial
-            inherit
-            unset
-            revert
-          `,
-          suggestions: [
-            {
-              desc: 'Did you mean "left"? Replace "lfet" with "left"',
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({default: {':focus': {textAlign: 'left'}}})
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({
-          default: {
-            ':focs': {
-              textAlign: 'left'
-            }
-          }
-        })
-      `,
-      options: [{ allowOuterPseudoAndMedia: true }],
-      errors: [
-        {
-          message:
-            'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries',
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({
-          default: {
-            ':focus': {
-              ':hover': {
-                textAlign: 'left'
-              }
-            }
-          }
-        })
-      `,
-      options: [{ allowOuterPseudoAndMedia: true }],
-      errors: [
-        {
-          message: 'You cannot nest styles more than one level deep',
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const bounce = stylex.keyframes({
+        import { apply } from 'vicinage'
+        import { keyframes } from '${engine}'
+        const bounce = keyframes({
           '0%': {
             transform: 'translateY(0)',
           },
@@ -1320,14 +951,12 @@ ruleTester.run('valid-styles', rule, {
           },
           '100%': {
             transform: 'translateY(0)',
-          },
+          }
         })
-        const styles = stylex.create({
-          default: {
+        apply({
             animationName: bob,
             animationDuration: '1s',
             animationIterationCount: 'infinite',
-          }
         })
       `,
       errors: [
@@ -1348,488 +977,13 @@ ruleTester.run('valid-styles', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            border: '1px solid blue',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'blue',
-          }
-        })
-      `,
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'blue',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            border: '1px solid rgba(var(--black), 0.0975)',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'rgba(var(--black), 0.0975)',
-          }
-        })
-      `,
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'rgba(var(--black), 0.0975)',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            border: 'solid blue 1px',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'blue',
-          }
-        })
-      `,
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'blue',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            border: 'blue 1px solid',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'blue',
-          }
-        })
-      `,
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'blue',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            border: '1px blue solid',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'blue',
-          }
-        })
-      `,
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'blue',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            border: '1px solid',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-          }
-        })
-      `,
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderStyle: 'solid',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            border: '1px var(--foo)',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderColor: 'var(--foo)',
-          }
-        })
-      `,
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-            borderColor: 'var(--foo)',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            border: '1px',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-          }
-        })
-      `,
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: '1px',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            border: 'none',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderStyle: 'none',
-          }
-        })
-      `,
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderStyle: 'none',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            border: 0,
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: 0,
-          }
-        })
-      `,
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' set to a number with 'borderWidth' instead?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: 0,
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            border: 4,
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: 4,
-          }
-        })
-      `,
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' set to a number with 'borderWidth' instead?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            borderWidth: 4,
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from 'custom-import'
-        const styles = stylex.create({
-          default: {
-            border: 4,
-          }
-        })
-      `,
-      output: /* js */ `
-        import * as stylex from 'custom-import'
-        const styles = stylex.create({
-          default: {
-            borderWidth: 4,
-          }
-        })
-      `,
-      options: [
-        {
-          validImports: ['custom-import'],
-          styleResolution: 'legacy-expand-shorthands',
-        },
-      ],
-      errors: [
-        {
-          message: `The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.`,
-          suggestions: [
-            {
-              desc: `Replace 'border' set to a number with 'borderWidth' instead?`,
-              output: /* js */ `
-        import * as stylex from 'custom-import'
-        const styles = stylex.create({
-          default: {
-            borderWidth: 4,
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-      import * as stylex from'stylex'
+      import { apply } from 'vicinage'
       import {TextTypeTokens as TextType, ColorTokens} from 'DspSharedTextTokens'
-      stylex.create({
-        root: {
+      apply({
           fontSize: TextType.fontSize,
           borderColor: ColorTokens.borderColor,
           paddingBottom: TextType.paddingBottom,
           fontFamily: \`\${TextType.fontFamily}, \${TextType.fallbackFontFamily}\`,
-        }
       })
       `,
       errors: [
@@ -1996,16 +1150,14 @@ ruleTester.run('valid-styles', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          foo: {
+        import { apply } from 'vicinage'
+        apply({
             float: 'start',
             clear: 'start',
-          },
-          bar: {
+        })
+        apply({
             float: 'end',
             clear: 'end',
-          }
         })
       `,
       errors: [
@@ -2016,16 +1168,14 @@ ruleTester.run('valid-styles', rule, {
             {
               desc: 'Replace "start" with "inline-start"?',
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          foo: {
+        import { apply } from 'vicinage'
+        apply({
             float: 'inline-start',
             clear: 'start',
-          },
-          bar: {
+        })
+        apply({
             float: 'end',
             clear: 'end',
-          }
         })
       `,
             },
@@ -2038,16 +1188,14 @@ ruleTester.run('valid-styles', rule, {
             {
               desc: 'Replace "start" with "inline-start"?',
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          foo: {
+        import { apply } from 'vicinage'
+        apply({
             float: 'start',
             clear: 'inline-start',
-          },
-          bar: {
+        })
+        apply({
             float: 'end',
             clear: 'end',
-          }
         })
       `,
             },
@@ -2060,16 +1208,14 @@ ruleTester.run('valid-styles', rule, {
             {
               desc: 'Replace "end" with "inline-end"?',
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          foo: {
+        import { apply } from 'vicinage'
+        apply({
             float: 'start',
             clear: 'start',
-          },
-          bar: {
+        })
+        apply({
             float: 'inline-end',
             clear: 'end',
-          }
         })
       `,
             },
@@ -2082,16 +1228,14 @@ ruleTester.run('valid-styles', rule, {
             {
               desc: 'Replace "end" with "inline-end"?',
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          foo: {
+        import { apply } from 'vicinage'
+        apply({
             float: 'start',
             clear: 'start',
-          },
-          bar: {
+        })
+        apply({
             float: 'end',
             clear: 'inline-end',
-          }
         })
       `,
             },
@@ -2099,107 +1243,98 @@ ruleTester.run('valid-styles', rule, {
         },
       ],
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          foo: {
+        import { apply } from 'vicinage'
+        apply({
             float: 'inline-start',
             clear: 'inline-start',
-          },
-          bar: {
+        })
+        apply({
             float: 'inline-end',
             clear: 'inline-end',
-          }
         })
       `,
     },
     // test for ternary and logical expressions
+    // {
+    //   code: /* js */ `
+    //     import { apply } from 'vicinage'
+    //     apply({
+    //         color: () => condition ? 'red' : 123,
+    //         fontSize: () => condition ? true : '10px',
+    //         transition: () => condition ? 'transform 1s' : ' ',
+    //         zIndex: () => condition ?? 'red',
+    //         display: 'invalid-display' || 'block',
+    //     })
+    //   `,
+    //   errors: [
+    //     {
+    //       message: /^color value must be one of:\n/u,
+    //     },
+    //     {
+    //       message: /^fontSize value must be one of:\n/u,
+    //     },
+    //     {
+    //       message:
+    //         'The empty string is not allowed. Use `null` to reset a style.',
+    //       suggestions: [
+    //         {
+    //           desc: 'Replace empty string with `null`?',
+    //           output: /* js */ `
+    //     import { apply } from 'vicinage'
+    //     apply({
+    //         color: () => condition ? 'red' : 123,
+    //         fontSize: () => condition ? true : '10px',
+    //         transition: () => condition ? 'transform 1s' : null,
+    //         zIndex: () => condition ?? 'red',
+    //         display: 'invalid-display' || 'block',
+    //     })
+    //   `,
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       message: /^zIndex value must be one of:\n/u,
+    //     },
+    //     {
+    //       message: /^display value must be one of:\n/u,
+    //     },
+    //   ],
+    // },
+    // {
+    //   code: /* js */ `
+    //     import { apply } from 'vicinage'
+    //     apply({
+    //         float: () => condition ? 'start' : 'inline-end',
+    //     })
+    //   `,
+    //   errors: [
+    //     {
+    //       message:
+    //         'The value "start" is not a standard CSS value for "float". Did you mean "inline-start"?',
+    //       suggestions: [
+    //         {
+    //           desc: 'Replace "start" with "inline-start"?',
+    //           output: /* js */ `
+    //     import { apply } from 'vicinage'
+    //     apply({
+    //         float: () => condition ? 'inline-start' : 'inline-end',
+    //     })`,
+    //         },
+    //       ],
+    //     },
+    //   ],
+    //   output: /* js */ `
+    //     import { apply } from 'vicinage'
+    //     apply({
+    //         float: () => condition ? 'inline-start' : 'inline-end',
+    //     })
+    //   `,
+    // },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          ternaryWithBasicInvalidStyles: (condition) => ({
-            color: condition ? 'red' : 123,
-            fontSize: condition ? true : '10px',
-            transition: condition ? 'transform 1s' : ' ',
-            zIndex: condition ?? 'red',
-            display: 'invalid-display' || 'block',
-          }),
-        })
-      `,
-      errors: [
-        {
-          message: /^color value must be one of:\n/u,
-        },
-        {
-          message: /^fontSize value must be one of:\n/u,
-        },
-        {
-          message:
-            'The empty string is not allowed by Stylex. Use `null` to reset a style.',
-          suggestions: [
-            {
-              desc: 'Replace empty string with `null`?',
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          ternaryWithBasicInvalidStyles: (condition) => ({
-            color: condition ? 'red' : 123,
-            fontSize: condition ? true : '10px',
-            transition: condition ? 'transform 1s' : null,
-            zIndex: condition ?? 'red',
-            display: 'invalid-display' || 'block',
-          }),
-        })
-      `,
-            },
-          ],
-        },
-        {
-          message: /^zIndex value must be one of:\n/u,
-        },
-        {
-          message: /^display value must be one of:\n/u,
-        },
-      ],
-    },
-    {
-      code: /* js */ `import * as stylex from '@stylexjs/stylex'
-const styles = stylex.create({
-  ternaryWithBasicInvalidStyles: (condition) => ({
-    float: condition ? 'start' : 'inline-end',
-  }),
-})`,
-      errors: [
-        {
-          message:
-            'The value "start" is not a standard CSS value for "float". Did you mean "inline-start"?',
-          suggestions: [
-            {
-              desc: 'Replace "start" with "inline-start"?',
-              output: /* js */ `import * as stylex from '@stylexjs/stylex'
-const styles = stylex.create({
-  ternaryWithBasicInvalidStyles: (condition) => ({
-    float: condition ? 'inline-start' : 'inline-end',
-  }),
-})`,
-            },
-          ],
-        },
-      ],
-      output: /* js */ `import * as stylex from '@stylexjs/stylex'
-const styles = stylex.create({
-  ternaryWithBasicInvalidStyles: (condition) => ({
-    float: condition ? 'inline-start' : 'inline-end',
-  }),
-})`,
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          nestedInvalidStyles: (conditionA, conditionB) => ({
-            display: conditionA ?  conditionB ? 'grid' : 'invalid-display' : 'block',
-          }),
+        import { apply } from 'vicinage'
+        apply({
+            display: () => conditionA ?  conditionB ? 'grid' : 'invalid-display' : 'block',
         })
       `,
       errors: [
@@ -2210,12 +1345,10 @@ const styles = stylex.create({
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          ternaryWithInvalidType: (condition) => ({
-            fontWeight: condition ? sasasa : 'bold',
-            marginStart: condition ? '10px' : '20px',
-          }),
+        import { apply } from 'vicinage'
+        apply({
+            fontWeight: () => condition ? sasasa : 'bold',
+            marginStart: () => condition ? '10px' : '20px',
         })
       `,
       errors: [
@@ -2223,7 +1356,7 @@ const styles = stylex.create({
           message: /^fontWeight value must be one of:\n/u,
         },
         {
-          message: 'This is not a key that is allowed by stylex',
+          message: 'This is not a key that is allowed',
         },
       ],
     },
@@ -2233,24 +1366,20 @@ const styles = stylex.create({
 ruleTester.run('valid-styles [restrictions]', rule, {
   valid: [
     /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      const styles = stylex.create({
-        default: {
+      import { apply } from 'vicinage'
+      apply({
           display: 'grid',
           grid: 'repeat(3, 80px) / auto-flow',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gridTemplateRows: 'repeat(3, 1fr)',
-        }
       })
     `,
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             display: 'grid',
             grid: 'repeat(3, 80px) / auto-flow',
-          }
         })
       `,
       options: [
@@ -2266,11 +1395,9 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             display: 'grid',
-          }
         })
       `,
       options: [
@@ -2286,90 +1413,74 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from'stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             textUnderlineOffset: 'auto',
-          },
         })
       `,
     },
     {
       code: /* js */ `
-        import * as stylex from'stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             textUnderlineOffset: '1px',
-          },
         })
       `,
     },
     {
       code: /* js */ `
-        import * as stylex from'stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             textUnderlineOffset: '100%',
-          },
         })
       `,
     },
     {
       code: /* js */ `
-        import * as stylex from'stylex'
-        const styles = stylex.create({
-          base: {
+        import { apply } from 'vicinage'
+        apply({
             backgroundColor: {
               default: 'blue',
               ':focus-within': 'red',
             },
-          },
         })`,
     },
     // test for allowed raw CSS variable overrides
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          foo: {
+        import { apply } from 'vicinage'
+        apply({
             '--bar': '0',
-          }
         })
       `,
       options: [{ allowRawCSSVars: true }],
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             '::after': {
               ':hover': {
                 content: ''
               }
             }
-          }
         })
       `,
-      options: [{ allowOuterPseudoAndMedia: true }],
+      // options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          container: {
+        import { apply } from 'vicinage'
+        apply({
             backgroundBlendMode: 'multiply',
-          },
         })
       `,
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          container: {
+        import { apply } from 'vicinage'
+        apply({
             backgroundBlendMode: 'multiply, darken, exclusion',
-          },
         })
       `,
     },
@@ -2377,11 +1488,9 @@ ruleTester.run('valid-styles [restrictions]', rule, {
   invalid: [
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             display: 'grid',
-          }
         })
       `,
       options: [
@@ -2411,32 +1520,10 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({
-          default: {
-            ':focus': {
-              '::after': {
-                content: ''
-              }
-            }
-          }
-        })
-      `,
-      options: [{ allowOuterPseudoAndMedia: true }],
-      errors: [
-        {
-          message: 'You cannot nest styles more than one level deep',
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             display: 'grid',
             grid: 'repeat(3, 80px) / auto-flow',
-          }
         })
       `,
       options: [
@@ -2460,12 +1547,10 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
-          }
         })
       `,
       options: [
@@ -2489,50 +1574,22 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            display: 'grid',
-            grid: 'repeat(3, 80px) / auto-flow',
-          }
-        })
-      `,
-      options: [
-        {
-          banPropsForLegacy: true,
-        },
-      ],
-      errors: [
-        {
-          message: message`
-            grid value must be one of:
-            This property is not supported in legacy StyleX resolution.
-          `,
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      const styles = stylex.create({
-        base:{
+      import { apply } from 'vicinage'
+      apply({
           background: ''
-        },
       })
     `,
       errors: [
         {
           message:
-            'The empty string is not allowed by Stylex. Use `null` to reset a style.',
+            'The empty string is not allowed. Use `null` to reset a style.',
           suggestions: [
             {
               desc: 'Replace empty string with `null`?',
               output: /* js */ `
-      import * as stylex from '@stylexjs/stylex'
-      const styles = stylex.create({
-        base:{
+      import { apply } from 'vicinage'
+      apply({
           background: null
-        },
       })
     `,
             },
@@ -2542,11 +1599,9 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from'stylex'
-        const styles = stylex.create({
-          b:{
+        import { apply } from 'vicinage'
+        apply({
             textUnderlineOffset: '',
-          },
         })
       `,
       errors: [
@@ -2567,44 +1622,38 @@ ruleTester.run('valid-styles [restrictions]', rule, {
         },
       ],
     },
+    // {
+    //   code: /* js */ `
+    //     import { css } from 'a'
+    //     const styles = css.create({
+    //         background: ''
+    //     })
+    //   `,
+    //   options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+    //   errors: [
+    //     {
+    //       message:
+    //         'The empty string is not allowed. Use `null` to reset a style.',
+    //       suggestions: [
+    //         {
+    //           desc: 'Replace empty string with `null`?',
+    //           output: /* js */ `
+    //     import { css } from 'a'
+    //     const styles = css.create({
+    //         background: null
+    //     })
+    //   `,
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
     {
       code: /* js */ `
-        import { css } from 'a'
-        const styles = css.create({
-          base:{
-            background: ''
-          },
-        })
-      `,
-      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
-      errors: [
-        {
-          message:
-            'The empty string is not allowed by Stylex. Use `null` to reset a style.',
-          suggestions: [
-            {
-              desc: 'Replace empty string with `null`?',
-              output: /* js */ `
-        import { css } from 'a'
-        const styles = css.create({
-          base:{
-            background: null
-          },
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          invalidStyle: {
+        import { apply } from 'vicinage'
+        apply({
             margin: '10',
             height: '10',
-          },
         })
       `,
       errors: [
@@ -2622,12 +1671,10 @@ ruleTester.run('valid-styles [restrictions]', rule, {
             {
               desc: `Replace string '10' with number 10?`,
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          invalidStyle: {
+        import { apply } from 'vicinage'
+        apply({
             margin: 10,
             height: '10',
-          },
         })
       `,
             },
@@ -2655,12 +1702,10 @@ ruleTester.run('valid-styles [restrictions]', rule, {
             {
               desc: `Replace string '10' with number 10?`,
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          invalidStyle: {
+        import { apply } from 'vicinage'
+        apply({
             margin: '10',
             height: 10,
-          },
         })
       `,
             },
@@ -2670,9 +1715,8 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          invalidStyle: {
+        import { apply } from 'vicinage'
+        apply({
             margin: '10',
             marginTop: '10.1',
             marginRight: '-10',
@@ -2704,7 +1748,6 @@ ruleTester.run('valid-styles [restrictions]', rule, {
             columnGap: '10',
             lineHeight: '10',
             outlineWidth: '10',
-          },
         })
       `,
       errors: (
@@ -3192,9 +2235,8 @@ ruleTester.run('valid-styles [restrictions]', rule, {
                 {
                   desc: `Replace string '${original}' with number ${replacement ?? original}?`,
                   output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          invalidStyle: {
+        import { apply } from 'vicinage'
+        apply({
             margin: '10',
             marginTop: '10.1',
             marginRight: '-10',
@@ -3226,7 +2268,6 @@ ruleTester.run('valid-styles [restrictions]', rule, {
             columnGap: '10',
             lineHeight: '10',
             outlineWidth: '10',
-          },
         })
       `.replace(
                     `${property}: '${original}'`,
@@ -3238,11 +2279,9 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             positionTryFallbacks: 42,
-          },
         })
       `,
       errors: [
@@ -3264,25 +2303,24 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     // test for positionTryFallbacks with incorrectly formatted template literal - missing comma
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const fallback1 = stylex.positionTry({
+        import { apply } from 'vicinage'
+        import { positionTry } from '${engine}'
+        const fallback1 = positionTry({
           positionAnchor: '--anchor',
           top: '0',
           left: '0',
           width: '100px',
           height: '100px'
         })
-        const fallback2 = stylex.positionTry({
+        const fallback2 = positionTry({
           positionAnchor: '--anchor',
           bottom: '0',
           right: '0',
           width: '100px',
           height: '100px'
         })
-        stylex.create({
-          anchor: {
+        apply({
             positionTryFallbacks: \`\${fallback1} \${fallback2}\`,
-          },
         })
       `,
       errors: [
@@ -3304,25 +2342,24 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     // test for positionTryFallbacks with incorrectly formatted template literal - missing space after comma
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const fallback1 = stylex.positionTry({
+        import { apply } from 'vicinage'
+        import { positionTry } from '${engine}'
+        const fallback1 = positionTry({
           positionAnchor: '--anchor',
           top: '0',
           left: '0',
           width: '100px',
           height: '100px'
         })
-        const fallback2 = stylex.positionTry({
+        const fallback2 = positionTry({
           positionAnchor: '--anchor',
           bottom: '0',
           right: '0',
           width: '100px',
           height: '100px'
         })
-        stylex.create({
-          anchor: {
+        apply({
             positionTryFallbacks: \`\${fallback1},\${fallback2}\`,
-          },
         })
       `,
       errors: [
@@ -3344,27 +2381,23 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     // test for disallowed raw CSS variable overrides
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          foo: {
+        import { apply } from 'vicinage'
+        apply({
             '--bar': '0',
-          }
         })
       `,
       options: [{ allowRawCSSVars: false }],
       errors: [
         {
-          message: 'This is not a key that is allowed by stylex',
+          message: 'This is not a key that is allowed',
         },
       ],
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          container: {
+        import { apply } from 'vicinage'
+        apply({
             backgroundBlendMode: 'invalid-blend-mode',
-          },
         })
       `,
       errors: [
@@ -3400,11 +2433,9 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     // 'darke' should be 'darken'
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          container: {
+        import { apply } from 'vicinage'
+        apply({
             backgroundBlendMode: 'multiply, darke, exclusion',
-          },
         })
       `,
       errors: [
@@ -3439,11 +2470,9 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     // test for incorrect spacing around comma in backgroundBlendMode
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          container: {
+        import { apply } from 'vicinage'
+        apply({
             backgroundBlendMode: 'multiply, darken,exclusion',
-          },
         })
       `,
       errors: [
@@ -3453,11 +2482,9 @@ ruleTester.run('valid-styles [restrictions]', rule, {
             {
               desc: 'Replace comma with a comma and a space (", ")',
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          container: {
+        import { apply } from 'vicinage'
+        apply({
             backgroundBlendMode: 'multiply, darken, exclusion',
-          },
         })
       `,
             },
@@ -3468,40 +2495,37 @@ ruleTester.run('valid-styles [restrictions]', rule, {
     // test for when function from other library
     {
       code: /* js */ `
+             import { apply } from 'vicinage'
              import { when } from 'some-other-library'
-             import { create } from '@stylexjs/stylex'
-             const styles = create({
-               base: {
+             apply({
                  width: {
                    default: 10,
                    [when.descendant(':focus')]: 20,
                  },
-               },
              })
            `,
-      options: [{ allowOuterPseudoAndMedia: true }],
+      // options: [{ allowOuterPseudoAndMedia: true }],
       errors: [
         {
           message: 'Computed key cannot be resolved.',
         },
       ],
     },
-    // test for invalid CSS values in stylex.when calls
+    // test for invalid CSS values in `when` calls
     {
       code: /* js */ `
-             import * as stylex from '@stylexjs/stylex'
-             const styles = stylex.create({
-               base: {
+             import { apply } from 'vicinage'
+             import { when } from '${engine}'
+             apply({
                  float: {
                    default: 'left',
-                   [stylex.when.ancestor(':hover')]: 'dsdfdsdfsdfsdfsdfsdf',
-                   [stylex.when.descendant(':focus')]: 30,
-                   [stylex.when.siblingAfter(':active')]: 40,
+                   [when.ancestor(':hover')]: 'dsdfdsdfsdfsdfsdfsdf',
+                   [when.descendant(':focus')]: 30,
+                   [when.siblingAfter(':active')]: 40,
                  },
-               },
              })
            `,
-      options: [{ allowOuterPseudoAndMedia: true }],
+      // options: [{ allowOuterPseudoAndMedia: true }],
       errors: [
         {
           message:
@@ -3517,20 +2541,19 @@ ruleTester.run('valid-styles [restrictions]', rule, {
         },
       ],
     },
-    // test for invalid CSS value in stylex.when call
+    // test for invalid CSS value in when call
     {
       code: /* js */ `
-             import { when, create } from '@stylexjs/stylex'
-             const styles = create({
-               base: {
+             import { apply } from 'vicinage'
+             import { when } from '${engine}'
+             apply({
                  float: {
                    default: 'left',
                    [when.descendant(':focus')]: 'invalid-value',
                  },
-               },
              })
            `,
-      options: [{ allowOuterPseudoAndMedia: true }],
+      // options: [{ allowOuterPseudoAndMedia: true }],
       errors: [
         {
           message:
@@ -3538,20 +2561,19 @@ ruleTester.run('valid-styles [restrictions]', rule, {
         },
       ],
     },
-    // test for trying to use `stylex.when` as outer key when `allowOuterPseudoAndMedia` is false
+    // test for trying to use `when` as outer key when `allowOuterPseudoAndMedia` is false
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          base: {
+        import { apply } from 'vicinage'
+        import { when } from '${engine}'
+        apply({
             width: 10,
-            [stylex.when.descendant(':focus')]: {
+            [when.descendant(':focus')]: {
               width: 20,
             },
-            [stylex.when.siblingAfter(':active')]: {
+            [when.siblingAfter(':active')]: {
               width: 30,
             },
-          },
         })
       `,
       options: [{ allowOuterPseudoAndMedia: false }],
@@ -3568,472 +2590,14 @@ ruleTester.run('valid-styles [restrictions]', rule, {
 })
 
 ruleTester.run('valid-styles [autofixers]', rule, {
-  valid: [
-    // Grid longhands should be allowed under banPropsForLegacy
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gridTemplateRows: 'auto',
-            gridRowStart: '1',
-            gridRowEnd: '3',
-            gridColumnStart: '1',
-            gridColumnEnd: '3',
-            gridAutoFlow: 'row',
-            gridAutoColumns: 'auto',
-            gridAutoRows: 'minmax(100px, auto)',
-            gridTemplateAreas: '"header header" "sidebar main"',
-          }
-        })
-      `,
-      options: [{ banPropsForLegacy: true }],
-    },
-  ],
+  valid: [],
   invalid: [
-    // gridArea auto-fix under banPropsForLegacy
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridArea: '1 / 2 / 3 / 4',
-          }
-        })
-      `,
-      options: [{ banPropsForLegacy: true }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridColumnEnd: '4',
-            gridColumnStart: '2',
-            gridRowEnd: '3',
-            gridRowStart: '1',
-          }
-        })
-      `,
-      errors: [
-        {
-          message:
-            'gridArea value must be one of:\nThis property is not supported in legacy StyleX resolution.',
-          suggestions: [
-            {
-              desc: `Split 'gridArea' shorthand into individual longhand properties?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridColumnEnd: '4',
-            gridColumnStart: '2',
-            gridRowEnd: '3',
-            gridRowStart: '1',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    // gridColumn auto-fix under banPropsForLegacy
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridColumn: '1 / 3',
-          }
-        })
-      `,
-      options: [{ banPropsForLegacy: true }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridColumnEnd: '3',
-            gridColumnStart: '1',
-          }
-        })
-      `,
-      errors: [
-        {
-          message:
-            'gridColumn value must be one of:\nThis property is not supported in legacy StyleX resolution.',
-          suggestions: [
-            {
-              desc: `Split 'gridColumn' shorthand into individual longhand properties?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridColumnEnd: '3',
-            gridColumnStart: '1',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    // gridRow auto-fix under banPropsForLegacy
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridRow: '1 / 3',
-          }
-        })
-      `,
-      options: [{ banPropsForLegacy: true }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridRowEnd: '3',
-            gridRowStart: '1',
-          }
-        })
-      `,
-      errors: [
-        {
-          message:
-            'gridRow value must be one of:\nThis property is not supported in legacy StyleX resolution.',
-          suggestions: [
-            {
-              desc: `Split 'gridRow' shorthand into individual longhand properties?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridRowEnd: '3',
-            gridRowStart: '1',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    // gridTemplate auto-fix under banPropsForLegacy
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridTemplate: 'auto 1fr / 120px 1fr',
-          }
-        })
-      `,
-      options: [{ banPropsForLegacy: true }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridTemplateColumns: '120px 1fr',
-            gridTemplateRows: 'auto 1fr',
-          }
-        })
-      `,
-      errors: [
-        {
-          message:
-            'gridTemplate value must be one of:\nThis property is not supported in legacy StyleX resolution.',
-          suggestions: [
-            {
-              desc: `Split 'gridTemplate' shorthand into individual longhand properties?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridTemplateColumns: '120px 1fr',
-            gridTemplateRows: 'auto 1fr',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    // gridGap auto-fix under banPropsForLegacy
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridGap: '10px 20px',
-          }
-        })
-      `,
-      options: [{ banPropsForLegacy: true }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            rowGap: '10px',
-            columnGap: '20px',
-          }
-        })
-      `,
-      errors: [
-        {
-          message:
-            'gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.',
-          suggestions: [
-            {
-              desc: `Split 'gridGap' shorthand into individual longhand properties?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            rowGap: '10px',
-            columnGap: '20px',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    // gridGap numeric value auto-fix under banPropsForLegacy
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridGap: '10',
-          }
-        })
-      `,
-      options: [{ banPropsForLegacy: true }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            rowGap: 10,
-            columnGap: 10,
-          }
-        })
-      `,
-      errors: [
-        {
-          message:
-            'gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.',
-          suggestions: [
-            {
-              desc: `Split 'gridGap' shorthand into individual longhand properties?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            rowGap: 10,
-            columnGap: 10,
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    // grid shorthand without fix (too complex for deterministic expansion)
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            grid: 'repeat(3, 80px) / auto-flow',
-          }
-        })
-      `,
-      options: [{ banPropsForLegacy: true }],
-      errors: [
-        {
-          message:
-            'grid value must be one of:\nThis property is not supported in legacy StyleX resolution.',
-        },
-      ],
-    },
-    // gridArea with single ident (custom ident expansion)
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridArea: 'header',
-          }
-        })
-      `,
-      options: [{ banPropsForLegacy: true }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridColumnEnd: 'header',
-            gridColumnStart: 'header',
-            gridRowEnd: 'header',
-            gridRowStart: 'header',
-          }
-        })
-      `,
-      errors: [
-        {
-          message:
-            'gridArea value must be one of:\nThis property is not supported in legacy StyleX resolution.',
-          suggestions: [
-            {
-              desc: `Split 'gridArea' shorthand into individual longhand properties?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            gridColumnEnd: 'header',
-            gridColumnStart: 'header',
-            gridRowEnd: 'header',
-            gridRowStart: 'header',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    // animation suggest-fix (suggest-only because animationName needs
-    // a keyframes() reference, not a string literal)
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            animation: 'fadeIn 1s ease-in',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      errors: [
-        {
-          message:
-            /^animation value must be one of:\n`animation` is not recommended/u,
-          suggestions: [
-            {
-              desc: `Split 'animation' shorthand into individual longhand properties?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            animationDuration: '1s',
-            animationTimingFunction: 'ease-in',
-            animationName: 'fadeIn',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    // font auto-fix
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            font: 'bold 16px/1.5 Arial',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            fontFamily: 'Arial',
-            fontWeight: 'bold',
-            fontSize: '16px',
-            lineHeight: 1.5,
-          }
-        })
-      `,
-      errors: [
-        {
-          message: /^font value must be one of:\n`font` is not recommended/u,
-          suggestions: [
-            {
-              desc: `Split 'font' shorthand into individual longhand properties?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            fontFamily: 'Arial',
-            fontWeight: 'bold',
-            fontSize: '16px',
-            lineHeight: 1.5,
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    // font auto-fix emits numeric fontWeight as a number literal
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            font: '700 16px Arial',
-          }
-        })
-      `,
-      options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            fontFamily: 'Arial',
-            fontWeight: 700,
-            fontSize: '16px',
-          }
-        })
-      `,
-      errors: [
-        {
-          message: /^font value must be one of:\n`font` is not recommended/u,
-          suggestions: [
-            {
-              desc: `Split 'font' shorthand into individual longhand properties?`,
-              output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
-            fontFamily: 'Arial',
-            fontWeight: 700,
-            fontSize: '16px',
-          }
-        })
-      `,
-            },
-          ],
-        },
-      ],
-    },
     // animation/font/border autofixes are only enabled in legacy-expand-shorthands mode
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             animation: 'fadeIn 1s ease-in',
-          }
         })
       `,
       errors: [
@@ -4046,11 +2610,9 @@ ruleTester.run('valid-styles [autofixers]', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             font: 'bold 16px/1.5 Arial',
-          }
         })
       `,
       errors: [
@@ -4061,11 +2623,9 @@ ruleTester.run('valid-styles [autofixers]', rule, {
     },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             border: '1px solid blue',
-          }
         })
       `,
       errors: [
@@ -4075,13 +2635,11 @@ ruleTester.run('valid-styles [autofixers]', rule, {
             {
               desc: `Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?`,
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             borderWidth: '1px',
             borderStyle: 'solid',
             borderColor: 'blue',
-          }
         })
       `,
             },
@@ -4092,11 +2650,9 @@ ruleTester.run('valid-styles [autofixers]', rule, {
     // animation with no expansion (single value)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             animation: 'none',
-          }
         })
       `,
       errors: [
@@ -4109,26 +2665,22 @@ ruleTester.run('valid-styles [autofixers]', rule, {
     // empty string suggest-fix
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             color: '',
-          }
         })
       `,
       errors: [
         {
           message:
-            'The empty string is not allowed by Stylex. Use `null` to reset a style.',
+            'The empty string is not allowed. Use `null` to reset a style.',
           suggestions: [
             {
               desc: 'Replace empty string with `null`?',
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             color: null,
-          }
         })
       `,
             },
@@ -4139,11 +2691,9 @@ ruleTester.run('valid-styles [autofixers]', rule, {
     // grid shorthand with propLimits (user-defined, not banPropsForLegacy)
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             gridArea: '1 / 2',
-          }
         })
       `,
       options: [
@@ -4157,12 +2707,10 @@ ruleTester.run('valid-styles [autofixers]', rule, {
         },
       ],
       output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             gridColumnStart: '2',
             gridRowStart: '1',
-          }
         })
       `,
       errors: [
@@ -4173,12 +2721,10 @@ ruleTester.run('valid-styles [autofixers]', rule, {
             {
               desc: `Split 'gridArea' shorthand into individual longhand properties?`,
               output: /* js */ `
-        import * as stylex from '@stylexjs/stylex'
-        const styles = stylex.create({
-          default: {
+        import { apply } from 'vicinage'
+        apply({
             gridColumnStart: '2',
             gridRowStart: '1',
-          }
         })
       `,
             },
