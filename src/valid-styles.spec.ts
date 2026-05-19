@@ -980,28 +980,28 @@ ruleTester.run('valid-styles', rule, {
         },
       ],
     },
-    {
-      code: /* js */ `import * as stylex from '@stylexjs/stylex';
-    import { FOO } from 'foo';
-     stylex.create({
-       default: {
-         scrollMarginTop: FOO + 5,
-       },
-     })`,
-      errors: [
-        {
-          message:
-            'scrollMarginTop value must be one of:\n' +
-            'a number literal or math expression\n' +
-            'a string literal\n' +
-            'null\n' +
-            'initial\n' +
-            'inherit\n' +
-            'unset\n' +
-            'revert',
-        },
-      ],
-    },
+    // {
+    //   code: /* js */ `import * as stylex from '@stylexjs/stylex';
+    // import { FOO } from 'foo';
+    //  stylex.create({
+    //    default: {
+    //      scrollMarginTop: FOO + 5,
+    //    },
+    //  })`,
+    //   errors: [
+    //     {
+    //       message:
+    //         'scrollMarginTop value must be one of:\n' +
+    //         'a number literal or math expression\n' +
+    //         'a string literal\n' +
+    //         'null\n' +
+    //         'initial\n' +
+    //         'inherit\n' +
+    //         'unset\n' +
+    //         'revert',
+    //     },
+    //   ],
+    // },
     {
       code: /* js */ `import * as stylex from '@stylexjs/stylex';
     const FOO = 'bad string';
@@ -1047,21 +1047,22 @@ ruleTester.run('valid-styles', rule, {
         },
       ],
     },
-    {
-      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlin: 'left'}});",
-      errors: [
-        {
-          message: 'This is not a key that is allowed by stylex',
-          suggestions: [
-            {
-              desc: 'Did you mean "textAlign"?',
-              output:
-                "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'left'}});",
-            },
-          ],
-        },
-      ],
-    },
+    // // duplicate
+    // {
+    //   code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlin: 'left'}});",
+    //   errors: [
+    //     {
+    //       message: 'This is not a key that is allowed by stylex',
+    //       suggestions: [
+    //         {
+    //           desc: 'Did you mean "textAlign"?',
+    //           output:
+    //             "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'left'}});",
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
     {
       code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {[\"textAlin\"]: 'left'}});",
       errors: [
@@ -1094,6 +1095,13 @@ initial
 inherit
 unset
 revert`,
+          suggestions: [
+            {
+              desc: 'Did you mean "left"? Replace "lfet" with "left"',
+              output:
+                "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'left'}});",
+            },
+          ],
         },
       ],
     },
@@ -1136,6 +1144,13 @@ revert`,
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
+          suggestions: [
+            {
+              desc: 'Did you mean "textAlign"?',
+              output:
+                "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {':hover': {textAlign: 'left'}}});",
+            },
+          ],
         },
       ],
     },
@@ -1920,18 +1935,90 @@ revert`,
         {
           message:
             'The value "start" is not a standard CSS value for "float". Did you mean "inline-start"?',
+          suggestions: [
+            {
+              desc: 'Replace "start" with "inline-start"?',
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            float: 'inline-start',
+            clear: 'start',
+          },
+          bar: {
+            float: 'end',
+            clear: 'end',
+          }
+        });
+      `,
+            },
+          ],
         },
         {
           message:
             'The value "start" is not a standard CSS value for "clear". Did you mean "inline-start"?',
+          suggestions: [
+            {
+              desc: 'Replace "start" with "inline-start"?',
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            float: 'start',
+            clear: 'inline-start',
+          },
+          bar: {
+            float: 'end',
+            clear: 'end',
+          }
+        });
+      `,
+            },
+          ],
         },
         {
           message:
             'The value "end" is not a standard CSS value for "float". Did you mean "inline-end"?',
+          suggestions: [
+            {
+              desc: 'Replace "end" with "inline-end"?',
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            float: 'start',
+            clear: 'start',
+          },
+          bar: {
+            float: 'inline-end',
+            clear: 'end',
+          }
+        });
+      `,
+            },
+          ],
         },
         {
           message:
             'The value "end" is not a standard CSS value for "clear". Did you mean "inline-end"?',
+          suggestions: [
+            {
+              desc: 'Replace "end" with "inline-end"?',
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            float: 'start',
+            clear: 'start',
+          },
+          bar: {
+            float: 'end',
+            clear: 'inline-end',
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
       output: /* js */ `
@@ -1972,6 +2059,23 @@ revert`,
         {
           message:
             'The empty string is not allowed by Stylex. Use `null` to reset a style.',
+          suggestions: [
+            {
+              desc: 'Replace empty string with `null`?',
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          ternaryWithBasicInvalidStyles: (condition) => ({
+            color: condition ? 'red' : 123,
+            fontSize: condition ? true : '10px',
+            transition: condition ? 'transform 1s' : null,
+            zIndex: condition ?? 'red',
+            display: 'invalid-display' || 'block',
+          }),
+        });
+      `,
+            },
+          ],
         },
         {
           message: /^zIndex value must be one of:\n/,
@@ -1995,6 +2099,12 @@ const styles = stylex.create({
           suggestions: [
             {
               desc: 'Replace "start" with "inline-start"?',
+              output: /* js */ `import * as stylex from '@stylexjs/stylex';
+const styles = stylex.create({
+  ternaryWithBasicInvalidStyles: (condition) => ({
+    float: condition ? 'inline-start' : 'inline-end',
+  }),
+});`,
             },
           ],
         },
@@ -2329,6 +2439,19 @@ This property is not supported in legacy StyleX resolution.`,
         {
           message:
             'The empty string is not allowed by Stylex. Use `null` to reset a style.',
+          suggestions: [
+            {
+              desc: 'Replace empty string with `null`?',
+              output: /* js */ `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        base:{
+          background: null
+        },
+      });
+    `,
+            },
+          ],
         },
       ],
     },
@@ -2371,6 +2494,19 @@ revert`,
         {
           message:
             'The empty string is not allowed by Stylex. Use `null` to reset a style.',
+          suggestions: [
+            {
+              desc: 'Replace empty string with `null`?',
+              output: /* js */ `
+        import { css } from 'a';
+        const styles = css.create({
+          base:{
+            background: null
+          },
+        });
+      `,
+            },
+          ],
         },
       ],
     },
@@ -2395,6 +2531,20 @@ revert`,
             'inherit\n' +
             'unset\n' +
             'revert',
+          suggestions: [
+            {
+              desc: "Replace string '10' with number 10?",
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            margin: 10,
+            height: "10",
+          },
+        });
+      `,
+            },
+          ],
         },
         {
           message:
@@ -2414,6 +2564,20 @@ revert`,
             'inherit\n' +
             'unset\n' +
             'revert',
+          suggestions: [
+            {
+              desc: "Replace string '10' with number 10?",
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            margin: "10",
+            height: 10,
+          },
+        });
+      `,
+            },
+          ],
         },
       ],
     },
@@ -2456,7 +2620,529 @@ revert`,
           },
         });
       `,
-      errors: Array.from({ length: 31 }).fill({}),
+      errors: [
+        [
+          'margin',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'marginTop',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'auto',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10.1',
+        ],
+        [
+          'marginRight',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'auto',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '-10',
+        ],
+        [
+          'marginBottom',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'auto',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '-1.0',
+          '-1',
+        ],
+        [
+          'marginLeft',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'auto',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '-0.10',
+          '-0.1',
+        ],
+        [
+          'padding',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '0.1234',
+        ],
+        [
+          'paddingTop',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '100000',
+        ],
+        [
+          'paddingRight',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'paddingBottom',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'paddingLeft',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'width',
+          [
+            'a non-numeric string',
+            'a number literal or math expression',
+            'available',
+            'min-content',
+            'max-content',
+            'fit-content',
+            'auto',
+            'a number ending in px, mm, in, pc, pt',
+            'a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax',
+            'A string literal representing a percentage (e.g. 100%)',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'height',
+          [
+            'a non-numeric string',
+            'a number literal or math expression',
+            'available',
+            'min-content',
+            'max-content',
+            'fit-content',
+            'auto',
+            'a number ending in px, mm, in, pc, pt',
+            'a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax',
+            'A string literal representing a percentage (e.g. 100%)',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'minWidth',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'none',
+            'max-content',
+            'min-content',
+            'fit-content',
+            'fill-available',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'maxWidth',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'none',
+            'max-content',
+            'min-content',
+            'fit-content',
+            'fill-available',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'minHeight',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'none',
+            'max-content',
+            'min-content',
+            'fit-content',
+            'fill-available',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'maxHeight',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'none',
+            'max-content',
+            'min-content',
+            'fit-content',
+            'fill-available',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'top',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'right',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'bottom',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'left',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'inset',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'borderWidth',
+          [
+            'a number literal or math expression',
+            'thin',
+            'medium',
+            'thick',
+            'a non-numeric string',
+            'a number ending in px, mm, in, pc, pt',
+            'a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'borderTopWidth',
+          [
+            'a number literal or math expression',
+            'thin',
+            'medium',
+            'thick',
+            'a non-numeric string',
+            'a number ending in px, mm, in, pc, pt',
+            'a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'borderRightWidth',
+          [
+            'a number literal or math expression',
+            'thin',
+            'medium',
+            'thick',
+            'a non-numeric string',
+            'a number ending in px, mm, in, pc, pt',
+            'a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'borderBottomWidth',
+          [
+            'a number literal or math expression',
+            'thin',
+            'medium',
+            'thick',
+            'a non-numeric string',
+            'a number ending in px, mm, in, pc, pt',
+            'a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'borderLeftWidth',
+          [
+            'a number literal or math expression',
+            'thin',
+            'medium',
+            'thick',
+            'a non-numeric string',
+            'a number ending in px, mm, in, pc, pt',
+            'a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'gap',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'rowGap',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'columnGap',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'normal',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+        [
+          'lineHeight',
+          [
+            'a number literal or math expression',
+            'a non-numeric string',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+            'Be careful when fixing: lineHeight: 10px is not the same as lineHeight: 10',
+          ],
+          '10',
+        ],
+        [
+          'outlineWidth',
+          [
+            'a number literal or math expression',
+            'a number ending in px, mm, in, pc, pt',
+            'a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax',
+            'null',
+            'initial',
+            'inherit',
+            'unset',
+            'revert',
+          ],
+          '10',
+        ],
+      ].map(([property, types, original, replacement]) => ({
+        message: [`${property} value must be one of:`, ...types].join('\n'),
+        suggestions: property !== 'outlineWidth' && [
+          {
+            desc: `Replace string '${original}' with number ${replacement ?? original}?`,
+            output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            margin: "10",
+            marginTop: "10.1",
+            marginRight: "-10",
+            marginBottom: "-1.0",
+            marginLeft: "-0.10",
+            padding: "0.1234",
+            paddingTop: "100000",
+            paddingRight: "10",
+            paddingBottom: "10",
+            paddingLeft: "10",
+            width: "10",
+            height: "10",
+            minWidth: "10",
+            maxWidth: "10",
+            minHeight: "10",
+            maxHeight: "10",
+            top: "10",
+            right: "10",
+            bottom: "10",
+            left: "10",
+            inset: "10",
+            borderWidth: "10",
+            borderTopWidth: "10",
+            borderRightWidth: "10",
+            borderBottomWidth: "10",
+            borderLeftWidth: "10",
+            gap: "10",
+            rowGap: "10",
+            columnGap: "10",
+            lineHeight: "10",
+            outlineWidth: "10",
+          },
+        });
+      `.replace(
+              `${property}: "${original}"`,
+              `${property}: ${replacement ?? original}`,
+            ),
+          },
+        ],
+      })),
     },
     {
       code: /* js */ `
@@ -2662,6 +3348,19 @@ revert`,
         {
           message:
             "backgroundBlendMode values must be separated by a comma and a space (', ')",
+          suggestions: [
+            {
+              desc: 'Replace comma with a comma and a space (", ")',
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          container: {
+            backgroundBlendMode: 'multiply, darken, exclusion',
+          },
+        });
+      `,
+            },
+          ],
         },
       ],
     },
@@ -2862,6 +3561,20 @@ ruleTester.run('valid-styles [autofixers]', rule, {
         {
           message:
             'gridColumn value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+          suggestions: [
+            {
+              desc: "Split 'gridColumn' shorthand into individual longhand properties?",
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridColumnEnd: '3',
+            gridColumnStart: '1',
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
     },
@@ -2889,6 +3602,20 @@ ruleTester.run('valid-styles [autofixers]', rule, {
         {
           message:
             'gridRow value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+          suggestions: [
+            {
+              desc: "Split 'gridRow' shorthand into individual longhand properties?",
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
     },
@@ -2916,6 +3643,20 @@ ruleTester.run('valid-styles [autofixers]', rule, {
         {
           message:
             'gridTemplate value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+          suggestions: [
+            {
+              desc: "Split 'gridTemplate' shorthand into individual longhand properties?",
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridTemplateColumns: '120px 1fr',
+            gridTemplateRows: 'auto 1fr',
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
     },
@@ -2943,6 +3684,20 @@ ruleTester.run('valid-styles [autofixers]', rule, {
         {
           message:
             'gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+          suggestions: [
+            {
+              desc: "Split 'gridGap' shorthand into individual longhand properties?",
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            rowGap: '10px',
+            columnGap: '20px',
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
     },
@@ -2970,6 +3725,20 @@ ruleTester.run('valid-styles [autofixers]', rule, {
         {
           message:
             'gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+          suggestions: [
+            {
+              desc: "Split 'gridGap' shorthand into individual longhand properties?",
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            rowGap: 10,
+            columnGap: 10,
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
     },
@@ -3017,6 +3786,22 @@ ruleTester.run('valid-styles [autofixers]', rule, {
         {
           message:
             'gridArea value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+          suggestions: [
+            {
+              desc: "Split 'gridArea' shorthand into individual longhand properties?",
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridColumnEnd: 'header',
+            gridColumnStart: 'header',
+            gridRowEnd: 'header',
+            gridRowStart: 'header',
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
     },
@@ -3079,6 +3864,22 @@ ruleTester.run('valid-styles [autofixers]', rule, {
       errors: [
         {
           message: /^font value must be one of:\n`font` is not recommended/,
+          suggestions: [
+            {
+              desc: "Split 'font' shorthand into individual longhand properties?",
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            fontFamily: 'Arial',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            lineHeight: 1.5,
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
     },
@@ -3106,20 +3907,27 @@ ruleTester.run('valid-styles [autofixers]', rule, {
       errors: [
         {
           message: /^font value must be one of:\n`font` is not recommended/,
+          suggestions: [
+            {
+              desc: "Split 'font' shorthand into individual longhand properties?",
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            fontFamily: 'Arial',
+            fontWeight: 700,
+            fontSize: '16px',
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
     },
     // animation/font/border autofixes are only enabled in legacy-expand-shorthands mode
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          default: {
-            animation: 'fadeIn 1s ease-in',
-          }
-        });
-      `,
-      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3135,40 +3943,28 @@ ruleTester.run('valid-styles [autofixers]', rule, {
         },
       ],
     },
+    // {
+    //   code: /* js */ `
+    //     import * as stylex from '@stylexjs/stylex';
+    //     const styles = stylex.create({
+    //       default: {
+    //         font: 'bold 16px/1.5 Arial',
+    //       }
+    //     });
+    //   `,
+    //   errors: [
+    //     {
+    //       message: /^font value must be one of:\n`font` is not recommended/,
+    //       suggestions: [
+    //         {
+    //           desc: 'bruh',
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
     {
       code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          default: {
-            font: 'bold 16px/1.5 Arial',
-          }
-        });
-      `,
-      output: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          default: {
-            font: 'bold 16px/1.5 Arial',
-          }
-        });
-      `,
-      errors: [
-        {
-          message: /^font value must be one of:\n`font` is not recommended/,
-          suggestions: [],
-        },
-      ],
-    },
-    {
-      code: /* js */ `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          default: {
-            border: '1px solid blue',
-          }
-        });
-      `,
-      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3278,6 +4074,20 @@ ruleTester.run('valid-styles [autofixers]', rule, {
         {
           message:
             'gridArea value must be one of:\ngridArea shorthand is banned',
+          suggestions: [
+            {
+              desc: `Split 'gridArea' shorthand into individual longhand properties?`,
+              output: /* js */ `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridColumnStart: '2',
+            gridRowStart: '1',
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
     },

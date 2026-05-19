@@ -457,7 +457,7 @@ const backgroundBlendMode: RuleCheck = (
           fix: (fixer: Rule.RuleFixer): Rule.Fix | null =>
             fixer.replaceText(
               prop,
-              `backgroundBlendMode: '${value.replace(',', ', ')}'`,
+              `backgroundBlendMode: '${value.replace(/,(?! )/g, ', ')}'`,
             ),
         },
       }
