@@ -1,26 +1,19 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
+import rule from './valid-styles'
+import { RuleTester } from 'eslint'
 
-'use strict'
-
-jest.disableAutomock()
-
-const { RuleTester: ESLintTester } = require('eslint')
-const rule = require('./valid-styles')
-
-const eslintTester = new ESLintTester({
-  parser: require.resolve('hermes-eslint'),
-  parserOptions: {
-    ecmaVersion: 6,
-    sourceType: 'module',
+const ruleTester = new RuleTester({
+  languageOptions: {
+    parserOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      ecmaFeatures: {
+        jsx: true,
+      },
+    },
   },
 })
 
-eslintTester.run('valid-styles', rule.default, {
+ruleTester.run('valid-styles', rule, {
   valid: [
     // test for local static variables
     `
@@ -54,7 +47,7 @@ eslintTester.run('valid-styles', rule.default, {
     `,
     `
       const stylex = require('@stylexjs/stylex');
-      
+
       const styles = stylex.create({
         validStyle: {
           marginInlineStart: "10px",
@@ -155,7 +148,7 @@ eslintTester.run('valid-styles', rule.default, {
     `,
     // test for nested styles
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const TRANSPARENT = 0;
         const OPAQUE = 1;
@@ -176,7 +169,7 @@ eslintTester.run('valid-styles', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
-      code: `
+      code: /* js */ `
         import { keyframes as kf, create } from 'stylex';
         const fadeIn = kf({
           '0%': {
@@ -194,7 +187,7 @@ eslintTester.run('valid-styles', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stlx from 'stylex';
         const fadeIn = stlx.keyframes({
           '0%': {
@@ -212,7 +205,7 @@ eslintTester.run('valid-styles', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -226,7 +219,7 @@ eslintTester.run('valid-styles', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           base: {
@@ -242,7 +235,7 @@ eslintTester.run('valid-styles', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
-      code: `
+      code: /* js */ `
         import { create, when } from '@stylexjs/stylex';
         const styles = create({
           base: {
@@ -257,7 +250,7 @@ eslintTester.run('valid-styles', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
-      code: `
+      code: /* js */ `
         import { create, when } from 'stylex';
         const styles = create({
           base: {
@@ -272,7 +265,7 @@ eslintTester.run('valid-styles', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           base: {
@@ -287,7 +280,7 @@ eslintTester.run('valid-styles', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
 
         import { colors } from './vars.stylex';
@@ -305,7 +298,7 @@ eslintTester.run('valid-styles', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           base: {
@@ -322,7 +315,7 @@ eslintTester.run('valid-styles', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
 
         import { colors } from './vars.stylex';
@@ -740,7 +733,7 @@ eslintTester.run('valid-styles', rule.default, {
         `,
     // test importing vars from paths including custom theme file extension
     {
-      code: `
+      code: /* js */ `
     import * as stylex from '@stylexjs/stylex';
     import { vars } from './vars.css.js';
     import { consts } from './consts.css.const.js';
@@ -803,7 +796,7 @@ eslintTester.run('valid-styles', rule.default, {
     `,
     // test for ternary and logical expressions
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           basicTernary: (condition) => ({
@@ -818,7 +811,7 @@ eslintTester.run('valid-styles', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const COLOR = 'blue';
         const sizeSmall = '10px';
@@ -836,7 +829,7 @@ eslintTester.run('valid-styles', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const COLOR = 'blue';
         const styles = stylex.create({
@@ -849,7 +842,7 @@ eslintTester.run('valid-styles', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const condition = true;
         const styles = stylex.create({
@@ -864,7 +857,7 @@ eslintTester.run('valid-styles', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const condition = true;
         const styles = stylex.create({
@@ -876,7 +869,7 @@ eslintTester.run('valid-styles', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           emptyString: (condition) => ({
@@ -888,7 +881,7 @@ eslintTester.run('valid-styles', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const zIndexConst = 10;
         const widthConst = 0;
@@ -918,7 +911,7 @@ eslintTester.run('valid-styles', rule.default, {
       });
     `,
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           foo: {
@@ -928,7 +921,7 @@ eslintTester.run('valid-styles', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           foo: {
@@ -939,7 +932,7 @@ eslintTester.run('valid-styles', rule.default, {
     },
     // bare numbers for time-based properties
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           foo: {
@@ -954,7 +947,7 @@ eslintTester.run('valid-styles', rule.default, {
   ],
   invalid: [
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -976,7 +969,7 @@ eslintTester.run('valid-styles', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = {default: {width: '30pt'}};
         stylex.create(styles);
@@ -988,7 +981,7 @@ eslintTester.run('valid-styles', rule.default, {
       ],
     },
     {
-      code: `import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `import * as stylex from '@stylexjs/stylex';
     import { FOO } from 'foo';
      stylex.create({
        default: {
@@ -1010,7 +1003,7 @@ eslintTester.run('valid-styles', rule.default, {
       ],
     },
     {
-      code: `import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `import * as stylex from '@stylexjs/stylex';
     const FOO = 'bad string';
      stylex.create({
        default: {
@@ -1175,7 +1168,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         stylex.create({
           default: {
@@ -1194,7 +1187,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         stylex.create({
           default: {
@@ -1214,7 +1207,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const bounce = stylex.keyframes({
           '0%': {
@@ -1250,7 +1243,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1259,7 +1252,7 @@ revert`,
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1276,7 +1269,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1292,7 +1285,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1301,7 +1294,7 @@ revert`,
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1318,7 +1311,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1334,7 +1327,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1343,7 +1336,7 @@ revert`,
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1360,7 +1353,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1376,7 +1369,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1385,7 +1378,7 @@ revert`,
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1402,7 +1395,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1418,7 +1411,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1427,7 +1420,7 @@ revert`,
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1444,7 +1437,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1460,7 +1453,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1469,7 +1462,7 @@ revert`,
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1485,7 +1478,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1500,7 +1493,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1509,7 +1502,7 @@ revert`,
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1525,7 +1518,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1540,7 +1533,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1549,7 +1542,7 @@ revert`,
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1564,7 +1557,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1578,7 +1571,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1587,7 +1580,7 @@ revert`,
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1602,7 +1595,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1616,7 +1609,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1625,7 +1618,7 @@ revert`,
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1640,7 +1633,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' set to a number with 'borderWidth' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1654,7 +1647,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1663,7 +1656,7 @@ revert`,
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1678,7 +1671,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' set to a number with 'borderWidth' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -1692,7 +1685,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from 'custom-import';
         const styles = stylex.create({
           default: {
@@ -1700,7 +1693,7 @@ revert`,
           }
         });
       `,
-      output: `
+      output: /* js */ `
         import * as stylex from 'custom-import';
         const styles = stylex.create({
           default: {
@@ -1721,7 +1714,7 @@ revert`,
           suggestions: [
             {
               desc: "Replace 'border' set to a number with 'borderWidth' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from 'custom-import';
         const styles = stylex.create({
           default: {
@@ -1735,7 +1728,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import * as stylex from'stylex';
       import {TextTypeTokens as TextType, ColorTokens} from 'DspSharedTextTokens';
       stylex.create({
@@ -1910,7 +1903,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           foo: {
@@ -1941,7 +1934,7 @@ revert`,
             'The value "end" is not a standard CSS value for "clear". Did you mean "inline-end"?',
         },
       ],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           foo: {
@@ -1957,7 +1950,7 @@ revert`,
     },
     // test for ternary and logical expressions
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           ternaryWithBasicInvalidStyles: (condition) => ({
@@ -1989,7 +1982,7 @@ revert`,
       ],
     },
     {
-      code: `import * as stylex from '@stylexjs/stylex';
+      code: /* js */ `import * as stylex from '@stylexjs/stylex';
 const styles = stylex.create({
   ternaryWithBasicInvalidStyles: (condition) => ({
     float: condition ? 'start' : 'inline-end',
@@ -2006,7 +1999,7 @@ const styles = stylex.create({
           ],
         },
       ],
-      output: `import * as stylex from '@stylexjs/stylex';
+      output: /* js */ `import * as stylex from '@stylexjs/stylex';
 const styles = stylex.create({
   ternaryWithBasicInvalidStyles: (condition) => ({
     float: condition ? 'inline-start' : 'inline-end',
@@ -2014,7 +2007,7 @@ const styles = stylex.create({
 });`,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           nestedInvalidStyles: (conditionA, conditionB) => ({
@@ -2029,7 +2022,7 @@ const styles = stylex.create({
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           ternaryWithInvalidType: (condition) => ({
@@ -2050,7 +2043,7 @@ const styles = stylex.create({
   ],
 })
 
-eslintTester.run('valid-styles [restrictions]', rule.default, {
+ruleTester.run('valid-styles [restrictions]', rule, {
   valid: [
     `
       import * as stylex from '@stylexjs/stylex';
@@ -2064,7 +2057,7 @@ eslintTester.run('valid-styles [restrictions]', rule.default, {
       });
     `,
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2085,7 +2078,7 @@ eslintTester.run('valid-styles [restrictions]', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2105,7 +2098,7 @@ eslintTester.run('valid-styles [restrictions]', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from'stylex';
         const styles = stylex.create({
           default: {
@@ -2115,7 +2108,7 @@ eslintTester.run('valid-styles [restrictions]', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from'stylex';
         const styles = stylex.create({
           default: {
@@ -2125,7 +2118,7 @@ eslintTester.run('valid-styles [restrictions]', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from'stylex';
         const styles = stylex.create({
           default: {
@@ -2135,7 +2128,7 @@ eslintTester.run('valid-styles [restrictions]', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from'stylex';
         const styles = stylex.create({
           base: {
@@ -2148,7 +2141,7 @@ eslintTester.run('valid-styles [restrictions]', rule.default, {
     },
     // test for allowed raw CSS variable overrides
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           foo: {
@@ -2159,7 +2152,7 @@ eslintTester.run('valid-styles [restrictions]', rule.default, {
       options: [{ allowRawCSSVars: true }],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2174,7 +2167,7 @@ eslintTester.run('valid-styles [restrictions]', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           container: {
@@ -2184,7 +2177,7 @@ eslintTester.run('valid-styles [restrictions]', rule.default, {
       `,
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           container: {
@@ -2196,7 +2189,7 @@ eslintTester.run('valid-styles [restrictions]', rule.default, {
   ],
   invalid: [
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2228,7 +2221,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         stylex.create({
           default: {
@@ -2248,7 +2241,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2275,7 +2268,7 @@ grid properties disallowed for testing`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2302,7 +2295,7 @@ grid properties disallowed for testing`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2324,7 +2317,7 @@ This property is not supported in legacy StyleX resolution.`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         base:{
@@ -2340,7 +2333,7 @@ This property is not supported in legacy StyleX resolution.`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from'stylex';
         const styles = stylex.create({
           b:{
@@ -2365,7 +2358,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import { css } from 'a';
         const styles = css.create({
           base:{
@@ -2382,7 +2375,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           invalidStyle: {
@@ -2425,7 +2418,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           invalidStyle: {
@@ -2463,10 +2456,10 @@ revert`,
           },
         });
       `,
-      errors: Array(31).fill({}),
+      errors: Array.from({ length: 31 }).fill({}),
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         stylex.create({
           default: {
@@ -2490,7 +2483,7 @@ revert`,
     },
     // test for positionTryFallbacks with incorrectly formatted template literal - missing comma
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const fallback1 = stylex.positionTry({
           positionAnchor: '--anchor',
@@ -2528,7 +2521,7 @@ revert`,
     },
     // test for positionTryFallbacks with incorrectly formatted template literal - missing space after comma
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const fallback1 = stylex.positionTry({
           positionAnchor: '--anchor',
@@ -2566,7 +2559,7 @@ revert`,
     },
     // test for disallowed raw CSS variable overrides
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           foo: {
@@ -2582,7 +2575,7 @@ revert`,
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           container: {
@@ -2620,7 +2613,7 @@ revert`,
     // test for backgroundBlendMode with invalid blend mode value in comma-separated list
     // 'darke' should be 'darken'
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           container: {
@@ -2657,7 +2650,7 @@ revert`,
     },
     // test for incorrect spacing around comma in backgroundBlendMode
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           container: {
@@ -2674,7 +2667,7 @@ revert`,
     },
     // test for when function from other library
     {
-      code: `
+      code: /* js */ `
              import { when } from 'some-other-library';
              import { create } from '@stylexjs/stylex';
              const styles = create({
@@ -2695,7 +2688,7 @@ revert`,
     },
     // test for invalid CSS values in stylex.when calls
     {
-      code: `
+      code: /* js */ `
              import * as stylex from '@stylexjs/stylex';
              const styles = stylex.create({
                base: {
@@ -2726,7 +2719,7 @@ revert`,
     },
     // test for invalid CSS value in stylex.when call
     {
-      code: `
+      code: /* js */ `
              import { when, create } from '@stylexjs/stylex';
              const styles = create({
                base: {
@@ -2747,7 +2740,7 @@ revert`,
     },
     // test for trying to use `stylex.when` as outer key when `allowOuterPseudoAndMedia` is false
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           base: {
@@ -2774,11 +2767,11 @@ revert`,
   ],
 })
 
-eslintTester.run('valid-styles [autofixers]', rule.default, {
+ruleTester.run('valid-styles [autofixers]', rule, {
   valid: [
     // Grid longhands should be allowed under banPropsForLegacy
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2802,7 +2795,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
   invalid: [
     // gridArea auto-fix under banPropsForLegacy
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2811,7 +2804,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
         });
       `,
       options: [{ banPropsForLegacy: true }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2829,7 +2822,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
           suggestions: [
             {
               desc: "Split 'gridArea' shorthand into individual longhand properties?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2847,7 +2840,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // gridColumn auto-fix under banPropsForLegacy
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2856,7 +2849,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
         });
       `,
       options: [{ banPropsForLegacy: true }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2874,7 +2867,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // gridRow auto-fix under banPropsForLegacy
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2883,7 +2876,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
         });
       `,
       options: [{ banPropsForLegacy: true }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2901,7 +2894,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // gridTemplate auto-fix under banPropsForLegacy
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2910,7 +2903,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
         });
       `,
       options: [{ banPropsForLegacy: true }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2928,7 +2921,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // gridGap auto-fix under banPropsForLegacy
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2937,7 +2930,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
         });
       `,
       options: [{ banPropsForLegacy: true }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2955,7 +2948,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // gridGap numeric value auto-fix under banPropsForLegacy
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2964,7 +2957,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
         });
       `,
       options: [{ banPropsForLegacy: true }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -2982,7 +2975,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // grid shorthand without fix (too complex for deterministic expansion)
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3000,7 +2993,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // gridArea with single ident (custom ident expansion)
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3009,7 +3002,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
         });
       `,
       options: [{ banPropsForLegacy: true }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3030,7 +3023,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     // animation suggest-fix (suggest-only because animationName needs
     // a keyframes() reference, not a string literal)
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3046,7 +3039,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
           suggestions: [
             {
               desc: "Split 'animation' shorthand into individual longhand properties?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3063,7 +3056,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // font auto-fix
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3072,7 +3065,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3091,7 +3084,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // font auto-fix emits numeric fontWeight as a number literal
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3100,7 +3093,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
         });
       `,
       options: [{ styleResolution: 'legacy-expand-shorthands' }],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3118,7 +3111,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // animation/font/border autofixes are only enabled in legacy-expand-shorthands mode
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3126,7 +3119,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
           }
         });
       `,
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3143,7 +3136,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3151,7 +3144,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
           }
         });
       `,
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3167,7 +3160,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
       ],
     },
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3175,7 +3168,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
           }
         });
       `,
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3190,7 +3183,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
           suggestions: [
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3207,7 +3200,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // animation with no expansion (single value)
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3224,7 +3217,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // empty string suggest-fix
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3239,7 +3232,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
           suggestions: [
             {
               desc: 'Replace empty string with `null`?',
-              output: `
+              output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3254,7 +3247,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
     },
     // grid shorthand with propLimits (user-defined, not banPropsForLegacy)
     {
-      code: `
+      code: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
@@ -3272,7 +3265,7 @@ eslintTester.run('valid-styles [autofixers]', rule.default, {
           },
         },
       ],
-      output: `
+      output: /* js */ `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {

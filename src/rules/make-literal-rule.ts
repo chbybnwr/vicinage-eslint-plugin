@@ -1,41 +1,36 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
+/* eslint-disable no-undefined */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 
-import type {
-  RuleResponse,
-  Variables,
-  RuleCheck,
-} from '../stylex-valid-styles';
-/*:: import { Rule } from 'eslint'; */
-import getDistance from '../utils/getDistance';
-import type { Node } from 'estree';
-import makeVariableCheckingRule from '../utils/makeVariableCheckingRule';
+import getDistance from '../utils/get-distance'
+import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import type { Node } from 'estree'
+import type { Rule } from 'eslint'
+import type { RuleCheck } from '#/rules/types'
+import type { RuleResponse } from '#/rules/types'
+import type { Variables } from '#/rules/types'
 
 // Helper functions to check for stylex values.
 // All these helper functions receive a list of locally defined variables
 // as well. This lets them recursively resolve values that are defined locally.
-const MAX_DISTANCE = 4;
+const MAX_DISTANCE = 4
+
 export default function makeLiteralRule(
   value: number | string | null,
 ): RuleCheck {
   function literalChecker(node: Node, _variables?: Variables): RuleResponse {
     const defaultFailure = {
       message: `${value ?? 'null'}`,
-    };
+    }
+
     if (node.type === 'Literal') {
       if (node.value === value) {
-        return undefined;
+        return undefined
       }
+
       const distance =
         typeof node.value === 'string' && typeof value === 'string'
           ? getDistance(value, node.value, MAX_DISTANCE)
-          : Infinity;
+          : Infinity
       const suggest =
         distance < MAX_DISTANCE
           ? {
@@ -43,28 +38,33 @@ export default function makeLiteralRule(
                 node.value,
               )}" with "${value ?? 'null'}"`,
               fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
-                const raw = node.raw;
+                const { raw } = node
+
                 if (raw != null) {
-                  const quoteType = raw.substr(0, 1);
+                  const quoteType = raw.slice(0, 1)
+
                   return fixer.replaceText(
                     node,
                     `${quoteType}${value ?? 'null'}${quoteType}`,
-                  );
+                  )
                 }
-                return null;
+
+                return null
               },
             }
-          : undefined;
+          : undefined
 
-      // $FlowFixMe[incompatible-type]
+      // @ts-expect-error FIXME: incompatible-type
       return {
         ...defaultFailure,
-        distance: distance,
+        distance,
         suggest,
-      } as const;
+      } as const
     }
-    // $FlowFixMe[incompatible-type]
-    return defaultFailure;
+
+    // FIXME: incompatible-type
+    return defaultFailure
   }
-  return makeVariableCheckingRule(literalChecker);
+
+  return makeVariableCheckingRule(literalChecker)
 }

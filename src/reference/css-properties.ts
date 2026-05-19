@@ -1,86 +1,84 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
+import { borderSplitter } from '../utils/split-css-value'
+import type { Expression } from 'estree'
+import formatPropertiesWithNodeIndentation from '../utils/format-properties-with-node-indentation'
+import getSourceCode from '../utils/get-source-code'
+import isAbsoluteLength from '../rules/is-absolute-length'
+import isCSSVariable from '../rules/is-css-variable'
+import isHexColor from '../rules/is-hex-color'
+import isNumber from '../rules/is-number'
+import isPercentage from '../rules/is-percentage'
+import isRelativeLength from '../rules/is-relative-length'
+import isString from '../rules/is-string'
+import makeLiteralRule from '../rules/make-literal-rule'
+import makeRangeRule from '../rules/make-range-rule'
+import makeRegExRule from '../rules/make-reg-ex-rule'
+import makeUnionRule from '../rules/make-union-rule'
+import namedColors from './named-colors'
+import type { Node } from 'estree'
+import type { Pattern } from 'estree'
+import type { Property } from 'estree'
+import type { Rule } from 'eslint'
 
-'use strict';
-import namedColors from '../reference/namedColors';
-import type { Expression, Node, Pattern, Property } from 'estree';
-import type { Rule } from 'eslint';
-import isCSSVariable from '../rules/isCSSVariable';
-import makeLiteralRule from '../rules/makeLiteralRule';
-import makeRangeRule from '../rules/makeRangeRule';
-import makeRegExRule from '../rules/makeRegExRule';
-import isString from '../rules/isString';
-import isHexColor from '../rules/isHexColor';
-import makeUnionRule from '../rules/makeUnionRule';
-import isNumber from '../rules/isNumber';
-import isPercentage from '../rules/isPercentage';
-import isAbsoluteLength from '../rules/isAbsoluteLength';
-import isRelativeLength from '../rules/isRelativeLength';
-import { borderSplitter } from '../utils/split-css-value';
-import formatPropertiesWithNodeIndentation from '../utils/formatPropertiesWithNodeIndentation';
-import getSourceCode from '../utils/getSourceCode';
-
-export type RuleResponse = void | {
-  message: string,
-  distance?: number,
-  fix?: Rule.ReportFixer,
-  suggest?: {
-    fix: Rule.ReportFixer,
-    desc: string,
-  },
-};
+export type RuleResponse =
+  | undefined
+  | {
+      message: string
+      distance?: number
+      fix?: Rule.ReportFixer
+      suggest?: {
+        fix: Rule.ReportFixer
+        desc: string
+      }
+    }
 export type RuleCheck = (
-  node: $ReadOnly<Expression | Pattern>,
+  node: Readonly<Expression | Pattern>,
   variables?: Variables,
-  prop?: $ReadOnly<Property>,
+  prop?: Readonly<Property>,
   context?: Rule.RuleContext,
-) => RuleResponse;
+) => RuleResponse
 
-export type Variables = $ReadOnlyMap<string, Expression | 'ARG'>;
+export type Variables = ReadonlyMap<string, Expression | 'ARG'>
 
 const showError =
   (message: string): RuleCheck =>
-  () => ({ message });
+  () => ({ message })
 
-const isStringOrNumber: RuleCheck = makeUnionRule(isString, isNumber);
+const isStringOrNumber: RuleCheck = makeUnionRule(isString, isNumber)
 
 const isNamedColor: RuleCheck = makeUnionRule(
-  ...Array.from(namedColors).map((color) => makeLiteralRule(color)),
-);
+  ...[...namedColors].map((color) => makeLiteralRule(color)),
+)
 
-const isLength: RuleCheck = makeUnionRule(isAbsoluteLength, isRelativeLength);
+const isLength: RuleCheck = makeUnionRule(isAbsoluteLength, isRelativeLength)
 
 const isNonNumericString: RuleCheck = (
   node: Node,
   _variables?: Variables,
   _prop?: Property,
 ): RuleResponse => {
-  if (node.type === 'Literal' && typeof node.value === 'string') {
-    if (/^[-+]?(?:\d+|\d*\.\d+)$/.test(node.value)) {
-      if (node.value === '0') {
-        return undefined;
-      }
-
-      const response: $NonMaybeType<RuleResponse> = {
-        message: 'a non-numeric string',
-      };
-      response.suggest = {
-        desc: `Replace string '${node.value}' with number ${Number(node.value)}?`,
-        fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
-          return fixer.replaceText(node, String(Number(node.value)));
-        },
-      };
-      return response;
+  if (
+    node.type === 'Literal' &&
+    typeof node.value === 'string' &&
+    /^[+-]?(?:\d+|\d*\.\d+)$/.test(node.value)
+  ) {
+    if (node.value === '0') {
+      return undefined
     }
+
+    const response: NonNullable<RuleResponse> = {
+      message: 'a non-numeric string',
+    }
+    response.suggest = {
+      desc: `Replace string '${node.value}' with number ${Number(node.value)}?`,
+      fix: (fixer: Rule.RuleFixer): Rule.Fix | null =>
+        fixer.replaceText(node, String(Number(node.value))),
+    }
+
+    return response
   }
-  return undefined;
-};
+
+  return undefined
+}
 
 // NOTE: converted from Flow types to function calls using this
 // https://astexplorer.net/#/gist/87e64b378349f13e885f9b6968c1e556/4b4ff0358de33cf86b8b21d29c17504d789babf9
@@ -90,11 +88,11 @@ export const all: RuleCheck = makeUnionRule(
   makeLiteralRule('inherit'),
   makeLiteralRule('unset'),
   makeLiteralRule('revert'),
-);
+)
 
-const length: RuleCheck = makeUnionRule(isNumber, isNonNumericString);
+const length: RuleCheck = makeUnionRule(isNumber, isNonNumericString)
 
-const color: RuleCheck = makeUnionRule(isString, isNamedColor, isHexColor);
+const color: RuleCheck = makeUnionRule(isString, isNamedColor, isHexColor)
 const width: RuleCheck = makeUnionRule(
   isNonNumericString,
   isNumber,
@@ -105,7 +103,7 @@ const width: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   isLength,
   isPercentage,
-);
+)
 const borderWidth: RuleCheck = makeUnionRule(
   isNumber,
   makeLiteralRule('thin'),
@@ -113,33 +111,33 @@ const borderWidth: RuleCheck = makeUnionRule(
   makeLiteralRule('thick'),
   isNonNumericString,
   isLength,
-);
-const lengthPercentage: RuleCheck = isStringOrNumber;
+)
+const lengthPercentage: RuleCheck = isStringOrNumber
 const borderImageSource: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isString,
-);
-const time: RuleCheck = makeUnionRule(isNumber, isString);
+)
+const time: RuleCheck = makeUnionRule(isNumber, isString)
 const animationDirection: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('reverse'),
   makeLiteralRule('alternate'),
   makeLiteralRule('alternate-reverse'),
-);
+)
 const animationFillMode: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('forwards'),
   makeLiteralRule('backwards'),
   makeLiteralRule('both'),
-);
+)
 const animationIterationCount: RuleCheck = makeUnionRule(
   makeLiteralRule('infinite'),
   isNumber,
-);
+)
 const animationPlayState: RuleCheck = makeUnionRule(
   makeLiteralRule('running'),
   makeLiteralRule('paused'),
-);
+)
 const animationTimingFunction: RuleCheck = makeUnionRule(
   makeLiteralRule('ease'),
   makeLiteralRule('linear'),
@@ -149,12 +147,12 @@ const animationTimingFunction: RuleCheck = makeUnionRule(
   makeLiteralRule('step-start'),
   makeLiteralRule('step-end'),
   isString,
-);
+)
 const attachment: RuleCheck = makeUnionRule(
   makeLiteralRule('scroll'),
   makeLiteralRule('fixed'),
   makeLiteralRule('local'),
-);
+)
 const blendMode: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('multiply'),
@@ -172,24 +170,24 @@ const blendMode: RuleCheck = makeUnionRule(
   makeLiteralRule('saturation'),
   makeLiteralRule('color'),
   makeLiteralRule('luminosity'),
-);
+)
 const bgSize: RuleCheck = makeUnionRule(
   isString,
   makeLiteralRule('cover'),
   makeLiteralRule('contain'),
-);
+)
 const boxAlign: RuleCheck = makeUnionRule(
   makeLiteralRule('start'),
   makeLiteralRule('center'),
   makeLiteralRule('end'),
   makeLiteralRule('baseline'),
   makeLiteralRule('stretch'),
-);
+)
 const repeatStyle: RuleCheck = makeUnionRule(
   makeLiteralRule('repeat-x'),
   makeLiteralRule('repeat-y'),
   isString,
-);
+)
 const backgroundPosition: RuleCheck = makeUnionRule(
   isString,
   makeLiteralRule('top'),
@@ -197,39 +195,39 @@ const backgroundPosition: RuleCheck = makeUnionRule(
   makeLiteralRule('left'),
   makeLiteralRule('right'),
   makeLiteralRule('center'),
-);
+)
 const backgroundPositionX: RuleCheck = makeUnionRule(
   isNumber,
   isString,
   makeLiteralRule('left'),
   makeLiteralRule('right'),
   makeLiteralRule('center'),
-);
+)
 const backgroundPositionY: RuleCheck = makeUnionRule(
   isNumber,
   isString,
   makeLiteralRule('top'),
   makeLiteralRule('bottom'),
   makeLiteralRule('center'),
-);
-const borderImageOutset: RuleCheck = isString;
+)
+const borderImageOutset: RuleCheck = isString
 const borderImageRepeat: RuleCheck = makeUnionRule(
   isString,
   makeLiteralRule('stretch'),
   makeLiteralRule('repeat'),
   makeLiteralRule('round'),
   makeLiteralRule('space'),
-);
-const borderImageWidth: RuleCheck = isString;
+)
+const borderImageWidth: RuleCheck = isString
 const borderImageSlice: RuleCheck = makeUnionRule(
   isStringOrNumber,
   makeLiteralRule('fill'),
-);
+)
 const box: RuleCheck = makeUnionRule(
   makeLiteralRule('border-box'),
   makeLiteralRule('padding-box'),
   makeLiteralRule('content-box'),
-);
+)
 const brStyle: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('hidden'),
@@ -241,7 +239,7 @@ const brStyle: RuleCheck = makeUnionRule(
   makeLiteralRule('ridge'),
   makeLiteralRule('inset'),
   makeLiteralRule('outset'),
-);
+)
 const CSSCursor: RuleCheck = makeUnionRule(
   isCSSVariable,
   makeLiteralRule('auto'),
@@ -282,43 +280,43 @@ const CSSCursor: RuleCheck = makeUnionRule(
   makeLiteralRule('grabbing'),
   makeLiteralRule('-webkit-grab'),
   makeLiteralRule('-webkit-grabbing'),
-);
+)
 const relativeSize: RuleCheck = makeUnionRule(
   makeLiteralRule('larger'),
   makeLiteralRule('smaller'),
-);
+)
 const emptyCells: RuleCheck = makeUnionRule(
   makeLiteralRule('show'),
   makeLiteralRule('hide'),
-);
-const filter: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString);
+)
+const filter: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString)
 // const flex = makeUnionRule(makeLiteralRule('none'), isString, isNumber);
 const flexBasis: RuleCheck = makeUnionRule(
   makeLiteralRule('content'),
   isNumber,
   isString,
-);
+)
 const flexDirection: RuleCheck = makeUnionRule(
   makeLiteralRule('row'),
   makeLiteralRule('row-reverse'),
   makeLiteralRule('column'),
   makeLiteralRule('column-reverse'),
-);
+)
 const flexWrap: RuleCheck = makeUnionRule(
   makeLiteralRule('nowrap'),
   makeLiteralRule('wrap'),
   makeLiteralRule('wrap-reverse'),
-);
-const flexGrow: RuleCheck = isStringOrNumber;
-const flexShrink: RuleCheck = isStringOrNumber;
-const flexFlow: RuleCheck = makeUnionRule(flexDirection, flexWrap);
+)
+const flexGrow: RuleCheck = isStringOrNumber
+const flexShrink: RuleCheck = isStringOrNumber
+const flexFlow: RuleCheck = makeUnionRule(flexDirection, flexWrap)
 const float: RuleCheck = makeUnionRule(
   makeLiteralRule('left'),
   makeLiteralRule('right'),
   makeLiteralRule('none'),
   makeLiteralRule('inline-start'),
   makeLiteralRule('inline-end'),
-);
+)
 const absoluteSize: RuleCheck = makeUnionRule(
   makeLiteralRule('xx-small'),
   makeLiteralRule('x-small'),
@@ -327,61 +325,61 @@ const absoluteSize: RuleCheck = makeUnionRule(
   makeLiteralRule('large'),
   makeLiteralRule('x-large'),
   makeLiteralRule('xx-large'),
-);
-const fontFamily: RuleCheck = isString;
-const gridLine: RuleCheck = makeUnionRule(makeLiteralRule('auto'), isString);
+)
+const fontFamily: RuleCheck = isString
+const gridLine: RuleCheck = makeUnionRule(makeLiteralRule('auto'), isString)
 const gridTemplate: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('subgrid'),
   isString,
-);
+)
 const gridTemplateAreas: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isString,
-);
+)
 const trackBreadth: RuleCheck = makeUnionRule(
   lengthPercentage,
   isString,
   makeLiteralRule('min-content'),
   makeLiteralRule('max-content'),
   makeLiteralRule('auto'),
-);
+)
 const listStyleType: RuleCheck = makeUnionRule(
   isString,
   makeLiteralRule('none'),
-);
-const trackSize: RuleCheck = makeUnionRule(trackBreadth, isString);
-const borderStyle: RuleCheck = brStyle;
-const columnRuleColor: RuleCheck = color;
-const columnRuleStyle: RuleCheck = brStyle;
-const columnRuleWidth: RuleCheck = borderWidth;
+)
+const trackSize: RuleCheck = makeUnionRule(trackBreadth, isString)
+const borderStyle: RuleCheck = brStyle
+const columnRuleColor: RuleCheck = color
+const columnRuleStyle: RuleCheck = brStyle
+const columnRuleWidth: RuleCheck = borderWidth
 const columnRule: RuleCheck = makeUnionRule(
   columnRuleWidth,
   columnRuleStyle,
   columnRuleColor,
-);
-const shapeBox: RuleCheck = makeUnionRule(box, makeLiteralRule('margin-box'));
+)
+const shapeBox: RuleCheck = makeUnionRule(box, makeLiteralRule('margin-box'))
 const geometryBox: RuleCheck = makeUnionRule(
   shapeBox,
   makeLiteralRule('fill-box'),
   makeLiteralRule('stroke-box'),
   makeLiteralRule('view-box'),
-);
+)
 const maskReference: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isString,
-);
+)
 const compositeOperator: RuleCheck = makeUnionRule(
   makeLiteralRule('add'),
   makeLiteralRule('subtract'),
   makeLiteralRule('intersect'),
   makeLiteralRule('exclude'),
-);
+)
 const maskingMode: RuleCheck = makeUnionRule(
   makeLiteralRule('alpha'),
   makeLiteralRule('luminance'),
   makeLiteralRule('match-source'),
-);
+)
 const maskLayer: RuleCheck = makeUnionRule(
   maskReference,
   maskingMode,
@@ -389,7 +387,7 @@ const maskLayer: RuleCheck = makeUnionRule(
   repeatStyle,
   geometryBox,
   compositeOperator,
-);
+)
 
 const alignBase: RuleCheck = makeUnionRule(
   'normal',
@@ -404,101 +402,99 @@ const alignBase: RuleCheck = makeUnionRule(
   'last baseline',
   'safe center',
   'unsafe center',
-);
+)
 
 const alignContent: RuleCheck = makeUnionRule(
   alignBase,
   'space-between',
   'space-around',
   'space-evenly',
-);
+)
 
-const alignItems: RuleCheck = makeUnionRule(
-  alignBase,
-  'self-start',
-  'self-end',
-);
+const alignItems: RuleCheck = makeUnionRule(alignBase, 'self-start', 'self-end')
 
 const alignSelf: RuleCheck = makeUnionRule(
   alignBase,
   'auto',
   'self-start',
   'self-end',
-);
+)
 const appearance: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('none'),
   makeLiteralRule('textfield'),
-);
+)
 const backdropFilter: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isString,
-);
+)
 const backfaceVisibility: RuleCheck = makeUnionRule(
   makeLiteralRule('visible'),
   makeLiteralRule('hidden'),
-);
+)
 // type background = string | finalBgLayer;
-const backgroundAttachment: RuleCheck = attachment;
+const backgroundAttachment: RuleCheck = attachment
+
 const backgroundBlendMode: RuleCheck = (
   node: Expression | Pattern,
   _variables?: Variables,
   prop?: Property,
 ) => {
   if (node.type !== 'Literal' || prop == null) {
-    return blendMode(node, _variables, prop);
+    return blendMode(node, _variables, prop)
   }
 
   if (typeof node.value === 'string') {
-    const value: string = node.value;
-    const items = value.split(', ');
+    const { value } = node
+    const items = value.split(', ')
+
     if (value.split(',').length !== items.length) {
       return {
         message:
           "backgroundBlendMode values must be separated by a comma and a space (', ')",
         suggest: {
           desc: 'Replace comma with a comma and a space (", ")',
-          fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
-            return fixer.replaceText(
+          fix: (fixer: Rule.RuleFixer): Rule.Fix | null =>
+            fixer.replaceText(
               prop,
               `backgroundBlendMode: '${value.replace(',', ', ')}'`,
-            );
-          },
+            ),
         },
-      };
+      }
     }
+
     for (const item of items) {
       const response = blendMode(
         { type: 'Literal', value: item, raw: `'${item}'` },
         _variables,
         prop,
-      );
+      )
+
       if (response !== undefined) {
         return {
           message: response.message,
-        };
+        }
       }
     }
-
-    return undefined;
   }
-};
+}
+
 const backgroundClip: RuleCheck = makeUnionRule(
   'border-box',
   'padding-box',
   'content-box',
   'text',
-);
-const backgroundColor: RuleCheck = color;
+)
+const backgroundColor: RuleCheck = color
 const backgroundImage: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isString,
-);
-const backgroundOrigin: RuleCheck = box;
-const backgroundRepeat: RuleCheck = repeatStyle;
-const backgroundSize: RuleCheck = bgSize;
-const blockSize: RuleCheck = width;
-const NUMERIC_LITERAL_VALUE_REGEX = /^[-+]?(?:\d+|\d*\.\d+)$/;
+)
+const backgroundOrigin: RuleCheck = box
+const backgroundRepeat: RuleCheck = repeatStyle
+const backgroundSize: RuleCheck = bgSize
+const blockSize: RuleCheck = width
+const NUMERIC_LITERAL_VALUE_REGEX = /^[+-]?(?:\d+|\d*\.\d+)$/
 
 const NUMERIC_LITERAL_PROPERTIES = new Set([
   'lineHeight',
@@ -513,144 +509,156 @@ const NUMERIC_LITERAL_PROPERTIES = new Set([
   'borderInlineEndWidth',
   'borderBlockStartWidth',
   'borderBlockEndWidth',
-]);
+])
 
 const serializeValue = (propertyKey: string, val: number | string): string => {
   if (typeof val === 'number') {
-    return String(val);
+    return String(val)
   }
+
   if (
     NUMERIC_LITERAL_PROPERTIES.has(propertyKey) &&
     NUMERIC_LITERAL_VALUE_REGEX.test(val)
   ) {
-    return String(Number(val));
+    return String(Number(val))
   }
+
   // Escape single quotes within the string
-  const escaped = val.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-  return `'${escaped}'`;
-};
+  const escaped = val.replaceAll('\\', '\\\\').replaceAll("'", String.raw`\'`)
+
+  return `'${escaped}'`
+}
 
 const formatReplacementProperties = (
-  prop: $ReadOnly<Property>,
-  properties: $ReadOnlyArray<string>,
+  prop: Readonly<Property>,
+  properties: ReadonlyArray<string>,
   context?: Rule.RuleContext,
 ): string => {
-  const sourceCode = context != null ? getSourceCode(context) : undefined;
-  return formatPropertiesWithNodeIndentation(prop, properties, sourceCode);
-};
+  const sourceCode = context == null ? undefined : getSourceCode(context)
+
+  return formatPropertiesWithNodeIndentation(prop, properties, sourceCode)
+}
 
 const border =
-  (suffix: string = ''): RuleCheck =>
+  (suffix = ''): RuleCheck =>
   (
     node: Expression | Pattern,
     _variables?: Variables,
     prop?: Property,
     context?: Rule.RuleContext,
   ) => {
-    const response: $NonMaybeType<RuleResponse> = {
+    const response: NonNullable<RuleResponse> = {
       message: `The 'border${suffix}' property is not supported. Use the 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' properties instead.`,
-    };
-    if (node.type !== 'Literal' || prop == null) {
-      return response;
     }
+
+    if (node.type !== 'Literal' || prop == null) {
+      return response
+    }
+
     if (typeof node.value === 'number') {
-      const fixFn = (fixer: Rule.RuleFixer): Rule.Fix | null => {
-        return fixer.replaceText(
-          prop,
-          `border${suffix}Width: ${String(node.value)}`,
-        );
-      };
-      response.fix = fixFn;
+      const fixFn = (fixer: Rule.RuleFixer): Rule.Fix | null =>
+        fixer.replaceText(prop, `border${suffix}Width: ${String(node.value)}`)
+
+      response.fix = fixFn
       response.suggest = {
         desc: `Replace 'border${suffix}' set to a number with 'border${suffix}Width' instead?`,
         fix: fixFn,
-      };
+      }
     }
+
     if (typeof node.value === 'string') {
-      const [width, style, color] = borderSplitter(node.value);
+      const [width, style, color] = borderSplitter(node.value)
+
       if (width != null || style != null || color != null) {
         const fixFn = (fixer: Rule.RuleFixer): Rule.Fix | null => {
-          const newRules = [];
+          const newRules = []
+
           if (width != null) {
             newRules.push(
               `border${suffix}Width: ${serializeValue(`border${suffix}Width`, width)}`,
-            );
+            )
           }
+
           if (style != null) {
             newRules.push(
               `border${suffix}Style: ${serializeValue(`border${suffix}Style`, style)}`,
-            );
+            )
           }
+
           if (color != null) {
             newRules.push(
               `border${suffix}Color: ${serializeValue(`border${suffix}Color`, color)}`,
-            );
+            )
           }
+
           return fixer.replaceText(
             prop,
             formatReplacementProperties(prop, newRules, context),
-          );
-        };
-        response.fix = fixFn;
+          )
+        }
+
+        response.fix = fixFn
         response.suggest = {
           desc: `Replace 'border${suffix}' with 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' instead?`,
           fix: fixFn,
-        };
+        }
       }
     }
-    return response;
-  };
-const borderBottomStyle: RuleCheck = brStyle;
-const borderBottomWidth: RuleCheck = borderWidth;
+
+    return response
+  }
+
+const borderBottomStyle: RuleCheck = brStyle
+const borderBottomWidth: RuleCheck = borderWidth
 const borderCollapse: RuleCheck = makeUnionRule(
   makeLiteralRule('collapse'),
   makeLiteralRule('separate'),
-);
-const borderColor: RuleCheck = color;
+)
+const borderColor: RuleCheck = color
 const borderImage: RuleCheck = makeUnionRule(
   borderImageSource,
   borderImageSlice,
   isString,
   borderImageRepeat,
-);
-const borderLeftColor: RuleCheck = color;
-const borderLeftStyle: RuleCheck = brStyle;
-const borderLeftWidth: RuleCheck = borderWidth;
-const borderSpacing: RuleCheck = isStringOrNumber;
-const cornerShape: RuleCheck = isString;
-const borderTopStyle: RuleCheck = brStyle;
-const borderTopWidth: RuleCheck = borderWidth;
+)
+const borderLeftColor: RuleCheck = color
+const borderLeftStyle: RuleCheck = brStyle
+const borderLeftWidth: RuleCheck = borderWidth
+const borderSpacing: RuleCheck = isStringOrNumber
+const cornerShape: RuleCheck = isString
+const borderTopStyle: RuleCheck = brStyle
+const borderTopWidth: RuleCheck = borderWidth
 const boxDecorationBreak: RuleCheck = makeUnionRule(
   makeLiteralRule('slice'),
   makeLiteralRule('clone'),
-);
+)
 const boxDirection: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('reverse'),
-);
-const boxFlex: RuleCheck = isStringOrNumber;
-const boxFlexGroup: RuleCheck = isStringOrNumber;
+)
+const boxFlex: RuleCheck = isStringOrNumber
+const boxFlexGroup: RuleCheck = isStringOrNumber
 const boxLines: RuleCheck = makeUnionRule(
   makeLiteralRule('single'),
   makeLiteralRule('multiple'),
-);
-const boxOrdinalGroup: RuleCheck = isStringOrNumber;
+)
+const boxOrdinalGroup: RuleCheck = isStringOrNumber
 const boxOrient: RuleCheck = makeUnionRule(
   makeLiteralRule('horizontal'),
   makeLiteralRule('vertical'),
   makeLiteralRule('inline-axis'),
   makeLiteralRule('block-axis'),
-);
-const boxShadow: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString);
+)
+const boxShadow: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString)
 const boxSizing: RuleCheck = makeUnionRule(
   makeLiteralRule('content-box'),
   makeLiteralRule('border-box'),
-);
+)
 const boxSuppress: RuleCheck = makeUnionRule(
   makeLiteralRule('show'),
   makeLiteralRule('discard'),
   makeLiteralRule('hide'),
-);
+)
 const breakBeforeOrAfter: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('avoid'),
@@ -664,14 +672,14 @@ const breakBeforeOrAfter: RuleCheck = makeUnionRule(
   makeLiteralRule('column'),
   makeLiteralRule('avoid-region'),
   makeLiteralRule('region'),
-);
+)
 const breakInside: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('avoid'),
   makeLiteralRule('avoid-page'),
   makeLiteralRule('avoid-column'),
   makeLiteralRule('avoid-region'),
-);
+)
 const captionSide: RuleCheck = makeUnionRule(
   makeLiteralRule('top'),
   makeLiteralRule('bottom'),
@@ -679,7 +687,7 @@ const captionSide: RuleCheck = makeUnionRule(
   makeLiteralRule('block-end'),
   makeLiteralRule('inline-start'),
   makeLiteralRule('inline-end'),
-);
+)
 const clear: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('left'),
@@ -687,53 +695,50 @@ const clear: RuleCheck = makeUnionRule(
   makeLiteralRule('both'),
   makeLiteralRule('inline-start'),
   makeLiteralRule('inline-end'),
-);
-const clip: RuleCheck = makeUnionRule(isString, makeLiteralRule('auto'));
-const clipPath: RuleCheck = makeUnionRule(isString, makeLiteralRule('none'));
+)
+const clip: RuleCheck = makeUnionRule(isString, makeLiteralRule('auto'))
+const clipPath: RuleCheck = makeUnionRule(isString, makeLiteralRule('none'))
 const columnCount: RuleCheck = makeUnionRule(
   isNumber,
   isString,
   makeLiteralRule('auto'),
-);
+)
 const columnFill: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('balance'),
-);
+)
 const columnGap: RuleCheck = makeUnionRule(
   isNumber,
   isNonNumericString,
   makeLiteralRule('normal'),
-);
+)
 const columnSpan: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('all'),
-);
+)
 const columnWidth: RuleCheck = makeUnionRule(
   isNumber,
   isNonNumericString,
   makeLiteralRule('auto'),
-);
-const columns: RuleCheck = makeUnionRule(columnWidth, columnCount);
+)
+const columns: RuleCheck = makeUnionRule(columnWidth, columnCount)
 const contain: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('strict'),
   makeLiteralRule('content'),
   isString,
-);
-const content: RuleCheck = isString;
+)
+const content: RuleCheck = isString
 const counterIncrement: RuleCheck = makeUnionRule(
   isString,
   makeLiteralRule('none'),
-);
-const counterReset: RuleCheck = makeUnionRule(
-  isString,
-  makeLiteralRule('none'),
-);
-const cursor: RuleCheck = CSSCursor;
+)
+const counterReset: RuleCheck = makeUnionRule(isString, makeLiteralRule('none'))
+const cursor: RuleCheck = CSSCursor
 const direction: RuleCheck = makeUnionRule(
   makeLiteralRule('ltr'),
   makeLiteralRule('rtl'),
-);
+)
 const display: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('inline'),
@@ -763,7 +768,7 @@ const display: RuleCheck = makeUnionRule(
   makeLiteralRule('ruby-base-container'),
   makeLiteralRule('ruby-text-container'),
   makeLiteralRule('contents'),
-);
+)
 const displayInside: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('block'),
@@ -771,11 +776,11 @@ const displayInside: RuleCheck = makeUnionRule(
   makeLiteralRule('flex'),
   makeLiteralRule('grid'),
   makeLiteralRule('ruby'),
-);
+)
 const displayList: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('list-item'),
-);
+)
 const displayOutside: RuleCheck = makeUnionRule(
   makeLiteralRule('block-level'),
   makeLiteralRule('inline-level'),
@@ -794,30 +799,30 @@ const displayOutside: RuleCheck = makeUnionRule(
   makeLiteralRule('ruby-text'),
   makeLiteralRule('ruby-base-container'),
   makeLiteralRule('ruby-text-container'),
-);
+)
 const fontFeatureSettings: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   isString,
-);
+)
 const fontKerning: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('normal'),
   makeLiteralRule('none'),
-);
+)
 const fontLanguageOverride: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   isString,
-);
+)
 const fontSize: RuleCheck = makeUnionRule(
   absoluteSize,
   relativeSize,
   lengthPercentage,
-);
+)
 const fontSizeAdjust: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isNumber,
   isString,
-);
+)
 const fontStretch: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('ultra-condensed'),
@@ -828,25 +833,25 @@ const fontStretch: RuleCheck = makeUnionRule(
   makeLiteralRule('expanded'),
   makeLiteralRule('extra-expanded'),
   makeLiteralRule('ultra-expanded'),
-);
+)
 const fontStyle: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('italic'),
   makeLiteralRule('oblique'),
-);
+)
 const fontSynthesis: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isString,
-);
+)
 const fontVariant: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('none'),
   isString,
-);
+)
 const fontVariantAlternates: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   isString,
-);
+)
 const fontVariantCaps: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('small-caps'),
@@ -855,25 +860,25 @@ const fontVariantCaps: RuleCheck = makeUnionRule(
   makeLiteralRule('all-petite-caps'),
   makeLiteralRule('unicase'),
   makeLiteralRule('titling-caps'),
-);
+)
 const fontVariantEastAsian: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   isString,
-);
+)
 const fontVariantLigatures: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('none'),
   isString,
-);
+)
 const fontVariantNumeric: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   isString,
-);
+)
 const fontVariantPosition: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('sub'),
   makeLiteralRule('super'),
-);
+)
 const fontWeight: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('bold'),
@@ -881,32 +886,32 @@ const fontWeight: RuleCheck = makeUnionRule(
   makeLiteralRule('lighter'),
   makeRangeRule(1, 1000, 'a number between 1 and 1000'),
   isCSSVariable,
-);
-const gap: RuleCheck = length;
-const grid: RuleCheck = makeUnionRule(gridTemplate, isString);
-const gridArea: RuleCheck = makeUnionRule(gridLine, isString);
-const gridAutoColumns: RuleCheck = trackSize;
+)
+const gap: RuleCheck = length
+const grid: RuleCheck = makeUnionRule(gridTemplate, isString)
+const gridArea: RuleCheck = makeUnionRule(gridLine, isString)
+const gridAutoColumns: RuleCheck = trackSize
 const gridAutoFlow: RuleCheck = makeUnionRule(
   isString,
   makeLiteralRule('dense'),
-);
-const gridAutoRows: RuleCheck = trackSize;
-const gridColumn: RuleCheck = makeUnionRule(gridLine, isString);
-const gridColumnEnd: RuleCheck = gridLine;
-const gridColumnStart: RuleCheck = gridLine;
-const gridRow: RuleCheck = makeUnionRule(gridLine, isString);
-const gridRowEnd: RuleCheck = gridLine;
-const gridRowStart: RuleCheck = gridLine;
+)
+const gridAutoRows: RuleCheck = trackSize
+const gridColumn: RuleCheck = makeUnionRule(gridLine, isString)
+const gridColumnEnd: RuleCheck = gridLine
+const gridColumnStart: RuleCheck = gridLine
+const gridRow: RuleCheck = makeUnionRule(gridLine, isString)
+const gridRowEnd: RuleCheck = gridLine
+const gridRowStart: RuleCheck = gridLine
 const hyphens: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('manual'),
   makeLiteralRule('auto'),
-);
+)
 const imageOrientation: RuleCheck = makeUnionRule(
   makeLiteralRule('from-image'),
   isNumber,
   isString,
-);
+)
 const imageRendering: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('crisp-edges'),
@@ -914,32 +919,32 @@ const imageRendering: RuleCheck = makeUnionRule(
   makeLiteralRule('optimizeSpeed'),
   makeLiteralRule('optimizeQuality'),
   isString,
-);
+)
 const imageResolution: RuleCheck = makeUnionRule(
   isString,
   makeLiteralRule('snap'),
-);
+)
 const imeMode: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('normal'),
   makeLiteralRule('active'),
   makeLiteralRule('inactive'),
   makeLiteralRule('disabled'),
-);
+)
 const initialLetter: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   isString,
-);
-const initialLetterAlign: RuleCheck = isString;
-const inlineSize: RuleCheck = width;
+)
+const initialLetterAlign: RuleCheck = isString
+const inlineSize: RuleCheck = width
 const interpolateSize: RuleCheck = makeUnionRule(
   'allow-keywords',
   'numeric-only',
-);
+)
 const isolation: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('isolate'),
-);
+)
 
 const justifyBase: string[] = [
   'normal',
@@ -956,14 +961,14 @@ const justifyBase: string[] = [
   'last baseline',
   'safe center',
   'unsafe center',
-];
+]
 
 const justifyContent: RuleCheck = makeUnionRule(
   ...justifyBase,
   'space-between',
   'space-around',
   'space-evenly',
-);
+)
 
 const justifyItems: RuleCheck = makeUnionRule(
   ...justifyBase,
@@ -972,7 +977,7 @@ const justifyItems: RuleCheck = makeUnionRule(
   'legacy right',
   'legacy left',
   'legacy center',
-);
+)
 
 // There's an optional overflowPosition (safe vs unsafe) prefix to
 // [selfPosition | 'left' | 'right']. It's not used on www, so, it's not added
@@ -982,59 +987,56 @@ const justifySelf: RuleCheck = makeUnionRule(
   ...justifyBase,
   'self-start',
   'self-end',
-);
+)
 
 const letterSpacing: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   lengthPercentage,
-);
+)
 const lineBreak: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('loose'),
   makeLiteralRule('normal'),
   makeLiteralRule('strict'),
-);
-const lineHeight: RuleCheck = length;
+)
+const lineHeight: RuleCheck = length
 const listStyleImage: RuleCheck = makeUnionRule(
   isString,
   makeLiteralRule('none'),
-);
+)
 const listStylePosition: RuleCheck = makeUnionRule(
   makeLiteralRule('inside'),
   makeLiteralRule('outside'),
-);
+)
 const listStyle: RuleCheck = makeUnionRule(
   listStyleType,
   listStylePosition,
   listStyleImage,
-);
-const margin: RuleCheck = length;
+)
+const margin: RuleCheck = length
 const marginLeft: RuleCheck = makeUnionRule(
   isNumber,
   isNonNumericString,
   makeLiteralRule('auto'),
-);
+)
 const marginTop: RuleCheck = makeUnionRule(
   isNumber,
   isNonNumericString,
   makeLiteralRule('auto'),
-);
-const markerOffset: RuleCheck = makeUnionRule(
-  isNumber,
-  makeLiteralRule('auto'),
-);
-const mask: RuleCheck = maskLayer;
-const maskClip: RuleCheck = isString;
-const maskComposite: RuleCheck = compositeOperator;
-const maskMode: RuleCheck = maskingMode;
-const maskOrigin: RuleCheck = geometryBox;
-const maskPosition: RuleCheck = isString;
-const maskRepeat: RuleCheck = repeatStyle;
-const maskSize: RuleCheck = bgSize;
+)
+const markerOffset: RuleCheck = makeUnionRule(isNumber, makeLiteralRule('auto'))
+const mask: RuleCheck = maskLayer
+const maskClip: RuleCheck = isString
+const maskComposite: RuleCheck = compositeOperator
+const maskMode: RuleCheck = maskingMode
+const maskOrigin: RuleCheck = geometryBox
+const maskPosition: RuleCheck = isString
+const maskRepeat: RuleCheck = repeatStyle
+const maskSize: RuleCheck = bgSize
 const maskType: RuleCheck = makeUnionRule(
   makeLiteralRule('luminance'),
   makeLiteralRule('alpha'),
-);
+)
 const minMaxLength: RuleCheck = makeUnionRule(
   isNumber,
   isNonNumericString,
@@ -1043,68 +1045,68 @@ const minMaxLength: RuleCheck = makeUnionRule(
   makeLiteralRule('min-content'),
   makeLiteralRule('fit-content'),
   makeLiteralRule('fill-available'),
-);
+)
 
-const mixBlendMode: RuleCheck = blendMode;
+const mixBlendMode: RuleCheck = blendMode
 const motionPath: RuleCheck = makeUnionRule(
   isString,
   geometryBox,
   makeLiteralRule('none'),
-);
-const motionRotation: RuleCheck = isStringOrNumber;
+)
+const motionRotation: RuleCheck = isStringOrNumber
 const motion: RuleCheck = makeUnionRule(
   motionPath,
   lengthPercentage,
   motionRotation,
-);
+)
 const objectFit: RuleCheck = makeUnionRule(
   makeLiteralRule('fill'),
   makeLiteralRule('contain'),
   makeLiteralRule('cover'),
   makeLiteralRule('none'),
   makeLiteralRule('scale-down'),
-);
-const objectPosition: RuleCheck = isString;
-const offsetBlockEnd: RuleCheck = isString;
-const offsetBlockStart: RuleCheck = isString;
-const offsetInlineEnd: RuleCheck = isString;
-const offsetInlineStart: RuleCheck = isString;
-const opacity: RuleCheck = isStringOrNumber;
-const order: RuleCheck = isStringOrNumber;
-const orphans: RuleCheck = isStringOrNumber;
-const outline: RuleCheck = isString;
+)
+const objectPosition: RuleCheck = isString
+const offsetBlockEnd: RuleCheck = isString
+const offsetBlockStart: RuleCheck = isString
+const offsetInlineEnd: RuleCheck = isString
+const offsetInlineStart: RuleCheck = isString
+const opacity: RuleCheck = isStringOrNumber
+const order: RuleCheck = isStringOrNumber
+const orphans: RuleCheck = isStringOrNumber
+const outline: RuleCheck = isString
 const overflow: RuleCheck = makeUnionRule(
   makeLiteralRule('visible'),
   makeLiteralRule('hidden'),
   makeLiteralRule('clip'),
   makeLiteralRule('scroll'),
   makeLiteralRule('auto'),
-);
+)
 const overflowAnchor: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('none'),
-);
+)
 const overflowClipBox: RuleCheck = makeUnionRule(
   makeLiteralRule('padding-box'),
   makeLiteralRule('content-box'),
-);
+)
 const overflowWrap: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('break-word'),
   makeLiteralRule('anywhere'),
-);
+)
 const overflowDir: RuleCheck = makeUnionRule(
   makeLiteralRule('visible'),
   makeLiteralRule('hidden'),
   makeLiteralRule('clip'),
   makeLiteralRule('scroll'),
   makeLiteralRule('auto'),
-);
+)
 const overscrollBehavior: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('contain'),
   makeLiteralRule('auto'),
-);
+)
 
 const pageBreak: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
@@ -1112,17 +1114,17 @@ const pageBreak: RuleCheck = makeUnionRule(
   makeLiteralRule('avoid'),
   makeLiteralRule('left'),
   makeLiteralRule('right'),
-);
+)
 const pageBreakInside: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('avoid'),
-);
+)
 const perspective: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isNumber,
   isString,
-);
-const perspectiveOrigin: RuleCheck = isString;
+)
+const perspectiveOrigin: RuleCheck = isString
 const pointerEvents: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('none'),
@@ -1134,66 +1136,66 @@ const pointerEvents: RuleCheck = makeUnionRule(
   makeLiteralRule('fill'),
   makeLiteralRule('stroke'),
   makeLiteralRule('all'),
-);
+)
 const position: RuleCheck = makeUnionRule(
   makeLiteralRule('static'),
   makeLiteralRule('relative'),
   makeLiteralRule('absolute'),
   makeLiteralRule('sticky'),
   makeLiteralRule('fixed'),
-);
-const quotes: RuleCheck = makeUnionRule(isString, makeLiteralRule('none'));
+)
+const quotes: RuleCheck = makeUnionRule(isString, makeLiteralRule('none'))
 const resize: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('both'),
   makeLiteralRule('horizontal'),
   makeLiteralRule('vertical'),
-);
-const rowGap: RuleCheck = length;
+)
+const rowGap: RuleCheck = length
 const rubyAlign: RuleCheck = makeUnionRule(
   makeLiteralRule('start'),
   makeLiteralRule('center'),
   makeLiteralRule('space-between'),
   makeLiteralRule('space-around'),
-);
+)
 const rubyMerge: RuleCheck = makeUnionRule(
   makeLiteralRule('separate'),
   makeLiteralRule('collapse'),
   makeLiteralRule('auto'),
-);
+)
 const rubyPosition: RuleCheck = makeUnionRule(
   makeLiteralRule('over'),
   makeLiteralRule('under'),
   makeLiteralRule('inter-character'),
-);
+)
 const scrollBehavior: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('smooth'),
-);
-const scrollSnapPaddingBottom: RuleCheck = isStringOrNumber;
-const scrollSnapPaddingTop: RuleCheck = isStringOrNumber;
+)
+const scrollSnapPaddingBottom: RuleCheck = isStringOrNumber
+const scrollSnapPaddingTop: RuleCheck = isStringOrNumber
 const scrollSnapAlign: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('start'),
   makeLiteralRule('end'),
   makeLiteralRule('center'),
-);
+)
 const scrollSnapType: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('x mandatory'),
   makeLiteralRule('y mandatory'),
-);
-const shapeImageThreshold: RuleCheck = isStringOrNumber;
+)
+const shapeImageThreshold: RuleCheck = isStringOrNumber
 const shapeOutside: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   shapeBox,
   isString,
-);
-const tabSize: RuleCheck = isStringOrNumber;
+)
+const tabSize: RuleCheck = isStringOrNumber
 const tableLayout: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('fixed'),
-);
+)
 const textAlign: RuleCheck = makeUnionRule(
   makeLiteralRule('start'),
   makeLiteralRule('end'),
@@ -1202,7 +1204,7 @@ const textAlign: RuleCheck = makeUnionRule(
   makeLiteralRule('center'),
   makeLiteralRule('justify'),
   makeLiteralRule('match-parent'),
-);
+)
 const textAlignLast: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('start'),
@@ -1211,13 +1213,13 @@ const textAlignLast: RuleCheck = makeUnionRule(
   makeLiteralRule('right'),
   makeLiteralRule('center'),
   makeLiteralRule('justify'),
-);
+)
 const textCombineUpright: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('all'),
   isString,
-);
-const textDecorationColor: RuleCheck = color;
+)
+const textDecorationColor: RuleCheck = color
 const textDecorationLine: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('underline'),
@@ -1225,7 +1227,7 @@ const textDecorationLine: RuleCheck = makeUnionRule(
   makeLiteralRule('line-through'),
   makeLiteralRule('blink'),
   isString,
-);
+)
 // const textDecorationSkip = makeUnionRule(makeLiteralRule('none'), isString);
 const textDecorationStyle: RuleCheck = makeUnionRule(
   makeLiteralRule('solid'),
@@ -1233,14 +1235,14 @@ const textDecorationStyle: RuleCheck = makeUnionRule(
   makeLiteralRule('dotted'),
   makeLiteralRule('dashed'),
   makeLiteralRule('wavy'),
-);
+)
 const textDecoration: RuleCheck = makeUnionRule(
   textDecorationLine,
   textDecorationStyle,
   textDecorationColor,
-);
-const textEmphasisColor: RuleCheck = color;
-const textEmphasisPosition: RuleCheck = isString;
+)
+const textEmphasisColor: RuleCheck = color
+const textEmphasisPosition: RuleCheck = isString
 const textEmphasisStyle: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('filled'),
@@ -1252,79 +1254,79 @@ const textEmphasisStyle: RuleCheck = makeUnionRule(
   makeLiteralRule('filled sesame'),
   makeLiteralRule('open sesame'),
   isString,
-);
+)
 const textEmphasis: RuleCheck = makeUnionRule(
   textEmphasisStyle,
   textEmphasisColor,
-);
+)
 const textIndent: RuleCheck = makeUnionRule(
   lengthPercentage,
   makeLiteralRule('hanging'),
   makeLiteralRule('each-line'),
-);
+)
 const textOrientation: RuleCheck = makeUnionRule(
   makeLiteralRule('mixed'),
   makeLiteralRule('upright'),
   makeLiteralRule('sideways'),
-);
+)
 const textOverflow: RuleCheck = makeUnionRule(
   makeLiteralRule('clip'),
   makeLiteralRule('ellipsis'),
   isString,
-);
+)
 const textRendering: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('optimizeSpeed'),
   makeLiteralRule('optimizeLegibility'),
   makeLiteralRule('geometricPrecision'),
-);
-const textShadow: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString);
+)
+const textShadow: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString)
 const textSizeAdjust: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('auto'),
   isString,
-);
+)
 const textTransform: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('capitalize'),
   makeLiteralRule('uppercase'),
   makeLiteralRule('lowercase'),
   makeLiteralRule('full-width'),
-);
+)
 const textUnderlinePosition: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('under'),
   makeLiteralRule('left'),
   makeLiteralRule('right'),
   isString,
-);
+)
 const textUnderlineOffset: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   isNumber,
   isLength,
   isPercentage,
-);
+)
 const touchAction: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('none'),
   isString,
   makeLiteralRule('manipulation'),
-);
-const transform: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString);
+)
+const transform: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString)
 const transformBox: RuleCheck = makeUnionRule(
   makeLiteralRule('border-box'),
   makeLiteralRule('fill-box'),
   makeLiteralRule('view-box'),
   makeLiteralRule('content-box'),
   makeLiteralRule('stroke-box'),
-);
-const transformOrigin: RuleCheck = isStringOrNumber;
+)
+const transformOrigin: RuleCheck = isStringOrNumber
 const transformStyle: RuleCheck = makeUnionRule(
   makeLiteralRule('flat'),
   makeLiteralRule('preserve-3d'),
-);
-const transitionProperty: RuleCheck = isString;
-const transitionTimingFunction: RuleCheck = animationTimingFunction;
+)
+const transitionProperty: RuleCheck = isString
+const transitionTimingFunction: RuleCheck = animationTimingFunction
 const unicodeBidi: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('embed'),
@@ -1332,14 +1334,14 @@ const unicodeBidi: RuleCheck = makeUnionRule(
   makeLiteralRule('bidi-override'),
   makeLiteralRule('isolate-override'),
   makeLiteralRule('plaintext'),
-);
+)
 const userSelect: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('text'),
   makeLiteralRule('none'),
   makeLiteralRule('contain'),
   makeLiteralRule('all'),
-);
+)
 const verticalAlign: RuleCheck = makeUnionRule(
   makeLiteralRule('baseline'),
   makeLiteralRule('sub'),
@@ -1351,12 +1353,12 @@ const verticalAlign: RuleCheck = makeUnionRule(
   makeLiteralRule('bottom'),
   isString,
   isNumber,
-);
+)
 const visibility: RuleCheck = makeUnionRule(
   makeLiteralRule('visible'),
   makeLiteralRule('hidden'),
   makeLiteralRule('collapse'),
-);
+)
 const whiteSpace: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('pre'),
@@ -1364,32 +1366,32 @@ const whiteSpace: RuleCheck = makeUnionRule(
   makeLiteralRule('pre-wrap'),
   makeLiteralRule('pre-line'),
   makeLiteralRule('break-spaces'),
-);
-const widows: RuleCheck = isStringOrNumber;
+)
+const widows: RuleCheck = isStringOrNumber
 const animatableFeature: RuleCheck = makeUnionRule(
   makeLiteralRule('scroll-position'),
   makeLiteralRule('contents'),
   isString,
-);
+)
 const willChange: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   animatableFeature,
-);
-const nonStandardWordBreak: RuleCheck = makeLiteralRule('break-word');
+)
+const nonStandardWordBreak: RuleCheck = makeLiteralRule('break-word')
 const wordBreak: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('break-all'),
   makeLiteralRule('keep-all'),
   nonStandardWordBreak,
-);
+)
 const wordSpacing: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   lengthPercentage,
-);
+)
 const wordWrap: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('break-word'),
-);
+)
 const svgWritingMode: RuleCheck = makeUnionRule(
   makeLiteralRule('lr-tb'),
   makeLiteralRule('rl-tb'),
@@ -1397,7 +1399,7 @@ const svgWritingMode: RuleCheck = makeUnionRule(
   makeLiteralRule('lr'),
   makeLiteralRule('rl'),
   makeLiteralRule('tb'),
-);
+)
 const writingMode: RuleCheck = makeUnionRule(
   makeLiteralRule('horizontal-tb'),
   makeLiteralRule('vertical-rl'),
@@ -1405,8 +1407,8 @@ const writingMode: RuleCheck = makeUnionRule(
   makeLiteralRule('sideways-rl'),
   makeLiteralRule('sideways-lr'),
   svgWritingMode,
-);
-const zIndex: RuleCheck = makeUnionRule(makeLiteralRule('auto'), isNumber);
+)
+const zIndex: RuleCheck = makeUnionRule(makeLiteralRule('auto'), isNumber)
 const alignmentBaseline: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('baseline'),
@@ -1420,28 +1422,28 @@ const alignmentBaseline: RuleCheck = makeUnionRule(
   makeLiteralRule('alphabetic'),
   makeLiteralRule('hanging'),
   makeLiteralRule('mathematical'),
-);
-const svgLength: RuleCheck = isStringOrNumber;
+)
+const svgLength: RuleCheck = isStringOrNumber
 const baselineShift: RuleCheck = makeUnionRule(
   makeLiteralRule('baseline'),
   makeLiteralRule('sub'),
   makeLiteralRule('super'),
   svgLength,
-);
-const behavior: RuleCheck = isString;
+)
+const behavior: RuleCheck = isString
 const clipRule: RuleCheck = makeUnionRule(
   makeLiteralRule('nonzero'),
   makeLiteralRule('evenodd'),
-);
+)
 const cueAfter: RuleCheck = makeUnionRule(
   isStringOrNumber,
   makeLiteralRule('none'),
-);
+)
 const cueBefore: RuleCheck = makeUnionRule(
   isStringOrNumber,
   makeLiteralRule('none'),
-);
-const cue: RuleCheck = makeUnionRule(cueBefore, cueAfter);
+)
+const cue: RuleCheck = makeUnionRule(cueBefore, cueAfter)
 const dominantBaseline: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('use-script'),
@@ -1455,26 +1457,26 @@ const dominantBaseline: RuleCheck = makeUnionRule(
   makeLiteralRule('middle'),
   makeLiteralRule('text-after-edge'),
   makeLiteralRule('text-before-edge'),
-);
+)
 const paint: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('currentColor'),
   color,
   isString,
-);
-const fill: RuleCheck = paint;
-const fillOpacity: RuleCheck = isStringOrNumber;
+)
+const fill: RuleCheck = paint
+const fillOpacity: RuleCheck = isStringOrNumber
 const fillRule: RuleCheck = makeUnionRule(
   makeLiteralRule('nonzero'),
   makeLiteralRule('evenodd'),
-);
-const glyphOrientationHorizontal: RuleCheck = isStringOrNumber;
-const glyphOrientationVertical: RuleCheck = isStringOrNumber;
-const kerning: RuleCheck = makeUnionRule(makeLiteralRule('auto'), svgLength);
-const marker: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString);
-const markerEnd: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString);
-const markerMid: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString);
-const markerStart: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString);
+)
+const glyphOrientationHorizontal: RuleCheck = isStringOrNumber
+const glyphOrientationVertical: RuleCheck = isStringOrNumber
+const kerning: RuleCheck = makeUnionRule(makeLiteralRule('auto'), svgLength)
+const marker: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString)
+const markerEnd: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString)
+const markerMid: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString)
+const markerStart: RuleCheck = makeUnionRule(makeLiteralRule('none'), isString)
 const pauseOrRest: RuleCheck = makeUnionRule(
   isNumber,
   makeLiteralRule('none'),
@@ -1483,51 +1485,51 @@ const pauseOrRest: RuleCheck = makeUnionRule(
   makeLiteralRule('medium'),
   makeLiteralRule('strong'),
   makeLiteralRule('x-strong'),
-);
+)
 const shapeRendering: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('optimizeSpeed'),
   makeLiteralRule('crispEdges'),
   makeLiteralRule('geometricPrecision'),
-);
-const src: RuleCheck = isString;
+)
+const src: RuleCheck = isString
 const speak: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('none'),
   makeLiteralRule('normal'),
-);
+)
 const speakAs: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('spell-out'),
   makeLiteralRule('digits'),
   isString,
-);
-const stroke: RuleCheck = paint;
+)
+const stroke: RuleCheck = paint
 const strokeDasharray: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isNumber,
   isString,
-);
-const strokeDashoffset: RuleCheck = svgLength;
+)
+const strokeDashoffset: RuleCheck = svgLength
 const strokeLinecap: RuleCheck = makeUnionRule(
   makeLiteralRule('butt'),
   makeLiteralRule('round'),
   makeLiteralRule('square'),
-);
+)
 const strokeLinejoin: RuleCheck = makeUnionRule(
   makeLiteralRule('miter'),
   makeLiteralRule('round'),
   makeLiteralRule('bevel'),
-);
-const strokeMiterlimit: RuleCheck = isStringOrNumber;
-const strokeOpacity: RuleCheck = isStringOrNumber;
-const strokeWidth: RuleCheck = svgLength;
+)
+const strokeMiterlimit: RuleCheck = isStringOrNumber
+const strokeOpacity: RuleCheck = isStringOrNumber
+const strokeWidth: RuleCheck = svgLength
 const textAnchor: RuleCheck = makeUnionRule(
   makeLiteralRule('start'),
   makeLiteralRule('middle'),
   makeLiteralRule('end'),
-);
-const unicodeRange: RuleCheck = isString;
+)
+const unicodeRange: RuleCheck = isString
 const voiceBalance: RuleCheck = makeUnionRule(
   isNumber,
   makeLiteralRule('left'),
@@ -1535,35 +1537,35 @@ const voiceBalance: RuleCheck = makeUnionRule(
   makeLiteralRule('right'),
   makeLiteralRule('leftwards'),
   makeLiteralRule('rightwards'),
-);
-const voiceDuration: RuleCheck = makeUnionRule(makeLiteralRule('auto'), time);
+)
+const voiceDuration: RuleCheck = makeUnionRule(makeLiteralRule('auto'), time)
 const voiceFamily: RuleCheck = makeUnionRule(
   isString,
   makeLiteralRule('preserve'),
-);
+)
 const voicePitch: RuleCheck = makeUnionRule(
   isNumber,
   makeLiteralRule('absolute'),
   isString,
-);
+)
 const voiceRange: RuleCheck = makeUnionRule(
   isNumber,
   makeLiteralRule('absolute'),
   isString,
-);
-const voiceRate: RuleCheck = isString;
+)
+const voiceRate: RuleCheck = isString
 const voiceStress: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('strong'),
   makeLiteralRule('moderate'),
   makeLiteralRule('none'),
   makeLiteralRule('reduced'),
-);
+)
 const voiceVolume: RuleCheck = makeUnionRule(
   makeLiteralRule('silent'),
   isString,
-);
-const maskImage: RuleCheck = maskReference;
+)
+const maskImage: RuleCheck = maskReference
 
 const SupportedVendorSpecificCSSProperties = {
   MozOsxFontSmoothing: makeLiteralRule('grayscale') as RuleCheck,
@@ -1593,11 +1595,11 @@ const SupportedVendorSpecificCSSProperties = {
     'text',
   ) as RuleCheck,
   WebkitAppRegion: makeUnionRule('drag', 'no-drag') as RuleCheck,
-};
+}
 
-export const convertToStandardProperties: $ReadOnly<{
-  [key: string]: ?string,
-}> = {
+export const convertToStandardProperties: Readonly<
+  Record<string, string | null | undefined>
+> = {
   marginStart: 'marginInlineStart',
   marginEnd: 'marginInlineEnd',
   marginHorizontal: 'marginInline',
@@ -1628,26 +1630,26 @@ export const convertToStandardProperties: $ReadOnly<{
 
   end: 'insetInlineEnd',
   start: 'insetInlineStart',
-};
+}
 
-export const SVGProperties: { [string]: RuleCheck } = {
+export const SVGProperties: { [key: string]: RuleCheck } = {
   colorInterpolation: makeUnionRule('auto', 'sRGB', 'linearRGB'),
   // colorRendering: color,
-  fill: fill,
-  fillOpacity: fillOpacity,
-  fillRule: fillRule,
+  fill,
+  fillOpacity,
+  fillRule,
   floodColor: color,
   floodOpacity: opacity,
   stopColor: color,
   stopOpacity: opacity,
-  stroke: stroke,
-  strokeDasharray: strokeDasharray,
-  strokeDashoffset: strokeDashoffset,
-  strokeLinecap: strokeLinecap,
-  strokeLinejoin: strokeLinejoin,
-  strokeMiterlimit: strokeMiterlimit,
-  strokeOpacity: strokeOpacity,
-  strokeWidth: strokeWidth,
+  stroke,
+  strokeDasharray,
+  strokeDashoffset,
+  strokeLinecap,
+  strokeLinejoin,
+  strokeMiterlimit,
+  strokeOpacity,
+  strokeWidth,
   vectorEffect: makeUnionRule(
     'none',
     'non-scaling-stroke',
@@ -1655,7 +1657,7 @@ export const SVGProperties: { [string]: RuleCheck } = {
     'non-rotation',
     'fixed-position',
   ),
-};
+}
 
 /* eslint-disable object-shorthand */
 // $FlowFixMe[cannot-spread-indexer]
@@ -1671,7 +1673,7 @@ const CSSProperties = {
   all: all,
   animation: showError(
     '`animation` is not recommended. Please use `animationName`, `animationDuration`, etc. instead',
-  ) as RuleCheck,
+  ),
   animationComposition: makeUnionRule(
     'replace',
     'add',
@@ -1735,7 +1737,7 @@ const CSSProperties = {
       '  - `borderInlineEndStyle` and',
       '  - `borderInlineEndColor` instead',
     ].join('\n'),
-  ) as RuleCheck,
+  ),
   borderInlineColor: borderLeftColor,
   borderInlineStyle: borderLeftStyle,
   borderInlineWidth: borderLeftWidth,
@@ -1749,7 +1751,7 @@ const CSSProperties = {
       '  - `borderInlineStartStyle` and',
       '  - `borderInlineStartColor` instead',
     ].join('\n'),
-  ) as RuleCheck,
+  ),
   borderInlineStartColor: borderLeftColor,
   borderInlineStartStyle: borderLeftStyle,
   borderInlineStartWidth: borderLeftWidth,
@@ -1760,7 +1762,7 @@ const CSSProperties = {
       '  - `borderBlockEndStyle` and',
       '  - `borderBlockEndColor` instead',
     ].join('\n'),
-  ) as RuleCheck,
+  ),
   borderBlockColor: borderLeftColor,
   borderBlockStyle: borderLeftStyle,
   borderBlockWidth: borderLeftWidth,
@@ -1774,7 +1776,7 @@ const CSSProperties = {
       '  - `borderBlockStartStyle` and',
       '  - `borderBlockStartColor` instead',
     ].join('\n'),
-  ) as RuleCheck,
+  ),
   borderBlockStartColor: borderLeftColor,
   borderBlockStartStyle: borderLeftStyle,
   borderBlockStartWidth: borderLeftWidth,
@@ -1871,7 +1873,7 @@ const CSSProperties = {
   float: float,
   font: showError(
     '`font` is not recommended. Please use `fontSize`, `fontFamily`, `fontStyle` etc. instead',
-  ) as RuleCheck,
+  ),
   fontFamily: fontFamily,
   fontFeatureSettings: fontFeatureSettings,
   fontKerning: fontKerning,
@@ -2271,13 +2273,16 @@ const CSSProperties = {
 
   // Purposely not supported because it is not supported in Firefox.
   zoom: makeUnionRule('normal', 'reset', isNumber, isPercentage) as RuleCheck,
-};
-export const CSSPropertyKeys: Array<string> = Object.keys(CSSProperties);
+}
+export const CSSPropertyKeys = Object.keys(
+  CSSProperties,
+) as (keyof typeof CSSProperties)[]
+
 for (const key of CSSPropertyKeys) {
-  CSSProperties[key] = makeUnionRule(CSSProperties[key], all);
+  CSSProperties[key] = makeUnionRule(CSSProperties[key], all)
 }
 
-export const CSSPropertyReplacements: { [key: string]: RuleCheck | void } = {
+export const CSSPropertyReplacements: Record<string, RuleCheck | void> = {
   border: border(),
   borderTop: border('Top'),
   borderBlockStart: border('Top'),
@@ -2289,7 +2294,7 @@ export const CSSPropertyReplacements: { [key: string]: RuleCheck | void } = {
   borderStart: border('InlineStart'),
   borderInlineStart: border('InlineStart'),
   borderLeft: border('Left'),
-};
+}
 
 export const pseudoElements: RuleCheck = makeUnionRule(
   makeLiteralRule('::before'),
@@ -2332,7 +2337,7 @@ export const pseudoElements: RuleCheck = makeUnionRule(
   makeLiteralRule('::-moz-range-thumb'),
   makeLiteralRule('::-moz-range-track'),
   makeLiteralRule('::-moz-range-progress'),
-);
+)
 
 export const pseudoClassesAndAtRules: RuleCheck = makeUnionRule(
   makeLiteralRule(':first-child'),
@@ -2352,11 +2357,11 @@ export const pseudoClassesAndAtRules: RuleCheck = makeUnionRule(
   makeRegExRule(/^@container/, 'a media query'),
   makeRegExRule(/^@supports/, 'a supports query'),
   makeLiteralRule('@starting-style'),
-);
+)
 
 export const allModifiers: RuleCheck = makeUnionRule(
   pseudoElements,
   pseudoClassesAndAtRules,
-);
+)
 
-export { CSSProperties };
+export { CSSProperties }

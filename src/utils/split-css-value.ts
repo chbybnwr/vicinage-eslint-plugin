@@ -1,52 +1,45 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
-
+/* eslint-disable prefer-destructuring */
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+/* eslint-disable require-unicode-regexp */
 function splitValue(
   borderValue: number | string,
-): $ReadOnlyArray<number | string | null> {
+): readonly (number | string | null)[] {
   if (typeof borderValue === 'number') {
-    return [borderValue];
+    return [borderValue]
   }
-  const values: string[] = [];
-  let currentSegment = '';
-  let withinQuotes = false;
-  let withinFunction = 0;
 
-  for (let i = 0; i < borderValue.length; i++) {
-    const char = borderValue[i];
+  const values: string[] = []
+  let currentSegment = ''
+  let withinQuotes = false
+  let withinFunction = 0
 
+  for (const char of borderValue) {
     if (char === "'" || char === '"') {
-      withinQuotes = !withinQuotes;
+      withinQuotes = !withinQuotes
     } else if (char === '(' && !withinQuotes) {
-      withinFunction = withinFunction + 1;
+      withinFunction += 1
     } else if (char === ')' && !withinQuotes) {
-      withinFunction = withinFunction - 1;
+      withinFunction -= 1
     }
 
     if (char === ' ' && !withinQuotes && withinFunction === 0) {
       if (currentSegment.length > 0) {
-        values.push(currentSegment);
-        currentSegment = '';
+        values.push(currentSegment)
+        currentSegment = ''
       }
     } else {
-      currentSegment += char;
+      currentSegment += char
     }
   }
 
   if (currentSegment.length > 0) {
-    values.push(currentSegment);
+    values.push(currentSegment)
   }
 
-  return values;
+  return values
 }
 
-const borderWidthKeywords = new Set(['thin', 'medium', 'thick']);
+const borderWidthKeywords = new Set(['thin', 'medium', 'thick'])
 const borderStyleKeywords = new Set([
   'none',
   'hidden',
@@ -59,27 +52,27 @@ const borderStyleKeywords = new Set([
   'inside', // Non-standard
   'inset',
   'outset',
-]);
-const globalKeywords = new Set(['initial', 'inherit', 'unset']);
+])
+const globalKeywords = new Set(['initial', 'inherit', 'unset'])
 
 export function borderSplitter(
   value: string,
-): [?number | string, ?string, ?string] {
-  const borderParts: Array<number | string> = splitValue(value).filter(
-    (val) /*: val is number | string*/ => val != null,
-  );
+): [string | number | null, string | null, string | null] {
+  const borderParts: (number | string)[] = splitValue(value).filter(
+    (val) /* : val is number | string */ => val != null,
+  )
 
   const suffix = borderParts.some(
     (part) => typeof part === 'string' && part.endsWith('!important'),
   )
     ? ' !important'
-    : '';
+    : ''
 
   const parts = borderParts.map((part) =>
     typeof part === 'string' && part.endsWith('!important')
       ? part.replace('!important', '').trim()
       : part,
-  );
+  )
 
   if (
     parts.length === 1 &&
@@ -87,7 +80,7 @@ export function borderSplitter(
     globalKeywords.has(parts[0]) &&
     typeof parts[0] === 'string'
   ) {
-    return [parts[0], parts[0], parts[0]];
+    return [parts[0], parts[0], parts[0]]
   }
 
   // Find the part that starts with a number
@@ -96,32 +89,40 @@ export function borderSplitter(
     (part) =>
       typeof part === 'number' ||
       (typeof part === 'string' &&
-        (part.match(/^\.?\d+/) ||
+        (/^\.?\d+/.exec(part) ||
           borderWidthKeywords.has(part) ||
-          part.match(/^calc\(/))),
-  );
+          /^calc\(/.exec(part))),
+  )
+
   if (typeof width === 'number') {
-    width = String(width) + 'px';
+    width = `${String(width)}px`
   }
+
   if (width != null) {
-    parts.splice(parts.indexOf(width), 1);
+    parts.splice(parts.indexOf(width), 1)
+
     if (parts.length === 0) {
-      return [width + suffix, null, null];
+      return [width + suffix, null, null]
     }
   }
+
   const style = parts.find(
     (part) => typeof part === 'string' && borderStyleKeywords.has(part),
-  );
-  if (style != null) {
-    parts.splice(parts.indexOf(style), 1);
-  }
-  if (parts.length === 2 && width == null) {
-    width = parts[0];
-    parts.splice(0, 1);
-  }
-  const color = parts[0];
-  const withSuffix = (part: void | null | string | number) =>
-    part != null ? part + suffix : null;
+  )
 
-  return [withSuffix(width), withSuffix(style), withSuffix(color)];
+  if (style != null) {
+    parts.splice(parts.indexOf(style), 1)
+  }
+
+  if (parts.length === 2 && width == null) {
+    width = parts[0]
+    parts.splice(0, 1)
+  }
+
+  const color = parts[0]
+  const withSuffix = (part: undefined | null | string | number) =>
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+    part == null ? null : part + suffix
+
+  return [withSuffix(width), withSuffix(style), withSuffix(color)]
 }

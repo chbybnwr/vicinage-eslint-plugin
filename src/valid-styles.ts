@@ -1,89 +1,61 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
+import { all } from './reference/css-properties'
+import { allModifiers } from './reference/css-properties'
+import type { CallExpression } from 'estree'
+import { CANNOT_FIX } from './utils/split-shorthands'
+import { CSSProperties } from './reference/css-properties'
+import { CSSPropertyKeys } from './reference/css-properties'
+import { CSSPropertyReplacements } from './reference/css-properties'
+import type { Directive } from 'estree'
+import evaluate from './utils/evaluate'
+import type { Expression } from 'estree'
+import formatPropertiesWithNodeIndentation from './utils/format-properties-with-node-indentation'
+import getDistance from './utils/get-distance'
+import getSourceCode from './utils/get-source-code'
+import type { Identifier } from 'estree'
+import type { ImportDeclaration } from 'estree'
+import isAnimationName from './rules/is-animation-name'
+import isCSSVariable from './rules/is-css-variable'
+import isNumber from './rules/is-number'
+import isPositionTryFallbacks from './rules/is-position-try-fallbacks'
+import isString from './rules/is-string'
+import isStylexResolvedVarsToken from './rules/is-stylex-resolved-vars-token'
+import isWhiteSpaceOrEmpty from './utils/is-white-space-or-empty'
+import type { Literal } from 'estree'
+import makeLiteralRule from './rules/make-literal-rule'
+import makeUnionRule from './rules/make-union-rule'
+import micromatch from 'micromatch'
+import type { ModuleDeclaration } from 'estree'
+import type { Node } from 'estree'
+import type { ObjectExpression } from 'estree'
+import type { Pattern } from 'estree'
+import type { PrivateIdentifier } from 'estree'
+import type { Program } from 'estree'
+import type { Property } from 'estree'
+import { pseudoClassesAndAtRules } from './reference/css-properties'
+import { pseudoElements } from './reference/css-properties'
+import resolveKey from './utils/resolve-key'
+import type { Rule } from 'eslint'
+import type { RuleCheck } from '#/rules/types'
+import type { RuleResponse } from '#/rules/types'
+import { splitSpecificShorthands } from './utils/split-shorthands'
+import type { Statement } from 'estree'
+import type { VariableDeclaration } from 'estree'
+import type { VariableDeclarator } from 'estree'
+import type { Variables } from '#/rules/types'
 
-'use strict';
-
-import getDistance from './utils/getDistance';
-import isWhiteSpaceOrEmpty from './utils/isWhiteSpaceOrEmpty';
-import type {
-  CallExpression,
-  Directive,
-  Expression,
-  Identifier,
-  ImportDeclaration,
-  ModuleDeclaration,
-  Node,
-  ObjectExpression,
-  Pattern,
-  Program,
-  Property,
-  Literal,
-  Statement,
-  VariableDeclaration,
-  VariableDeclarator,
-  PrivateIdentifier,
-} from 'estree';
-import micromatch from 'micromatch';
-/*:: import { Rule } from 'eslint'; */
-import makeLiteralRule from './rules/makeLiteralRule';
-import isString from './rules/isString';
-import makeUnionRule from './rules/makeUnionRule';
-import isNumber from './rules/isNumber';
-import isAnimationName from './rules/isAnimationName';
-import isPositionTryFallbacks from './rules/isPositionTryFallbacks';
-import isStylexResolvedVarsToken from './rules/isStylexResolvedVarsToken';
-import isCSSVariable from './rules/isCSSVariable';
-import evaluate from './utils/evaluate';
-import resolveKey from './utils/resolveKey';
-import formatPropertiesWithNodeIndentation from './utils/formatPropertiesWithNodeIndentation';
-import getSourceCode from './utils/getSourceCode';
-import {
-  CSSPropertyKeys,
-  CSSProperties,
-  CSSPropertyReplacements,
-  pseudoElements,
-  pseudoClassesAndAtRules,
-  allModifiers,
-  all,
-} from './reference/cssProperties';
-import { splitSpecificShorthands, CANNOT_FIX } from './utils/splitShorthands';
-
-export type Variables = $ReadOnlyMap<string, Expression | 'ARG'>;
-export type RuleCheck = (
-  node: $ReadOnly<Expression | Pattern>,
-  variables?: Variables,
-  prop?: $ReadOnly<Property>,
-  context?: Rule.RuleContext,
-) => RuleResponse;
-export type RuleResponse = void | {
-  message: string,
-  distance?: number,
-  fix?: Rule.ReportFixer,
-  suggest?: {
-    fix: Rule.ReportFixer,
-    desc: string,
-  },
-};
 type ValidationResult =
   | RuleResponse
-  | {
-      ...Rule.ReportDescriptor,
-      isSpecialCase: true,
-    };
+  | (Rule.ReportDescriptor & {
+      isSpecialCase: true
+    })
 
 const showError =
   (message: string): RuleCheck =>
-  () => ({ message });
+  () => ({ message })
 
 // Maps camelCase CSS shorthand property names to the hyphenated names
 // used by splitSpecificShorthands
-const shorthandExpansionMap: { [string]: string } = {
+const shorthandExpansionMap: Record<string, string> = {
   animation: 'animation',
   font: 'font',
   gridArea: 'grid-area',
@@ -91,9 +63,9 @@ const shorthandExpansionMap: { [string]: string } = {
   gridRow: 'grid-row',
   gridTemplate: 'grid-template',
   gridGap: 'gap',
-};
+}
 
-const LEGACY_CONDITIONAL_SHORTHAND_FIXERS = new Set(['animation', 'font']);
+const LEGACY_CONDITIONAL_SHORTHAND_FIXERS = new Set(['animation', 'font'])
 
 const LEGACY_CONDITIONAL_REPLACEMENT_FIXERS = new Set([
   'border',
@@ -107,9 +79,9 @@ const LEGACY_CONDITIONAL_REPLACEMENT_FIXERS = new Set([
   'borderStart',
   'borderInlineStart',
   'borderLeft',
-]);
+])
 
-const NUMERIC_LITERAL_VALUE_REGEX = /^[-+]?(?:\d+|\d*\.\d+)$/;
+const NUMERIC_LITERAL_VALUE_REGEX = /^[+-]?(?:\d+|\d*\.\d+)$/
 
 const NUMERIC_LITERAL_PROPERTIES = new Set([
   'rowGap',
@@ -117,77 +89,91 @@ const NUMERIC_LITERAL_PROPERTIES = new Set([
   'lineHeight',
   'fontWeight',
   'animationIterationCount',
-]);
+])
 
 const serializeValue = (propertyKey: string, val: number | string): string => {
   if (typeof val === 'number') {
-    return String(val);
+    return String(val)
   }
+
   if (
     NUMERIC_LITERAL_PROPERTIES.has(propertyKey) &&
     NUMERIC_LITERAL_VALUE_REGEX.test(val)
   ) {
-    return String(Number(val));
+    return String(Number(val))
   }
+
   // Escape single quotes within the string
-  const escaped = val.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-  return `'${escaped}'`;
-};
+  const escaped = val.replaceAll('\\', '\\\\').replaceAll("'", String.raw`\'`)
+
+  return `'${escaped}'`
+}
 
 const formatExpandedProperties = (
-  prop: $ReadOnly<Property>,
-  expanded: $ReadOnlyArray<$ReadOnly<[string, number | string]>>,
+  prop: Readonly<Property>,
+  expanded: readonly Readonly<[string, number | string]>[],
   context?: Rule.RuleContext,
 ): string => {
-  const sourceCode = context != null ? getSourceCode(context) : undefined;
+  const sourceCode = context == null ? undefined : getSourceCode(context)
   const properties = expanded.map(
     ([key, value]) => `${key}: ${serializeValue(key, value)}`,
-  );
-  return formatPropertiesWithNodeIndentation(prop, properties, sourceCode);
-};
+  )
+
+  return formatPropertiesWithNodeIndentation(prop, properties, sourceCode)
+}
 
 const showErrorWithFix =
   (message: string, propertyKey: string): RuleCheck =>
   (
-    node: $ReadOnly<Expression | Pattern>,
+    node: Readonly<Expression | Pattern>,
     _variables?: Variables,
-    prop?: $ReadOnly<Property>,
+    prop?: Readonly<Property>,
     context?: Rule.RuleContext,
   ): RuleResponse => {
-    const response: $NonMaybeType<RuleResponse> = { message };
-    const shorthandProp = shorthandExpansionMap[propertyKey];
+    const response: NonNullable<RuleResponse> = { message }
+    const shorthandProp = shorthandExpansionMap[propertyKey]
+
     if (shorthandProp == null || node.type !== 'Literal' || prop == null) {
-      return response;
+      return response
     }
-    const val = node.value;
+
+    const val = node.value
+
     if (typeof val !== 'string' && typeof val !== 'number') {
-      return response;
+      return response
     }
-    const expanded = splitSpecificShorthands(shorthandProp, String(val));
+
+    const expanded = splitSpecificShorthands(shorthandProp, String(val))
+
     if (expanded.length <= 1 && expanded[0]?.[1] !== CANNOT_FIX) {
       // Single value that's unchanged — no expansion available
-      return response;
+      return response
     }
+
     if (expanded.length === 1 && expanded[0]?.[1] === CANNOT_FIX) {
       // Cannot be auto-fixed
-      return response;
+      return response
     }
-    const newPropertiesText = formatExpandedProperties(prop, expanded, context);
-    const fixFn = (fixer: Rule.RuleFixer) => {
-      return fixer.replaceText(prop, newPropertiesText);
-    };
+
+    const newPropertiesText = formatExpandedProperties(prop, expanded, context)
+
+    const fixFn = (fixer: Rule.RuleFixer) =>
+      fixer.replaceText(prop, newPropertiesText)
+
     // animation is suggest-only since animationName needs a keyframes() reference
     if (propertyKey !== 'animation') {
-      response.fix = fixFn;
+      response.fix = fixFn
     }
+
     response.suggest = {
       desc: `Split '${propertyKey}' shorthand into individual longhand properties?`,
       fix: fixFn,
-    };
-    return response;
-  };
+    }
 
-const stylexValidStyles = {
+    return response
+  }
+
+const stylexValidStyles: Rule.RuleModule = {
   meta: {
     type: 'problem',
     hasSuggestions: true,
@@ -267,39 +253,40 @@ const stylexValidStyles = {
       },
     ],
   },
-  create(context: Rule.RuleContext): { ... } {
-    const variables = new Map<string, Expression | 'ARG'>();
-    const dynamicStyleVariables = new Set<string>();
-    const options = context.options[0] || {};
-    const themeFileExtension = options.themeFileExtension || '.stylex';
+  create(context: Rule.RuleContext) {
+    const variables = new Map<string, Expression | 'ARG'>()
+    const dynamicStyleVariables = new Set<string>()
+    const options = context.options[0] || {}
+    const themeFileExtension = options.themeFileExtension || '.stylex'
 
     const legacyReason =
-      'This property is not supported in legacy StyleX resolution.';
+      'This property is not supported in legacy StyleX resolution.'
 
-    type PropLimits = {
-      [string]: {
-        limit: null | string | number | Array<string | number>,
-        reason: string,
-      },
-    };
+    type PropLimits = Record<
+      string,
+      {
+        limit: null | string | number | (string | number)[]
+        reason: string
+      }
+    >
 
-    type Schema = {
-      validImports: Array<
+    interface Schema {
+      validImports: (
         | string
         | {
-            from: string,
-            as: string,
-          },
-      >,
-      allowRawCSSVars: boolean,
-      allowOuterPseudoAndMedia: boolean,
-      banPropsForLegacy: boolean,
+            from: string
+            as: string
+          }
+      )[]
+      allowRawCSSVars: boolean
+      allowOuterPseudoAndMedia: boolean
+      banPropsForLegacy: boolean
       styleResolution?:
         | 'application-order'
         | 'property-specificity'
-        | 'legacy-expand-shorthands',
-      propLimits?: PropLimits,
-    };
+        | 'legacy-expand-shorthands'
+      propLimits?: PropLimits
+    }
 
     const legacyProps: PropLimits = {
       grid: { limit: null, reason: legacyReason },
@@ -317,7 +304,7 @@ const stylexValidStyles = {
         limit: ['opacity', 'transform', 'opacity, transform', 'none'],
         reason: legacyReason,
       },
-    };
+    }
 
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
@@ -326,16 +313,16 @@ const stylexValidStyles = {
       banPropsForLegacy = false,
       styleResolution,
       propLimits = {},
-    }: Schema = context.options[0] || {};
+    }: Schema = context.options[0] || {}
 
     const isLegacyExpandShorthands =
-      styleResolution === 'legacy-expand-shorthands' || banPropsForLegacy;
+      styleResolution === 'legacy-expand-shorthands' || banPropsForLegacy
 
     const shouldEnableLegacyConditionalShorthandFixer = (
       propertyKey: string,
     ): boolean =>
       isLegacyExpandShorthands ||
-      !LEGACY_CONDITIONAL_SHORTHAND_FIXERS.has(propertyKey);
+      !LEGACY_CONDITIONAL_SHORTHAND_FIXERS.has(propertyKey)
 
     /**
      * Check if a file has a valid extension for StyleX variable imports.
@@ -360,34 +347,36 @@ const stylexValidStyles = {
         themeFileExtension,
         `${themeFileExtension}.const`,
         '.transformed',
-      ];
-      const extensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
+      ]
+      const extensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs']
+
       return ['', ...extensions].some((ext) =>
         baseExtensions.some((base) => filename.endsWith(`${base}${ext}`)),
-      );
+      )
     }
-    const stylexResolvedVarsTokenImports = new Set<string>();
+
+    const stylexResolvedVarsTokenImports = new Set<string>()
 
     // Track same-file defineVars/defineVarsNested/defineConstsNested declarations.
     const currentFilename =
-      context.getFilename != null ? context.getFilename() : '';
+      context.getFilename == null ? '' : context.getFilename()
     const isStylexFile = isValidStylexResolvedVarsFileExtension(
       currentFilename,
       themeFileExtension,
-    );
+    )
 
-    const styleXDefaultImports = new Set<string>();
-    const styleXCreateImports = new Set<string>();
-    const styleXKeyframesImports = new Set<string>();
-    const styleXPositionTryImports = new Set<string>();
-    const styleXWhenImports = new Set<string>();
+    const styleXDefaultImports = new Set<string>()
+    const styleXCreateImports = new Set<string>()
+    const styleXKeyframesImports = new Set<string>()
+    const styleXPositionTryImports = new Set<string>()
+    const styleXWhenImports = new Set<string>()
 
     const overrides: PropLimits = {
       ...(isLegacyExpandShorthands ? legacyProps : {}),
       ...propLimits,
-    };
+    }
 
-    const CSSPropertiesWithOverrides: { [string]: RuleCheck } = {
+    const CSSPropertiesWithOverrides: Record<string, RuleCheck> = {
       ...CSSProperties,
       // TODO change this to a special function that looks for stylex.keyframes call
       animationName: makeUnionRule(
@@ -401,15 +390,16 @@ const stylexValidStyles = {
         isPositionTryFallbacks(styleXDefaultImports, styleXPositionTryImports),
         all,
       ),
-    };
+    }
     const getOverrideErrorRule = (reason: string, propertyKey: string) =>
       shorthandExpansionMap[propertyKey] != null &&
       shouldEnableLegacyConditionalShorthandFixer(propertyKey)
         ? showErrorWithFix(reason, propertyKey)
-        : showError(reason);
+        : showError(reason)
 
     for (const overrideKey in overrides) {
-      const { limit, reason } = overrides[overrideKey];
+      const { limit, reason } = overrides[overrideKey]
+
       if (limit === null) {
         // For properties with known shorthand expansions, provide auto-fixers
         if (overrideKey.includes('*') || overrideKey.includes('+')) {
@@ -418,17 +408,19 @@ const stylexValidStyles = {
               CSSPropertiesWithOverrides[key] = getOverrideErrorRule(
                 reason,
                 key,
-              );
+              )
             }
           }
         } else {
           CSSPropertiesWithOverrides[overrideKey] = getOverrideErrorRule(
             reason,
             overrideKey,
-          );
+          )
         }
-        continue;
+
+        continue
       }
+
       const overrideValue =
         limit === '*'
           ? makeUnionRule(isString, isNumber, all)
@@ -442,31 +434,36 @@ const stylexValidStyles = {
                   ? makeUnionRule(
                       ...limit.map((l) => {
                         if (l === '*') {
-                          return makeUnionRule(isString, isNumber);
+                          return makeUnionRule(isString, isNumber)
                         }
+
                         if (l === 'string') {
-                          return isString;
+                          return isString
                         }
+
                         if (l === 'number') {
-                          return isNumber;
+                          return isNumber
                         }
-                        return l;
+
+                        return l
                       }),
                       all,
                     )
-                  : undefined;
+                  : undefined
+
       if (overrideValue === undefined) {
         // skip
-        continue;
+        continue
       }
+
       if (overrideKey.includes('*') || overrideKey.includes('+')) {
         for (const key in CSSPropertiesWithOverrides) {
           if (micromatch.isMatch(key, overrideKey)) {
-            CSSPropertiesWithOverrides[key] = overrideValue;
+            CSSPropertiesWithOverrides[key] = overrideValue
           }
         }
       } else {
-        CSSPropertiesWithOverrides[overrideKey] = overrideValue;
+        CSSPropertiesWithOverrides[overrideKey] = overrideValue
       }
     }
 
@@ -478,16 +475,15 @@ const stylexValidStyles = {
           node.property.type === 'Identifier' &&
           node.property.name === 'create') ||
         (node.type === 'Identifier' && styleXCreateImports.has(node.name))
-      );
+      )
     }
 
-    function isStylexDeclaration(node: $ReadOnly<{ ...Node, ... }>) {
+    function isStylexDeclaration(node: Readonly<Node>) {
       return (
-        node &&
-        node.type === 'CallExpression' &&
+        node?.type === 'CallExpression' &&
         isStylexCallee(node.callee) &&
         node.arguments.length === 1
-      );
+      )
     }
 
     function validateStyleValue(
@@ -507,10 +503,12 @@ const stylexValidStyles = {
           styleKey,
           propertyKey,
           ruleChecker,
-        );
+        )
+
         if (trueCheck != null) {
-          return trueCheck;
+          return trueCheck
         }
+
         const falseCheck = validateStyleValue(
           valueNode.alternate,
           varsWithFnArgs,
@@ -518,11 +516,13 @@ const stylexValidStyles = {
           styleKey,
           propertyKey,
           ruleChecker,
-        );
+        )
+
         if (falseCheck != null) {
-          return falseCheck;
+          return falseCheck
         }
-        return null;
+
+        return null
       }
 
       // For: color: "blue" || "green" or zIndex: var ?? 10
@@ -537,10 +537,12 @@ const stylexValidStyles = {
           styleKey,
           propertyKey,
           ruleChecker,
-        );
+        )
+
         if (leftCheck != null) {
-          return leftCheck;
+          return leftCheck
         }
+
         const rightCheck = validateStyleValue(
           valueNode.right,
           varsWithFnArgs,
@@ -548,11 +550,13 @@ const stylexValidStyles = {
           styleKey,
           propertyKey,
           ruleChecker,
-        );
+        )
+
         if (rightCheck != null) {
-          return rightCheck;
+          return rightCheck
         }
-        return null;
+
+        return null
       }
 
       if (
@@ -562,7 +566,8 @@ const stylexValidStyles = {
         (valueNode.value === 'start' || valueNode.value === 'end')
       ) {
         const replacement =
-          valueNode.value === 'start' ? 'inline-start' : 'inline-end';
+          valueNode.value === 'start' ? 'inline-start' : 'inline-end'
+
         return {
           node: valueNode,
           loc: valueNode.loc,
@@ -575,13 +580,15 @@ const stylexValidStyles = {
             },
           ],
           isSpecialCase: true,
-        };
+        }
       }
 
-      const check = ruleChecker(valueNode, varsWithFnArgs, style, context);
+      const check = ruleChecker(valueNode, varsWithFnArgs, style, context)
+
       if (check != null) {
-        return check;
+        return check
       }
+
       if (
         valueNode.type === 'Literal' &&
         typeof valueNode.value === 'string' &&
@@ -600,9 +607,10 @@ const stylexValidStyles = {
             },
           ],
           isSpecialCase: true,
-        };
+        }
       }
     }
+
     function checkStyleProperty(
       style: Node,
       level: number,
@@ -613,7 +621,8 @@ const stylexValidStyles = {
       if (style.type === 'Property') {
         // const styleAsProperty: Property = style;
         if (style.value.type === 'ObjectExpression') {
-          const styleValue: ObjectExpression = style.value;
+          const styleValue: ObjectExpression = style.value
+
           // TODO: Remove this soon
           // But we want to make sure that the same "condition" isn't repeated
           if (
@@ -622,78 +631,97 @@ const stylexValidStyles = {
             // Allow exactly one inner level when the outer/top nested layer is a pseudo-element
             !(outerIsPseudoElement && level === 1)
           ) {
-            return context.report({
-              node: style.value as Node,
+            context.report({
+              node: style.value,
               loc: style.value.loc,
               message: 'You cannot nest styles more than one level deep',
-            } as Rule.ReportDescriptor);
+            } as Rule.ReportDescriptor)
+
+            return
           }
-          const key = style.key;
+
+          const { key } = style
+
           if (key.type === 'PrivateIdentifier') {
-            return context.report({
+            context.report({
               node: key,
               loc: key.loc,
               message: 'Private properties are not allowed in stylex',
-            } as Rule.ReportDescriptor);
+            } as Rule.ReportDescriptor)
+
+            return
           }
+
           const keyName =
             key.type === 'Literal'
               ? key.value
               : key.type === 'Identifier'
-                ? !style.computed
-                  ? key.name
-                  : resolveKey(key, variables)
-                : null;
+                ? style.computed
+                  ? resolveKey(key, variables)
+                  : key.name
+                : null
+
           if (isStylexResolvedVarsToken(key, stylexResolvedVarsTokenImports)) {
-            return undefined;
+            return undefined
           }
+
           if (
             typeof keyName !== 'string' ||
             (key.type !== 'Literal' && key.type !== 'Identifier')
           ) {
-            return context.report({
+            context.report({
               node: key,
               loc: key.loc,
               message: 'Keys must be strings',
-            } as Rule.ReportDescriptor);
+            } as Rule.ReportDescriptor)
+
+            return
           }
+
           if (keyName.startsWith('@') || keyName.startsWith(':')) {
             if (level === 0) {
               const ruleCheck = (
                 allowOuterPseudoAndMedia ? allModifiers : pseudoElements
-              )(key, variables);
+              )(key, variables)
 
               if (ruleCheck !== undefined) {
                 if (keyName.startsWith('::')) {
-                  return context.report({
+                  context.report({
                     node: style.value,
                     loc: style.value.loc,
                     message: `Unknown pseudo element "${keyName}"`,
-                  } as $ReadOnly<Rule.ReportDescriptor>);
+                  } as Readonly<Rule.ReportDescriptor>)
+
+                  return
                 }
-                return context.report({
+
+                context.report({
                   node: style.value,
                   loc: style.value.loc,
                   message: allowOuterPseudoAndMedia
                     ? 'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries'
                     : 'Pseudo Classes, Media Queries and other At Rules should be nested as conditions within style properties. Only Pseudo Elements (::after) are allowed at the top-level',
-                } as $ReadOnly<Rule.ReportDescriptor>);
+                } as Readonly<Rule.ReportDescriptor>)
+
+                return
               }
             } else {
-              const ruleCheck = pseudoClassesAndAtRules(key, variables);
+              const ruleCheck = pseudoClassesAndAtRules(key, variables)
 
               if (ruleCheck !== undefined) {
-                return context.report({
+                context.report({
                   node: style.value,
                   loc: style.value.loc,
                   message:
                     'Invalid Pseudo class or At Rule used for conditional style value',
-                } as $ReadOnly<Rule.ReportDescriptor>);
+                } as Readonly<Rule.ReportDescriptor>)
+
+                return
               }
             }
           }
 
-          return styleValue.properties.forEach((prop) =>
+          for (const prop of styleValue.properties)
             checkStyleProperty(
               prop,
               level + 1,
@@ -704,135 +732,164 @@ const stylexValidStyles = {
                   ? null
                   : keyName),
               outerIsPseudoElement || keyName.startsWith('::'),
-            ),
-          );
+            )
+
+          return
         }
-        let styleKey: Expression | PrivateIdentifier = style.key;
+
+        let styleKey: Expression | PrivateIdentifier = style.key
+
         if (styleKey.type === 'PrivateIdentifier') {
-          return context.report({
+          context.report({
             node: styleKey,
             loc: styleKey.loc,
             message: 'Private properties are not allowed in stylex',
-          } as Rule.ReportDescriptor);
+          } as Rule.ReportDescriptor)
+
+          return
         }
+
         if (
           isStylexResolvedVarsToken(styleKey, stylexResolvedVarsTokenImports)
         ) {
-          return undefined;
+          return undefined
         }
 
-        let isStylexWhenCall = false;
-        if (style.computed && styleKey.type !== 'Literal') {
-          if (
-            styleKey.type === 'CallExpression' &&
-            styleKey.callee.type === 'MemberExpression'
-          ) {
-            const calleeObject = styleKey.callee.object;
-            const calleeProperty = styleKey.callee.property;
+        let isStylexWhenCall = false
 
-            isStylexWhenCall =
-              (calleeObject.type === 'MemberExpression' &&
-                calleeObject.object.type === 'Identifier' &&
-                styleXDefaultImports.has(calleeObject.object.name) &&
-                calleeObject.property.type === 'Identifier' &&
-                calleeObject.property.name === 'when' &&
-                calleeProperty.type === 'Identifier') ||
-              (calleeObject.type === 'Identifier' &&
-                styleXWhenImports.has(calleeObject.name) &&
-                calleeProperty.type === 'Identifier');
+        if (
+          style.computed &&
+          styleKey.type !== 'Literal' &&
+          styleKey.type === 'CallExpression' &&
+          styleKey.callee.type === 'MemberExpression'
+        ) {
+          const calleeObject = styleKey.callee.object
+          const calleeProperty = styleKey.callee.property
 
-            if (!isStylexWhenCall) {
-              const val = evaluate(styleKey, variables);
-              if (val == null) {
-                return context.report({
-                  node: style.key,
-                  loc: style.key.loc,
-                  message: 'Computed key cannot be resolved.',
-                } as Rule.ReportDescriptor);
-              } else if (val === 'ARG') {
-                return context.report({
-                  node: style.key,
-                  loc: style.key.loc,
-                  message: 'Computed key cannot depend on function argument',
-                } as Rule.ReportDescriptor);
-              } else {
-                styleKey = val;
-              }
+          isStylexWhenCall =
+            (calleeObject.type === 'MemberExpression' &&
+              calleeObject.object.type === 'Identifier' &&
+              styleXDefaultImports.has(calleeObject.object.name) &&
+              calleeObject.property.type === 'Identifier' &&
+              calleeObject.property.name === 'when' &&
+              calleeProperty.type === 'Identifier') ||
+            (calleeObject.type === 'Identifier' &&
+              styleXWhenImports.has(calleeObject.name) &&
+              calleeProperty.type === 'Identifier')
+
+          if (!isStylexWhenCall) {
+            const val = evaluate(styleKey, variables)
+
+            if (val == null) {
+              context.report({
+                node: style.key,
+                loc: style.key.loc,
+                message: 'Computed key cannot be resolved.',
+              } as Rule.ReportDescriptor)
+
+              return
+            } else if (val === 'ARG') {
+              context.report({
+                node: style.key,
+                loc: style.key.loc,
+                message: 'Computed key cannot depend on function argument',
+              } as Rule.ReportDescriptor)
+
+              return
             }
+
+            styleKey = val
           }
         }
+
         if (
           styleKey.type !== 'Literal' &&
           styleKey.type !== 'Identifier' &&
           !isStylexWhenCall
         ) {
-          return context.report({
+          context.report({
             node: styleKey,
             loc: styleKey.loc,
             message:
               'All keys in a stylex object must be static literal values.',
-          } as Rule.ReportDescriptor);
+          } as Rule.ReportDescriptor)
+
+          return
         }
 
         const key =
           propName ??
-          (styleKey.type === 'Identifier' ? styleKey.name : styleKey.value);
+          (styleKey.type === 'Identifier' ? styleKey.name : styleKey.value)
+
         if (typeof key !== 'string') {
-          return context.report({
+          context.report({
             node: styleKey,
             loc: styleKey.loc,
             message:
               'All keys in a stylex object must be static literal string values.',
-          } as Rule.ReportDescriptor);
+          } as Rule.ReportDescriptor)
+
+          return
         }
+
         if (CSSPropertyReplacements[key] != null) {
-          const propCheck: RuleCheck = CSSPropertyReplacements[key];
-          // eslint-disable-next-line no-unused-vars
-          const val: Property = style;
-          const check = propCheck(style.value, variables, style, context);
+          const propCheck: RuleCheck = CSSPropertyReplacements[key]
+
+          const val: Property = style
+          const check = propCheck(style.value, variables, style, context)
+
           if (check != null) {
-            const { message } = check;
-            const { suggest } = check;
-            let { fix } = check;
+            const { message } = check
+            const { suggest } = check
+            let { fix } = check
+
             if (
               !isLegacyExpandShorthands &&
               LEGACY_CONDITIONAL_REPLACEMENT_FIXERS.has(key)
             ) {
-              fix = undefined;
+              fix = undefined
             }
+
             const diagnostic: Rule.ReportDescriptor = {
               node: style,
               loc: style.loc,
               message,
-              fix: fix != null ? fix : undefined,
-              suggest: suggest != null ? [suggest] : undefined,
-            };
-            return context.report(diagnostic);
+              fix: fix == null ? undefined : fix,
+              suggest: suggest == null ? undefined : [suggest],
+            }
+
+            context.report(diagnostic)
+
+            return
           }
         }
-        const ruleChecker = CSSPropertiesWithOverrides[key];
+
+        const ruleChecker = CSSPropertiesWithOverrides[key]
+
         if (ruleChecker == null) {
           if (allowRawCSSVars && micromatch.isMatch(key, '--*')) {
-            return;
+            return
           }
 
           const closestKey = CSSPropertyKeys.find((cssProp) => {
-            const distance = getDistance(key, cssProp, 2);
-            return distance <= 2;
-          });
+            const distance = getDistance(key, cssProp, 2)
 
-          return context.report({
+            return distance <= 2
+          })
+
+          context.report({
             node: style.key,
             loc: style.key.loc,
             message: 'This is not a key that is allowed by stylex',
             suggest:
-              closestKey != null
-                ? [
+              closestKey == null
+                ? undefined
+                : [
                     {
                       desc: `Did you mean "${closestKey}"?`,
                       fix: (fixer) => {
                         if (style.key.type === 'Identifier') {
-                          return fixer.replaceText(style.key, closestKey);
+                          return fixer.replaceText(style.key, closestKey)
                         } else if (
                           style.key.type === 'Literal' &&
                           (typeof style.key.value === 'string' ||
@@ -840,42 +897,48 @@ const stylexValidStyles = {
                             typeof style.key.value === 'boolean' ||
                             style.key.value == null)
                         ) {
-                          const styleKey: Literal = style.key;
-                          const raw = style.key.raw;
+                          const styleKey: Literal = style.key
+                          const { raw } = style.key
+
                           if (raw != null) {
-                            const quoteType = raw.substr(0, 1);
+                            const quoteType = raw.slice(0, 1)
+
                             return fixer.replaceText(
                               styleKey,
                               `${quoteType}${closestKey}${quoteType}`,
-                            );
+                            )
                           }
                         }
-                        return null;
+
+                        return null
                       },
                     },
-                  ]
-                : undefined,
-          } as Rule.ReportDescriptor);
+                  ],
+          } as Rule.ReportDescriptor)
+
+          return
         }
+
         if (typeof ruleChecker !== 'function') {
-          throw new TypeError(`CSSProperties[${key}] is not a function`);
+          throw new TypeError(`CSSProperties[${key}] is not a function`)
         }
 
         const isReferencingStylexDefineVarsTokens =
           stylexResolvedVarsTokenImports.size > 0 &&
-          isStylexResolvedVarsToken(
-            style.value,
-            stylexResolvedVarsTokenImports,
-          );
+          isStylexResolvedVarsToken(style.value, stylexResolvedVarsTokenImports)
+
         if (!isReferencingStylexDefineVarsTokens) {
-          let varsWithFnArgs: Map<string, Expression | 'ARG'> = variables;
+          let varsWithFnArgs: Map<string, Expression | 'ARG'> = variables
+
           if (dynamicStyleVariables.size > 0) {
-            varsWithFnArgs = new Map();
+            varsWithFnArgs = new Map()
+
             for (const [key, value] of variables) {
-              varsWithFnArgs.set(key, value);
+              varsWithFnArgs.set(key, value)
             }
+
             for (const key of dynamicStyleVariables) {
-              varsWithFnArgs.set(key, 'ARG');
+              varsWithFnArgs.set(key, 'ARG')
             }
           }
 
@@ -886,20 +949,23 @@ const stylexValidStyles = {
             styleKey,
             key,
             ruleChecker,
-          );
+          )
+
           if (check != null) {
             if (check.isSpecialCase) {
-              return context.report({
+              context.report({
                 node: check.node,
                 loc: check.loc,
                 message: check.message,
                 fix: check.fix,
                 suggest: check.suggest,
-              });
+              })
+
+              return
             }
 
-            const { message } = check;
-            let { fix, suggest } = check;
+            const { message } = check
+            let { fix, suggest } = check
 
             // If the property has a known shorthand expansion and no fix yet,
             // try to attach one
@@ -910,35 +976,39 @@ const stylexValidStyles = {
               shouldEnableLegacyConditionalShorthandFixer(key) &&
               style.value.type === 'Literal'
             ) {
-              const val = style.value.value;
+              const val = style.value.value
+
               if (typeof val === 'string' || typeof val === 'number') {
-                const shorthandProp = shorthandExpansionMap[key];
+                const shorthandProp = shorthandExpansionMap[key]
                 const expanded = splitSpecificShorthands(
                   shorthandProp,
                   String(val),
-                );
+                )
                 const canFix =
                   expanded.length > 1 ||
-                  (expanded.length === 1 && expanded[0]?.[1] === CANNOT_FIX);
+                  (expanded.length === 1 && expanded[0]?.[1] === CANNOT_FIX)
                 const isFixable =
                   canFix &&
-                  !(expanded.length === 1 && expanded[0]?.[1] === CANNOT_FIX);
+                  !(expanded.length === 1 && expanded[0]?.[1] === CANNOT_FIX)
+
                 if (isFixable) {
                   const newPropertiesText = formatExpandedProperties(
                     style,
                     expanded,
                     context,
-                  );
+                  )
                   const fixFn = (fixer: Rule.RuleFixer) =>
-                    fixer.replaceText(style, newPropertiesText);
+                    fixer.replaceText(style, newPropertiesText)
+
                   // animation is suggest-only since animationName needs keyframes()
                   if (key !== 'animation') {
-                    fix = fixFn;
+                    fix = fixFn
                   }
+
                   suggest = {
                     desc: `Split '${key}' shorthand into individual longhand properties?`,
                     fix: fixFn,
-                  };
+                  }
                 }
               }
             }
@@ -946,9 +1016,9 @@ const stylexValidStyles = {
             const isBackgroundBlendModeFormatError =
               key === 'backgroundBlendMode' &&
               typeof message === 'string' &&
-              message.indexOf(
+              message.includes(
                 'backgroundBlendMode values must be separated by a comma and a space',
-              ) !== -1;
+              )
 
             const finalMessage = isBackgroundBlendModeFormatError
               ? message.split('\n')[0]
@@ -956,15 +1026,15 @@ const stylexValidStyles = {
                   key === 'lineHeight'
                     ? '\nBe careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
                     : ''
-                }`;
+                }`
 
-            return context.report({
+            context.report({
               node: style.value,
               loc: style.value.loc,
               message: finalMessage,
-              fix: fix != null ? fix : undefined,
-              suggest: suggest != null ? [suggest] : undefined,
-            } as Rule.ReportDescriptor);
+              fix: fix == null ? undefined : fix,
+              suggest: suggest == null ? undefined : [suggest],
+            } as Rule.ReportDescriptor)
           }
         }
       }
@@ -983,64 +1053,55 @@ const stylexValidStyles = {
         const vars = node.body
           .reduce(
             (
-              collection: Array<VariableDeclaration>,
+              collection: VariableDeclaration[],
               node: Statement | ModuleDeclaration | Directive,
             ) => {
               if (node.type === 'VariableDeclaration') {
-                collection.push(node);
+                collection.push(node)
               }
-              return collection;
+
+              return collection
             },
             [],
           )
-          .map(
-            (
-              constDecl: VariableDeclaration,
-            ): $ReadOnlyArray<VariableDeclarator> => constDecl.declarations,
+          .flatMap(
+            (constDecl: VariableDeclaration): readonly VariableDeclarator[] =>
+              constDecl.declarations,
           )
-          .reduce(
-            (
-              arr: $ReadOnlyArray<VariableDeclarator>,
-              curr: $ReadOnlyArray<VariableDeclarator>,
-            ) => arr.concat(curr),
-            [],
-          );
 
         const [requires, others] = vars.reduce(
           (acc, decl) => {
             if (
-              decl.init != null &&
-              decl.init.type === 'CallExpression' &&
+              decl.init?.type === 'CallExpression' &&
               decl.init.callee.type === 'Identifier' &&
               decl.init.callee.name === 'require'
             ) {
-              acc[0].push(decl);
+              acc[0].push(decl)
             } else {
-              acc[1].push(decl);
+              acc[1].push(decl)
             }
-            return acc;
+
+            return acc
           },
-          [[] as Array<VariableDeclarator>, [] as Array<VariableDeclarator>],
-        );
+          [[] as VariableDeclarator[], [] as VariableDeclarator[]],
+        )
 
         requires.forEach((decl: VariableDeclarator) => {
           // detect requires of "stylex" and "@stylexjs/stylex"
           if (
-            decl.init != null &&
-            decl.init.type === 'CallExpression' &&
+            decl.init?.type === 'CallExpression' &&
             decl.init.callee.type === 'Identifier' &&
             decl.init.callee.name === 'require' &&
             decl.init.arguments.length === 1 &&
             decl.init.arguments[0].type === 'Literal' &&
-            importsToLookFor.includes(
-              decl.init.arguments[0].value as $FlowFixMe,
-            )
+            importsToLookFor.includes(decl.init.arguments[0].value)
           ) {
             if (decl.id.type === 'Identifier') {
-              styleXDefaultImports.add(decl.id.name);
+              styleXDefaultImports.add(decl.id.name)
             }
+
             if (decl.id.type === 'ObjectPattern') {
-              decl.id.properties.forEach((prop) => {
+              for (const prop of decl.id.properties) {
                 if (
                   prop.type === 'Property' &&
                   prop.key.type === 'Identifier' &&
@@ -1048,103 +1109,112 @@ const stylexValidStyles = {
                   !prop.computed &&
                   prop.value.type === 'Identifier'
                 ) {
-                  styleXCreateImports.add(prop.value.name);
+                  styleXCreateImports.add(prop.value.name)
                 }
-              });
+              }
             }
           }
-        });
+        })
 
         others
           .filter((decl) => decl.id.type === 'Identifier')
           .forEach((decl: VariableDeclarator) => {
             const id: ?Identifier =
-              decl.id.type === 'Identifier' ? decl.id : null;
-            const init = decl.init;
+              decl.id.type === 'Identifier' ? decl.id : null
+            const { init } = decl
+
             if (id != null && init != null) {
-              variables.set(id.name, init);
+              variables.set(id.name, init)
             }
-          });
+          })
       },
       ImportDeclaration(node: ImportDeclaration) {
         if (
           node.source.type !== 'Literal' ||
           typeof node.source.value !== 'string'
         ) {
-          return;
+          return
         }
-        const sourceValue = node.source.value;
+
+        const sourceValue = node.source.value
 
         const foundImportSource = importsToLookFor.find((importSource) => {
           if (typeof importSource === 'string') {
-            return importSource === sourceValue;
+            return importSource === sourceValue
           }
-          return importSource.from === sourceValue;
-        });
 
-        const isStylexImport = foundImportSource !== undefined;
+          return importSource.from === sourceValue
+        })
+
+        const isStylexImport = foundImportSource !== undefined
         const isStylexResolvedVarsImport =
           isValidStylexResolvedVarsFileExtension(
             sourceValue,
             themeFileExtension,
-          );
+          )
 
         if (!(isStylexImport || isStylexResolvedVarsImport)) {
-          return;
+          return
         }
+
         if (isStylexImport) {
           if (typeof foundImportSource === 'string') {
-            node.specifiers.forEach((specifier) => {
+            for (const specifier of node.specifiers) {
               if (
                 specifier.type === 'ImportDefaultSpecifier' ||
                 specifier.type === 'ImportNamespaceSpecifier'
               ) {
-                styleXDefaultImports.add(specifier.local.name);
+                styleXDefaultImports.add(specifier.local.name)
               }
+
               if (
                 specifier.type === 'ImportSpecifier' &&
                 specifier.imported.name === 'create'
               ) {
-                styleXCreateImports.add(specifier.local.name);
+                styleXCreateImports.add(specifier.local.name)
               }
+
               if (
                 specifier.type === 'ImportSpecifier' &&
                 specifier.imported.name === 'keyframes'
               ) {
-                styleXKeyframesImports.add(specifier.local.name);
+                styleXKeyframesImports.add(specifier.local.name)
               }
+
               if (
                 specifier.type === 'ImportSpecifier' &&
                 specifier.imported.name === 'positionTry'
               ) {
-                styleXPositionTryImports.add(specifier.local.name);
+                styleXPositionTryImports.add(specifier.local.name)
               }
+
               if (
                 specifier.type === 'ImportSpecifier' &&
                 specifier.imported.name === 'when'
               ) {
-                styleXWhenImports.add(specifier.local.name);
+                styleXWhenImports.add(specifier.local.name)
               }
-            });
+            }
           }
 
           if (typeof foundImportSource === 'object') {
-            node.specifiers.forEach((specifier) => {
-              if (specifier.type === 'ImportSpecifier') {
-                if (specifier.imported.name === foundImportSource.as) {
-                  styleXDefaultImports.add(specifier.local.name);
-                }
+            for (const specifier of node.specifiers) {
+              if (
+                specifier.type === 'ImportSpecifier' &&
+                specifier.imported.name === foundImportSource.as
+              ) {
+                styleXDefaultImports.add(specifier.local.name)
               }
-            });
+            }
           }
         }
 
         if (isStylexResolvedVarsImport) {
-          node.specifiers.forEach((specifier) => {
+          for (const specifier of node.specifiers) {
             if (specifier.type === 'ImportSpecifier') {
-              stylexResolvedVarsTokenImports.add(specifier.local.name);
+              stylexResolvedVarsTokenImports.add(specifier.local.name)
             }
-          });
+          }
         }
       },
       // Track same-file token declarations in .stylex files.
@@ -1154,36 +1224,40 @@ const stylexValidStyles = {
         if (isStylexFile && node.declaration?.type === 'VariableDeclaration') {
           for (const decl of node.declaration.declarations) {
             if (decl.id?.type === 'Identifier') {
-              stylexResolvedVarsTokenImports.add(decl.id.name);
+              stylexResolvedVarsTokenImports.add(decl.id.name)
             }
           }
         }
       },
-      CallExpression(node: { ...CallExpression, ...Rule.NodeParentExtension }) {
+      CallExpression(node: CallExpression & Rule.NodeParentExtension) {
         if (!isStylexDeclaration(node)) {
-          return;
+          return
         }
 
-        const namespaces = node.arguments[0];
+        const namespaces = node.arguments[0]
+
         // const loc: ?AST['SourceLocation'] = namespaces.loc;
         if (namespaces.type !== 'ObjectExpression') {
-          return context.report({
+          context.report({
             node: namespaces,
             loc: namespaces.loc,
             message: 'Styles must be represented as JavaScript objects',
-          } as Rule.ReportDescriptor);
+          } as Rule.ReportDescriptor)
+
+          return
         }
 
-        namespaces.properties.forEach((namespace) => {
+        for (const namespace of namespaces.properties) {
           if (namespace.type !== 'Property') {
-            return context.report({
+            context.report({
               node: namespace,
               loc: namespace.loc,
               message: 'Styles cannot be spread objects',
-            });
+            })
+            continue
           }
 
-          let styles = namespace.value;
+          let styles = namespace.value
 
           if (styles.type !== 'ObjectExpression') {
             if (
@@ -1194,46 +1268,50 @@ const stylexValidStyles = {
                   // $FlowFixMe[invalid-compare]
                   styles.body.expression.type === 'ObjectExpression'))
             ) {
-              const params = styles.params;
-              styles = styles.body;
+              const { params } = styles
+              styles = styles.body
+
               // $FlowFixMe[invalid-compare]
               if (styles.type === 'TSAsExpression') {
-                styles = styles.expression;
+                styles = styles.expression
               }
+
               if (params.some((param) => param.type !== 'Identifier')) {
-                return params
-                  .filter((param) => param.type !== 'Identifier')
-                  .forEach((param) => {
-                    context.report({
-                      node: param,
-                      loc: param.loc,
-                      message:
-                        'Dynamic Styles can only accept named parameters. Destructuring, spreading or default parameters are not allowed.',
-                    });
-                  });
-              }
-              params.forEach((param) => {
-                if (param.type === 'Identifier') {
-                  dynamicStyleVariables.add(param.name);
+                for (const param of params.filter(
+                  (param) => param.type !== 'Identifier',
+                )) {
+                  context.report({
+                    node: param,
+                    loc: param.loc,
+                    message:
+                      'Dynamic Styles can only accept named parameters. Destructuring, spreading or default parameters are not allowed.',
+                  })
                 }
-              });
+
+                continue
+              }
+
+              for (const param of params) {
+                if (param.type === 'Identifier') {
+                  dynamicStyleVariables.add(param.name)
+                }
+              }
             } else {
               // This case should be already handled by type checking.
-              return;
+              continue
             }
           }
-          styles.properties.forEach((prop) =>
-            checkStyleProperty(prop, 0, null, false),
-          );
+
+          for (const prop of styles.properties)
+            checkStyleProperty(prop, 0, null, false)
           // Reset local variables.
-          dynamicStyleVariables.clear();
-        });
+          dynamicStyleVariables.clear()
+        }
       },
       'Program:exit'() {
-        variables.clear();
+        variables.clear()
       },
-    };
+    }
   },
-};
-export default stylexValidStyles as typeof stylexValidStyles;
-/* eslint-enable object-shorthand */
+}
+export default stylexValidStyles
