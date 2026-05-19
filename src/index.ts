@@ -8,7 +8,7 @@ const rules = {
   // 'no-nonstandard-styles': noNonStandardStyles,
   'sort-keys': sortKeys,
   'valid-shorthands': validShorthands,
-  // 'valid-styles': validStyles,
+  'valid-styles': validStyles,
 } satisfies Plugin['rules']
 
 /**
@@ -33,7 +33,6 @@ const plugin = {
   },
 } satisfies Plugin
 
-// import validStyles from './valid-styles'
 import noConflictingProps from './no-conflicting-props'
 // import validStyles from './valid-styles'
 import pkg from '../package.json'
@@ -42,3 +41,4 @@ import type { Plugin } from '@eslint/config-helpers'
 // import noNonStandardStyles from './no-nonstandard-styles'
 import sortKeys from './sort-keys'
 import validShorthands from './valid-shorthands'
+import validStyles from './valid-styles'
