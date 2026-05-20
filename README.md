@@ -1,5 +1,7 @@
 # @vicinage/eslint-plugin &middot; [![npm version](https://img.shields.io/npm/v/@vicinage/eslint-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@vicinage/eslint-plugin) [![build](https://img.shields.io/github/actions/workflow/status/chbybnwr/vicinage-eslint-plugin/publish.yml?label=build&style=flat-square)](https://github.com/chbybnwr/vicinage-eslint-plugin/actions/workflows/publish.yml) [![GitHub license](https://img.shields.io/npm/l/@vicinage/eslint-plugin.svg?style=flat-square)](https://github.com/chbybnwr/vicinage-eslint-plugin/blob/prototype/LICENSE)
 
+ESLint plugin for [Vicinage](https://github.com/chbybnwr/vicinage).
+
 ## Installation
 
 ```sh
