@@ -26,7 +26,11 @@ export default defineConfig([
 ])
 ```
 
-## All the rules
+## Rules
+
+### vicinage/valid-styles
+
+Requires styles that are statically analyzable. This rule will detect invalid styles and provides basic type checking for style values.
 
 ### vicinage/sort-keys
 
