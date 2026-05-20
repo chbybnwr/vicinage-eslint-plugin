@@ -1,12 +1,6 @@
-import type { Expression } from 'estree'
-import type { Pattern } from 'estree'
-import type { Property } from 'estree'
-import type { Rule } from 'eslint'
-import type { RuleCheck } from '#/rules/types'
-import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
+export { makeVariableCheckingRule as default }
 
-export default function makeVariableCheckingRule(rule: RuleCheck): RuleCheck {
+function makeVariableCheckingRule(rule: RuleCheck): RuleCheck {
   // eslint-disable-next-line max-params
   function varCheckingRule(
     node: Expression | Pattern,
@@ -60,3 +54,12 @@ export default function makeVariableCheckingRule(rule: RuleCheck): RuleCheck {
 
   return varCheckingRule
 }
+
+import type { Expression } from 'estree'
+import type { Pattern } from 'estree'
+import type { Property } from 'estree'
+import type { Rule } from 'eslint'
+import type { RuleCheck } from '#/rules/types'
+import type { RuleResponse } from '#/rules/types'
+import type { Variables } from '#/rules/types'
+//

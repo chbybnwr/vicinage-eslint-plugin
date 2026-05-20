@@ -1,7 +1,4 @@
-import type { Node } from 'estree'
-import type { RuleCheck } from '#/rules/types'
-import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
+export { isRelativeLength as default }
 
 const relativeLengthUnits = new Set([
   // font units
@@ -52,4 +49,8 @@ const isRelativeLength: RuleCheck = (
   }
 }
 
-export default isRelativeLength
+import type { Node } from 'estree'
+import type { RuleCheck } from '#/rules/types'
+import type { RuleResponse } from '#/rules/types'
+import type { Variables } from '#/rules/types'
+//

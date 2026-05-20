@@ -1,13 +1,6 @@
-import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
-import type { Node } from 'estree'
-import type { RuleCheck } from '#/rules/types'
-import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
+export { makeRegExRule as default }
 
-export default function makeRegExRule(
-  regex: RegExp,
-  message: string,
-): RuleCheck {
+function makeRegExRule(regex: RegExp, message: string): RuleCheck {
   function regexChecker(node: Node, _variables?: Variables): RuleResponse {
     if (
       node.type === 'Literal' &&
@@ -25,3 +18,10 @@ export default function makeRegExRule(
 
   return makeVariableCheckingRule(regexChecker)
 }
+
+import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import type { Node } from 'estree'
+import type { RuleCheck } from '#/rules/types'
+import type { RuleResponse } from '#/rules/types'
+import type { Variables } from '#/rules/types'
+//

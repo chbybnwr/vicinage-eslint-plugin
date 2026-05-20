@@ -1,22 +1,14 @@
+export { makeLiteralRule as default }
+
 /* eslint-disable no-undefined */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-
-import getDistance from '../utils/get-distance'
-import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
-import type { Node } from 'estree'
-import type { Rule } from 'eslint'
-import type { RuleCheck } from '#/rules/types'
-import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
 
 // Helper functions to check for stylex values.
 // All these helper functions receive a list of locally defined variables
 // as well. This lets them recursively resolve values that are defined locally.
 const MAX_DISTANCE = 4
 
-export default function makeLiteralRule(
-  value: number | string | null,
-): RuleCheck {
+function makeLiteralRule(value: number | string | null): RuleCheck {
   function literalChecker(node: Node, _variables?: Variables): RuleResponse {
     const defaultFailure = {
       message: `${value ?? 'null'}`,
@@ -68,3 +60,12 @@ export default function makeLiteralRule(
 
   return makeVariableCheckingRule(literalChecker)
 }
+
+import getDistance from '../utils/get-distance'
+import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import type { Node } from 'estree'
+import type { Rule } from 'eslint'
+import type { RuleCheck } from '#/rules/types'
+import type { RuleResponse } from '#/rules/types'
+import type { Variables } from '#/rules/types'
+//

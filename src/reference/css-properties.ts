@@ -1,31 +1,24 @@
+export { all }
+export { allModifiers }
+export { convertToStandardProperties }
+export { CSSProperties }
+export { CSSPropertyKeys }
+export { CSSPropertyReplacements }
+export { pseudoClassesAndAtRules }
+export { pseudoElements }
+export type { RuleCheck }
+export type { RuleResponse }
+export { SVGProperties }
+export type { Variables }
+
 /* eslint-disable no-magic-numbers */
 /* eslint-disable unicorn/no-useless-undefined */
 /* eslint-disable unicorn/no-keyword-prefix */
 /* eslint-disable no-shadow */
 /* eslint-disable no-undefined */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import { borderSplitter } from '../utils/split-css-value'
-import type { Expression } from 'estree'
-import formatPropertiesWithNodeIndentation from '../utils/format-properties-with-node-indentation'
-import getSourceCode from '../utils/get-source-code'
-import isAbsoluteLength from '../rules/is-absolute-length'
-import isCSSVariable from '../rules/is-css-variable'
-import isHexColor from '../rules/is-hex-color'
-import { isNumber } from '../rules/is-number'
-import isPercentage from '../rules/is-percentage'
-import isRelativeLength from '../rules/is-relative-length'
-import isString from '../rules/is-string'
-import makeLiteralRule from '../rules/make-literal-rule'
-import makeRangeRule from '../rules/make-range-rule'
-import makeRegExRule from '../rules/make-reg-ex-rule'
-import makeUnionRule from '../rules/make-union-rule'
-import namedColors from './named-colors'
-import type { Node } from 'estree'
-import type { Pattern } from 'estree'
-import type { Property } from 'estree'
-import type { Rule } from 'eslint'
 
-export type RuleResponse =
+type RuleResponse =
   | undefined
   | {
       message: string
@@ -38,14 +31,14 @@ export type RuleResponse =
     }
 
 // eslint-disable-next-line max-params
-export type RuleCheck = (
+type RuleCheck = (
   node: Readonly<Expression | Pattern>,
   variables?: Variables,
   prop?: Readonly<Property>,
   context?: Rule.RuleContext,
 ) => RuleResponse
 
-export type Variables = ReadonlyMap<string, Expression | 'ARG'>
+type Variables = ReadonlyMap<string, Expression | 'ARG'>
 
 const showError =
   (message: string): RuleCheck =>
@@ -88,7 +81,7 @@ function isNonNumericString(
 
 // NOTE: converted from Flow types to function calls using this
 // https://astexplorer.net/#/gist/87e64b378349f13e885f9b6968c1e556/4b4ff0358de33cf86b8b21d29c17504d789babf9
-export const all: RuleCheck = makeUnionRule(
+const all: RuleCheck = makeUnionRule(
   makeLiteralRule(null),
   makeLiteralRule('initial'),
   makeLiteralRule('inherit'),
@@ -1606,7 +1599,7 @@ const SupportedVendorSpecificCSSProperties = {
   WebkitAppRegion: makeUnionRule('drag', 'no-drag'),
 }
 
-export const convertToStandardProperties: Readonly<
+const convertToStandardProperties: Readonly<
   Record<string, string | null | undefined>
 > = {
   marginStart: 'marginInlineStart',
@@ -1641,7 +1634,7 @@ export const convertToStandardProperties: Readonly<
   start: 'insetInlineStart',
 }
 
-export const SVGProperties: Record<string, RuleCheck> = {
+const SVGProperties: Record<string, RuleCheck> = {
   colorInterpolation: makeUnionRule('auto', 'sRGB', 'linearRGB'),
   // colorRendering: color,
   fill,
@@ -2254,7 +2247,7 @@ const CSSProperties = {
   // Purposely not supported because it is not supported in Firefox.
   zoom: makeUnionRule('normal', 'reset', isNumber, isPercentage),
 }
-export const CSSPropertyKeys = Object.keys(
+const CSSPropertyKeys = Object.keys(
   CSSProperties,
 ) as (keyof typeof CSSProperties)[]
 
@@ -2262,7 +2255,7 @@ for (const key of CSSPropertyKeys) {
   CSSProperties[key] = makeUnionRule(CSSProperties[key], all)
 }
 
-export const CSSPropertyReplacements: Record<string, RuleCheck | undefined> = {
+const CSSPropertyReplacements: Record<string, RuleCheck | undefined> = {
   border: border(),
   borderTop: border('Top'),
   borderBlockStart: border('Top'),
@@ -2276,7 +2269,7 @@ export const CSSPropertyReplacements: Record<string, RuleCheck | undefined> = {
   borderLeft: border('Left'),
 }
 
-export const pseudoElements: RuleCheck = makeUnionRule(
+const pseudoElements: RuleCheck = makeUnionRule(
   makeLiteralRule('::before'),
   makeLiteralRule('::after'),
   makeLiteralRule('::first-letter'),
@@ -2319,7 +2312,7 @@ export const pseudoElements: RuleCheck = makeUnionRule(
   makeLiteralRule('::-moz-range-progress'),
 )
 
-export const pseudoClassesAndAtRules: RuleCheck = makeUnionRule(
+const pseudoClassesAndAtRules: RuleCheck = makeUnionRule(
   makeLiteralRule(':first-child'),
   makeLiteralRule(':last-child'),
   makeLiteralRule(':only-child'),
@@ -2339,9 +2332,29 @@ export const pseudoClassesAndAtRules: RuleCheck = makeUnionRule(
   makeLiteralRule('@starting-style'),
 )
 
-export const allModifiers: RuleCheck = makeUnionRule(
+const allModifiers: RuleCheck = makeUnionRule(
   pseudoElements,
   pseudoClassesAndAtRules,
 )
 
-export { CSSProperties }
+import { borderSplitter } from '../utils/split-css-value'
+import type { Expression } from 'estree'
+import formatPropertiesWithNodeIndentation from '../utils/format-properties-with-node-indentation'
+import getSourceCode from '../utils/get-source-code'
+import isAbsoluteLength from '../rules/is-absolute-length'
+import isCSSVariable from '../rules/is-css-variable'
+import isHexColor from '../rules/is-hex-color'
+import { isNumber } from '../rules/is-number'
+import isPercentage from '../rules/is-percentage'
+import isRelativeLength from '../rules/is-relative-length'
+import isString from '../rules/is-string'
+import makeLiteralRule from '../rules/make-literal-rule'
+import makeRangeRule from '../rules/make-range-rule'
+import makeRegExRule from '../rules/make-reg-ex-rule'
+import makeUnionRule from '../rules/make-union-rule'
+import namedColors from './named-colors'
+import type { Node } from 'estree'
+import type { Pattern } from 'estree'
+import type { Property } from 'estree'
+import type { Rule } from 'eslint'
+//

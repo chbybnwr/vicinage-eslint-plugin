@@ -1,9 +1,8 @@
+export { resolveKey as default }
+
 /* eslint-disable no-undefined */
 
-import type { Identifier } from 'estree'
-import type { Variables } from '#/rules/types'
-
-export default function resolveKey(
+function resolveKey(
   property: Identifier,
   variables?: Variables,
 ): string | undefined {
@@ -52,3 +51,7 @@ export default function resolveKey(
   // TODO: maybe not idk
   return undefined
 }
+
+import type { Identifier } from 'estree'
+import type { Variables } from '#/rules/types'
+//

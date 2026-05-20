@@ -1,13 +1,13 @@
-/* eslint-disable no-magic-numbers */
-/* eslint-disable no-continue */
-/* eslint-disable max-params */
-
 export { CANNOT_FIX }
 export { createBlockInlineTransformer }
 export { createDirectionalTransformer }
 export { createSpecificTransformer }
 export { splitDirectionalShorthands }
 export { splitSpecificShorthands }
+
+/* eslint-disable no-magic-numbers */
+/* eslint-disable no-continue */
+/* eslint-disable max-params */
 
 const CANNOT_FIX = 'CANNOT_FIX'
 

@@ -1,16 +1,9 @@
+export { makeUnionRule as default }
+
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable no-undefined */
 
-import type { Expression } from 'estree'
-import makeLiteralRule from './make-literal-rule'
-import type { Pattern } from 'estree'
-import type { Property } from 'estree'
-import type { Rule } from 'eslint'
-import type { RuleCheck } from '#/rules/types'
-import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
-
-export default function makeUnionRule(
+function makeUnionRule(
   ...rules: readonly (number | string | RuleCheck)[]
 ): RuleCheck {
   // eslint-disable-next-line max-params
@@ -54,3 +47,13 @@ export default function makeUnionRule(
     }
   }
 }
+
+import type { Expression } from 'estree'
+import makeLiteralRule from './make-literal-rule'
+import type { Pattern } from 'estree'
+import type { Property } from 'estree'
+import type { Rule } from 'eslint'
+import type { RuleCheck } from '#/rules/types'
+import type { RuleResponse } from '#/rules/types'
+import type { Variables } from '#/rules/types'
+//

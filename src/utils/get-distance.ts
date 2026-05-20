@@ -1,3 +1,5 @@
+export { getDistance as default }
+
 /* eslint-disable no-magic-numbers */
 /* eslint-disable no-multi-assign */
 /* eslint-disable unicorn/prefer-single-call */
@@ -31,11 +33,7 @@ function getDistanceMin(
  *
  * It will return Infinity if it bails out early
  */
-export default function getDistance(
-  _a: string,
-  _b: string,
-  max: number,
-): number {
+function getDistance(_a: string, _b: string, max: number): number {
   let a = _a
   let b = _b
 

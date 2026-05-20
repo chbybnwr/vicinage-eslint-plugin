@@ -1,7 +1,10 @@
+export { borderSplitter }
+
 /* eslint-disable no-magic-numbers */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable require-unicode-regexp */
+
 function splitValue(
   borderValue: number | string,
 ): readonly (number | string | null)[] {
@@ -56,7 +59,7 @@ const borderStyleKeywords = new Set([
 ])
 const globalKeywords = new Set(['initial', 'inherit', 'unset'])
 
-export function borderSplitter(
+function borderSplitter(
   value: string,
 ): [string | number | null, string | null, string | null] {
   const borderParts: (number | string)[] = splitValue(value).filter(

@@ -1,10 +1,8 @@
+export { isAnimationName as default }
+
 /* eslint-disable no-undefined */
 
-import type { Node } from 'estree'
-import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
-
-export default function isAnimationName(
+function isAnimationName(
   styleXDefaultImports: Set<string>,
   styleXKeyframesImports: Set<string>,
 ): (node: Node, variables?: Variables) => RuleResponse {
@@ -84,3 +82,8 @@ export default function isAnimationName(
     }
   }
 }
+
+import type { Node } from 'estree'
+import type { RuleResponse } from '#/rules/types'
+import type { Variables } from '#/rules/types'
+//

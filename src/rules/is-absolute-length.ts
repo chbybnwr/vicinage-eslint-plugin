@@ -1,7 +1,4 @@
-import type { Node } from 'estree'
-import type { RuleCheck } from '#/rules/types'
-import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
+export { isAbsoluteLength as default }
 
 const absoluteLengthUnits = new Set(['px', 'mm', 'in', 'pc', 'pt'])
 
@@ -29,4 +26,8 @@ const isAbsoluteLength: RuleCheck = (
   }
 }
 
-export default isAbsoluteLength
+import type { Node } from 'estree'
+import type { RuleCheck } from '#/rules/types'
+import type { RuleResponse } from '#/rules/types'
+import type { Variables } from '#/rules/types'
+//

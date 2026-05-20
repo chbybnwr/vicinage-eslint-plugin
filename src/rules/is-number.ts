@@ -1,21 +1,17 @@
+export { isNumber as default }
+export { isNumber }
+export { isMathCall }
+
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable no-undefined */
 
-import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
-import type { Node } from 'estree'
-import type { Property } from 'estree'
-import type { Rule } from 'eslint'
-import type { RuleCheck } from '#/rules/types'
-import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
-
 const numericOperators = new Set(['+', '-', '*', '/'])
 const mathFunctions = new Set(['abs', 'ceil', 'floor', 'round'])
 
 // eslint-disable-next-line max-params, complexity
-export const isNumber: RuleCheck = makeVariableCheckingRule(function (
+const isNumber: RuleCheck = makeVariableCheckingRule(function (
   node: Node,
   variables?: Variables,
   prop?: Readonly<Property>,
@@ -69,7 +65,7 @@ export const isNumber: RuleCheck = makeVariableCheckingRule(function (
   return { message: 'a number literal or math expression' }
 })
 
-export function isMathCall(node: Node): boolean {
+function isMathCall(node: Node): boolean {
   return (
     node.type === 'CallExpression' &&
     node.callee.type === 'MemberExpression' &&
@@ -81,4 +77,11 @@ export function isMathCall(node: Node): boolean {
   )
 }
 
-export default isNumber
+import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import type { Node } from 'estree'
+import type { Property } from 'estree'
+import type { Rule } from 'eslint'
+import type { RuleCheck } from '#/rules/types'
+import type { RuleResponse } from '#/rules/types'
+import type { Variables } from '#/rules/types'
+//

@@ -1,3 +1,5 @@
+export { namedColors as default }
+
 const namedColors = new Set<string>([
   'aliceblue',
   'antiquewhite',
@@ -148,5 +150,3 @@ const namedColors = new Set<string>([
   'yellowgreen',
   'rebeccapurple',
 ])
-
-export default namedColors

@@ -1,3 +1,5 @@
+export { stylexValidStyles as default }
+
 /* eslint-disable no-magic-numbers */
 /* eslint-disable unicorn/no-array-reduce */
 /* eslint-disable no-shadow */
@@ -12,50 +14,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable unicorn/no-keyword-prefix */
 /* eslint-disable no-undefined */
-
-import { all } from './reference/css-properties'
-import type { CallExpression } from 'estree'
-import { CANNOT_FIX } from './utils/split-shorthands'
-import { CSSProperties } from './reference/css-properties'
-import { CSSPropertyKeys } from './reference/css-properties'
-import { CSSPropertyReplacements } from './reference/css-properties'
-import type { Directive } from 'estree'
-import evaluate from './utils/evaluate'
-import type { Expression } from 'estree'
-import formatPropertiesWithNodeIndentation from './utils/format-properties-with-node-indentation'
-import getDistance from './utils/get-distance'
-import getSourceCode from './utils/get-source-code'
-import type { Identifier } from 'estree'
-import type { ImportDeclaration } from 'estree'
-import isAnimationName from './rules/is-animation-name'
-import isCSSVariable from './rules/is-css-variable'
-import { isNumber } from './rules/is-number'
-import isPositionTryFallbacks from './rules/is-position-try-fallbacks'
-import isString from './rules/is-string'
-import isStylexResolvedVarsToken from './rules/is-stylex-resolved-vars-token'
-import isWhiteSpaceOrEmpty from './utils/is-white-space-or-empty'
-import type { Literal } from 'estree'
-import makeLiteralRule from './rules/make-literal-rule'
-import makeUnionRule from './rules/make-union-rule'
-import micromatch from 'micromatch'
-import type { ModuleDeclaration } from 'estree'
-import type { Node } from 'estree'
-import type { ObjectExpression } from 'estree'
-import type { Pattern } from 'estree'
-import type { PrivateIdentifier } from 'estree'
-import type { Program } from 'estree'
-import type { Property } from 'estree'
-import { pseudoClassesAndAtRules } from './reference/css-properties'
-import { pseudoElements } from './reference/css-properties'
-import resolveKey from './utils/resolve-key'
-import type { Rule } from 'eslint'
-import type { RuleCheck } from '#/rules/types'
-import type { RuleResponse } from '#/rules/types'
-import { splitSpecificShorthands } from './utils/split-shorthands'
-import type { Statement } from 'estree'
-import type { VariableDeclaration } from 'estree'
-import type { VariableDeclarator } from 'estree'
-import type { Variables } from '#/rules/types'
 
 type ValidationResult =
   | RuleResponse
@@ -1292,4 +1250,48 @@ const stylexValidStyles: Rule.RuleModule = {
     }
   },
 }
-export default stylexValidStyles
+
+import { all } from './reference/css-properties'
+import type { CallExpression } from 'estree'
+import { CANNOT_FIX } from './utils/split-shorthands'
+import { CSSProperties } from './reference/css-properties'
+import { CSSPropertyKeys } from './reference/css-properties'
+import { CSSPropertyReplacements } from './reference/css-properties'
+import type { Directive } from 'estree'
+import evaluate from './utils/evaluate'
+import type { Expression } from 'estree'
+import formatPropertiesWithNodeIndentation from './utils/format-properties-with-node-indentation'
+import getDistance from './utils/get-distance'
+import getSourceCode from './utils/get-source-code'
+import type { Identifier } from 'estree'
+import type { ImportDeclaration } from 'estree'
+import isAnimationName from './rules/is-animation-name'
+import isCSSVariable from './rules/is-css-variable'
+import { isNumber } from './rules/is-number'
+import isPositionTryFallbacks from './rules/is-position-try-fallbacks'
+import isString from './rules/is-string'
+import isStylexResolvedVarsToken from './rules/is-stylex-resolved-vars-token'
+import isWhiteSpaceOrEmpty from './utils/is-white-space-or-empty'
+import type { Literal } from 'estree'
+import makeLiteralRule from './rules/make-literal-rule'
+import makeUnionRule from './rules/make-union-rule'
+import micromatch from 'micromatch'
+import type { ModuleDeclaration } from 'estree'
+import type { Node } from 'estree'
+import type { ObjectExpression } from 'estree'
+import type { Pattern } from 'estree'
+import type { PrivateIdentifier } from 'estree'
+import type { Program } from 'estree'
+import type { Property } from 'estree'
+import { pseudoClassesAndAtRules } from './reference/css-properties'
+import { pseudoElements } from './reference/css-properties'
+import resolveKey from './utils/resolve-key'
+import type { Rule } from 'eslint'
+import type { RuleCheck } from '#/rules/types'
+import type { RuleResponse } from '#/rules/types'
+import { splitSpecificShorthands } from './utils/split-shorthands'
+import type { Statement } from 'estree'
+import type { VariableDeclaration } from 'estree'
+import type { VariableDeclarator } from 'estree'
+import type { Variables } from '#/rules/types'
+//

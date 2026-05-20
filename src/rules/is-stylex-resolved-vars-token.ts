@@ -1,8 +1,7 @@
+export { isStylexDefineVarsToken as default }
+
 /* eslint-disable unicorn/no-array-reduce */
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-
-import type { Expression } from 'estree'
-import type { Pattern } from 'estree'
 
 interface ASTNode {
   readonly type: string
@@ -31,7 +30,7 @@ function getRootIdentifierName(node: ASTNode): string | null {
   return null
 }
 
-export default function isStylexDefineVarsToken(
+function isStylexDefineVarsToken(
   node: Expression | Pattern,
   stylexResolvedVarsTokenImports: Set<string>,
 ): boolean {
@@ -72,3 +71,7 @@ export default function isStylexDefineVarsToken(
 
   return false
 }
+
+import type { Expression } from 'estree'
+import type { Pattern } from 'estree'
+//

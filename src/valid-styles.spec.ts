@@ -1,6 +1,3 @@
-import rule from './valid-styles'
-import { RuleTester } from 'eslint'
-
 const ruleTester = new RuleTester({
   languageOptions: {
     parserOptions: {
@@ -2746,3 +2743,7 @@ ruleTester.run('valid-styles [autofixers]', rule, {
     },
   ],
 })
+
+import rule from './valid-styles'
+import { RuleTester } from 'eslint'
+//

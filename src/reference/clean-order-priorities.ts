@@ -1,3 +1,5 @@
+export { CLEAN_ORDER_PRIORITIES as default }
+
 // Based on https://github.com/kutsan/stylelint-config-clean-order/tree/v7.0.0
 const CLEAN_ORDER_PRIORITIES: readonly string[] = [
   '', // index 0 - unused
@@ -474,5 +476,3 @@ const CLEAN_ORDER_PRIORITIES: readonly string[] = [
   'viewTimelineInset',
   'viewTransitionName',
 ]
-
-export default CLEAN_ORDER_PRIORITIES

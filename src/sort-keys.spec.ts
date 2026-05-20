@@ -1,6 +1,3 @@
-import rule from './sort-keys'
-import { RuleTester } from 'eslint'
-
 const eslintTester = new RuleTester({
   languageOptions: {
     parserOptions: {
@@ -1254,3 +1251,7 @@ eslintTester.run('sort-keys', rule, {
     },
   ],
 })
+
+import rule from './sort-keys'
+import { RuleTester } from 'eslint'
+//

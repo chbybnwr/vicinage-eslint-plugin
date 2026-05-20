@@ -1,3 +1,5 @@
-export default function isWhiteSpaceOrEmpty(str: string): boolean {
+export { isWhiteSpaceOrEmpty as default }
+
+function isWhiteSpaceOrEmpty(str: string): boolean {
   return !str.trim()
 }

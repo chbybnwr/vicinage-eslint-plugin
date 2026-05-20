@@ -1,20 +1,6 @@
 /* eslint-disable no-magic-numbers */
 export { sortKeys as default }
 
-import type { AST } from 'eslint'
-import type { CallExpression } from 'estree'
-import type { Comment } from 'estree'
-import createImportTracker from './utils/create-import-tracker'
-import getPropertyName from './utils/get-property-name'
-import getPropertyPriorityAndType from './utils/get-property-priority-and-type'
-import getSourceCode from './utils/get-source-code'
-import type { Node } from 'estree'
-import type { ObjectExpression } from 'estree'
-import type { Property } from 'estree'
-import type { Rule } from 'eslint'
-import type { SourceCode } from 'eslint'
-import type { SpreadElement } from 'estree'
-
 const sortKeys: Rule.RuleModule = {
   meta: {
     type: 'suggestion',
@@ -501,3 +487,18 @@ function isSameLine(
 function isCommaToken(token: AST.Token): boolean {
   return token.type === 'Punctuator' && token.value === ','
 }
+
+import type { AST } from 'eslint'
+import type { CallExpression } from 'estree'
+import type { Comment } from 'estree'
+import createImportTracker from './utils/create-import-tracker'
+import getPropertyName from './utils/get-property-name'
+import getPropertyPriorityAndType from './utils/get-property-priority-and-type'
+import getSourceCode from './utils/get-source-code'
+import type { Node } from 'estree'
+import type { ObjectExpression } from 'estree'
+import type { Property } from 'estree'
+import type { Rule } from 'eslint'
+import type { SourceCode } from 'eslint'
+import type { SpreadElement } from 'estree'
+//

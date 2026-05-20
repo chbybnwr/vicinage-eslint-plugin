@@ -1,6 +1,4 @@
-import type { ChainExpression } from 'estree'
-import type { Node } from 'estree'
-import type { Property } from 'estree'
+export { getPropertyName as default }
 
 function isNullLiteral(node: Node) {
   return (
@@ -123,10 +121,13 @@ function getCalleeName(node: Node): string | null {
   return parts.length > 0 ? parts.join('.') : null
 }
 
-export default function getPropertyName(
-  node: Readonly<Property>,
-): string | null {
+function getPropertyName(node: Readonly<Property>): string | null {
   const staticName = getStaticPropertyName(node)
 
   return staticName ?? (node.key as { name: string | null }).name ?? null
 }
+
+import type { ChainExpression } from 'estree'
+import type { Node } from 'estree'
+import type { Property } from 'estree'
+//

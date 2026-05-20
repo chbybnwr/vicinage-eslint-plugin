@@ -1,18 +1,6 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
+export { evaluate as default }
 
-import type { Expression } from 'estree'
-import type { Literal } from 'estree'
-import type { Pattern } from 'estree'
-import type { Variables } from '#/rules/types'
-
-export default function evaluate(
+function evaluate(
   node: Expression | Pattern,
   variables?: Variables,
 ): null | Literal | 'ARG' {
@@ -45,3 +33,9 @@ export default function evaluate(
 
   return null
 }
+
+import type { Expression } from 'estree'
+import type { Literal } from 'estree'
+import type { Pattern } from 'estree'
+import type { Variables } from '#/rules/types'
+//
