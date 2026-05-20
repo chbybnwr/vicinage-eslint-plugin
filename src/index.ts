@@ -33,10 +33,10 @@ const plugin = {
   },
 } satisfies Plugin
 
-import noConflictingProps from './no-conflicting-props'
+import { noConflictingProps } from './no-conflicting-props'
 import pkg from '../package.json'
 import type { Plugin } from '@eslint/config-helpers'
 // import noNonStandardStyles from './no-nonstandard-styles'
-import sortKeys from './sort-keys'
-import validShorthands from './valid-shorthands'
-import validStyles from './valid-styles'
+import { sortKeys } from './sort-keys'
+import { validShorthands } from './valid-shorthands'
+import { validStyles } from './valid-styles'

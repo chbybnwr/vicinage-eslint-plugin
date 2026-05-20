@@ -1,4 +1,4 @@
-export { getPropertyName as default }
+export { getPropertyName }
 
 function isNullLiteral(node: Node) {
   return (

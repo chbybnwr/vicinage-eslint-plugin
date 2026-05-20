@@ -1,4 +1,4 @@
-export { getSourceCode as default }
+export { getSourceCode }
 
 // Fallback to legacy `getSourceCode()` for compatibility with older ESLint versions
 function getSourceCode(context: Rule.RuleContext): SourceCode {

@@ -1,4 +1,4 @@
-export { makeLiteralRule as default }
+export { makeLiteralRule }
 
 /* eslint-disable no-undefined */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
@@ -61,8 +61,8 @@ function makeLiteralRule(value: number | string | null): RuleCheck {
   return makeVariableCheckingRule(literalChecker)
 }
 
-import getDistance from '../utils/get-distance'
-import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import { getDistance } from '../utils/get-distance'
+import { makeVariableCheckingRule } from '../utils/make-variable-checking-rule'
 import type { Node } from 'estree'
 import type { Rule } from 'eslint'
 import type { RuleCheck } from '#/rules/types'

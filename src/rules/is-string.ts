@@ -1,4 +1,4 @@
-export { isString as default }
+export { isString }
 
 /* eslint-disable no-undefined */
 
@@ -19,7 +19,7 @@ const isString = makeVariableCheckingRule(function (
   }
 })
 
-import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import { makeVariableCheckingRule } from '../utils/make-variable-checking-rule'
 import type { Node } from 'estree'
 import type { RuleResponse } from '#/rules/types'
 import type { Variables } from '#/rules/types'

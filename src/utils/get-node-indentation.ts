@@ -1,4 +1,4 @@
-export { getNodeIndentation as default }
+export { getNodeIndentation }
 
 function isSameLine(
   aNode: Node | Comment | AST.Token | null,

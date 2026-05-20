@@ -1,4 +1,4 @@
-export { isRelativeLength as default }
+export { isRelativeLength }
 
 const relativeLengthUnits = new Set([
   // font units

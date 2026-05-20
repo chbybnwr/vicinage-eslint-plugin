@@ -1,4 +1,3 @@
-export { isNumber as default }
 export { isNumber }
 export { isMathCall }
 
@@ -77,7 +76,7 @@ function isMathCall(node: Node): boolean {
   )
 }
 
-import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import { makeVariableCheckingRule } from '../utils/make-variable-checking-rule'
 import type { Node } from 'estree'
 import type { Property } from 'estree'
 import type { Rule } from 'eslint'

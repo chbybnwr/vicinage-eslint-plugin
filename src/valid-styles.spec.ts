@@ -24,7 +24,7 @@ function message(strings: TemplateStringsArray): string {
     .join('\n')
 }
 
-ruleTester.run('valid-styles', rule, {
+ruleTester.run('valid-styles', validStyles, {
   valid: [
     // test for local static variables
     /* js */ `
@@ -1372,7 +1372,7 @@ ruleTester.run('valid-styles', rule, {
   ],
 })
 
-ruleTester.run('valid-styles [restrictions]', rule, {
+ruleTester.run('valid-styles [restrictions]', validStyles, {
   valid: [
     /* js */ `
       import { apply } from 'vicinage'
@@ -2598,7 +2598,7 @@ ruleTester.run('valid-styles [restrictions]', rule, {
   ],
 })
 
-ruleTester.run('valid-styles [autofixers]', rule, {
+ruleTester.run('valid-styles [autofixers]', validStyles, {
   valid: [],
   invalid: [
     // animation/font/border autofixes are only enabled in legacy-expand-shorthands mode
@@ -2744,6 +2744,6 @@ ruleTester.run('valid-styles [autofixers]', rule, {
   ],
 })
 
-import rule from './valid-styles'
 import { RuleTester } from 'eslint'
+import { validStyles } from './valid-styles'
 //

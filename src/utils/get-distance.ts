@@ -1,4 +1,4 @@
-export { getDistance as default }
+export { getDistance }
 
 /* eslint-disable no-magic-numbers */
 /* eslint-disable no-multi-assign */

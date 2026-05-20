@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable no-continue */
 
-export { validShorthands as default }
+export { validShorthands }
 
 const legacyNameMapping: Readonly<Record<string, string>> = {
   marginStart: 'marginInlineStart',
@@ -273,10 +273,10 @@ import type { CallExpression } from 'estree'
 import { CANNOT_FIX } from './utils/split-shorthands'
 import { createBlockInlineTransformer } from './utils/split-shorthands'
 import { createDirectionalTransformer } from './utils/split-shorthands'
-import createImportTracker from './utils/create-import-tracker'
+import { createImportTracker } from './utils/create-import-tracker'
 import { createSpecificTransformer } from './utils/split-shorthands'
-import getNodeIndentation from './utils/get-node-indentation'
-import getSourceCode from './utils/get-source-code'
+import { getNodeIndentation } from './utils/get-node-indentation'
+import { getSourceCode } from './utils/get-source-code'
 import type { Node } from 'estree'
 import type { ObjectExpression } from 'estree'
 import type { Property } from 'estree'

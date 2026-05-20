@@ -1,4 +1,4 @@
-export { formatPropertiesWithNodeIndentation as default }
+export { formatPropertiesWithNodeIndentation }
 
 /* eslint-disable unicorn/no-keyword-prefix */
 
@@ -21,7 +21,7 @@ function formatPropertiesWithNodeIndentation(
     .join(',')
 }
 
-import getNodeIndentation from './get-node-indentation'
+import { getNodeIndentation } from './get-node-indentation'
 import type { Node } from 'estree'
 import type { SourceCode } from 'eslint'
 //

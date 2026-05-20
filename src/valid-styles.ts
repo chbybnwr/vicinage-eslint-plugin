@@ -1,4 +1,4 @@
-export { stylexValidStyles as default }
+export { validStyles }
 
 /* eslint-disable no-magic-numbers */
 /* eslint-disable unicorn/no-array-reduce */
@@ -189,7 +189,7 @@ function getOverrideErrorRule(reason: string, propertyKey: string) {
     : showError(reason)
 }
 
-const stylexValidStyles: Rule.RuleModule = {
+const validStyles: Rule.RuleModule = {
   meta: {
     type: 'problem',
     hasSuggestions: true,
@@ -589,7 +589,7 @@ const stylexValidStyles: Rule.RuleModule = {
                   : key.name
                 : null
 
-          if (isStylexResolvedVarsToken(key, stylexResolvedVarsTokenImports)) {
+          if (isStylexDefineVarsToken(key, stylexResolvedVarsTokenImports)) {
             return
           }
 
@@ -664,9 +664,7 @@ const stylexValidStyles: Rule.RuleModule = {
 
         let styleKey: Expression | PrivateIdentifier = style.key
 
-        if (
-          isStylexResolvedVarsToken(styleKey, stylexResolvedVarsTokenImports)
-        ) {
+        if (isStylexDefineVarsToken(styleKey, stylexResolvedVarsTokenImports)) {
           return
         }
 
@@ -839,7 +837,7 @@ const stylexValidStyles: Rule.RuleModule = {
 
         const isReferencingStylexDefineVarsTokens =
           stylexResolvedVarsTokenImports.size > 0 &&
-          isStylexResolvedVarsToken(style.value, stylexResolvedVarsTokenImports)
+          isStylexDefineVarsToken(style.value, stylexResolvedVarsTokenImports)
 
         if (!isReferencingStylexDefineVarsTokens) {
           let varsWithFnArgs: Map<string, Expression | 'ARG'> = variables
@@ -1258,23 +1256,23 @@ import { CSSProperties } from './reference/css-properties'
 import { CSSPropertyKeys } from './reference/css-properties'
 import { CSSPropertyReplacements } from './reference/css-properties'
 import type { Directive } from 'estree'
-import evaluate from './utils/evaluate'
+import { evaluate } from './utils/evaluate'
 import type { Expression } from 'estree'
-import formatPropertiesWithNodeIndentation from './utils/format-properties-with-node-indentation'
-import getDistance from './utils/get-distance'
-import getSourceCode from './utils/get-source-code'
+import { formatPropertiesWithNodeIndentation } from './utils/format-properties-with-node-indentation'
+import { getDistance } from './utils/get-distance'
+import { getSourceCode } from './utils/get-source-code'
 import type { Identifier } from 'estree'
 import type { ImportDeclaration } from 'estree'
-import isAnimationName from './rules/is-animation-name'
-import isCSSVariable from './rules/is-css-variable'
+import { isAnimationName } from './rules/is-animation-name'
+import { isCSSVariable } from './rules/is-css-variable'
 import { isNumber } from './rules/is-number'
-import isPositionTryFallbacks from './rules/is-position-try-fallbacks'
-import isString from './rules/is-string'
-import isStylexResolvedVarsToken from './rules/is-stylex-resolved-vars-token'
-import isWhiteSpaceOrEmpty from './utils/is-white-space-or-empty'
+import { isPositionTryFallbacks } from './rules/is-position-try-fallbacks'
+import { isString } from './rules/is-string'
+import { isStylexDefineVarsToken } from './rules/is-stylex-resolved-vars-token'
+import { isWhiteSpaceOrEmpty } from './utils/is-white-space-or-empty'
 import type { Literal } from 'estree'
-import makeLiteralRule from './rules/make-literal-rule'
-import makeUnionRule from './rules/make-union-rule'
+import { makeLiteralRule } from './rules/make-literal-rule'
+import { makeUnionRule } from './rules/make-union-rule'
 import micromatch from 'micromatch'
 import type { ModuleDeclaration } from 'estree'
 import type { Node } from 'estree'
@@ -1285,7 +1283,7 @@ import type { Program } from 'estree'
 import type { Property } from 'estree'
 import { pseudoClassesAndAtRules } from './reference/css-properties'
 import { pseudoElements } from './reference/css-properties'
-import resolveKey from './utils/resolve-key'
+import { resolveKey } from './utils/resolve-key'
 import type { Rule } from 'eslint'
 import type { RuleCheck } from '#/rules/types'
 import type { RuleResponse } from '#/rules/types'

@@ -1,4 +1,4 @@
-export { noConflictingProps as default }
+export { noConflictingProps }
 
 const defaultValidImports = ['vicinage']
 const stylingProps = new Set(['style', 'class', 'className'])
@@ -145,7 +145,7 @@ interface JSXOpeningElement {
   attributes: readonly (JSXAttribute | JSXSpreadAttribute)[]
 }
 
-import createImportTracker from './utils/create-import-tracker'
+import { createImportTracker } from './utils/create-import-tracker'
 import type { Node } from 'estree'
 import type { Rule } from 'eslint'
 //

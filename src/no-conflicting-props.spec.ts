@@ -10,7 +10,7 @@ const ruleTester = new RuleTester({
   },
 })
 
-ruleTester.run('no-conflicting-props', rule, {
+ruleTester.run('no-conflicting-props', noConflictingProps, {
   valid: [
     {
       code: /* js */ `
@@ -337,6 +337,6 @@ ruleTester.run('no-conflicting-props', rule, {
   ],
 })
 
-import rule from './no-conflicting-props'
+import { noConflictingProps } from './no-conflicting-props'
 import { RuleTester } from 'eslint'
 //

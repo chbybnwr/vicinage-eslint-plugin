@@ -1,4 +1,4 @@
-export { makeRegExRule as default }
+export { makeRegExRule }
 
 function makeRegExRule(regex: RegExp, message: string): RuleCheck {
   function regexChecker(node: Node, _variables?: Variables): RuleResponse {
@@ -19,7 +19,7 @@ function makeRegExRule(regex: RegExp, message: string): RuleCheck {
   return makeVariableCheckingRule(regexChecker)
 }
 
-import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import { makeVariableCheckingRule } from '../utils/make-variable-checking-rule'
 import type { Node } from 'estree'
 import type { RuleCheck } from '#/rules/types'
 import type { RuleResponse } from '#/rules/types'

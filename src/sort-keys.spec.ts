@@ -7,7 +7,7 @@ const eslintTester = new RuleTester({
   },
 })
 
-eslintTester.run('sort-keys', rule, {
+eslintTester.run('sort-keys', sortKeys, {
   valid: [
     {
       code: /* js */ `
@@ -1252,6 +1252,6 @@ eslintTester.run('sort-keys', rule, {
   ],
 })
 
-import rule from './sort-keys'
 import { RuleTester } from 'eslint'
+import { sortKeys } from './sort-keys'
 //

@@ -1,4 +1,4 @@
-export { createImportTracker as default }
+export { createImportTracker }
 
 function createImportTracker(
   importsToLookFor: (string | { from: string; as: string })[],

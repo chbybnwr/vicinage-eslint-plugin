@@ -1,4 +1,4 @@
-export { evaluate as default }
+export { evaluate }
 
 function evaluate(
   node: Expression | Pattern,

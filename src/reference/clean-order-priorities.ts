@@ -1,4 +1,4 @@
-export { CLEAN_ORDER_PRIORITIES as default }
+export { CLEAN_ORDER_PRIORITIES }
 
 // Based on https://github.com/kutsan/stylelint-config-clean-order/tree/v7.0.0
 const CLEAN_ORDER_PRIORITIES: readonly string[] = [

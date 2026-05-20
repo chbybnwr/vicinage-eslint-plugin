@@ -1,4 +1,4 @@
-export { makeRangeRule as default }
+export { makeRangeRule }
 
 function makeRangeRule(min: number, max: number, message: string): RuleCheck {
   function rangeChecker(node: Node, _variables?: Variables): RuleResponse {
@@ -20,7 +20,7 @@ function makeRangeRule(min: number, max: number, message: string): RuleCheck {
   return makeVariableCheckingRule(rangeChecker)
 }
 
-import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import { makeVariableCheckingRule } from '../utils/make-variable-checking-rule'
 import type { Node } from 'estree'
 import type { RuleCheck } from '#/rules/types'
 import type { RuleResponse } from '#/rules/types'

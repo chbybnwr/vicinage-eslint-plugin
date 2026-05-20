@@ -1,4 +1,4 @@
-export { isPercentage as default }
+export { isPercentage }
 
 const isPercentage = makeVariableCheckingRule(function (
   node: Node,
@@ -22,7 +22,7 @@ const isPercentage = makeVariableCheckingRule(function (
   }
 })
 
-import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import { makeVariableCheckingRule } from '../utils/make-variable-checking-rule'
 import type { Node } from 'estree'
 import type { RuleResponse } from '#/rules/types'
 import type { Variables } from '#/rules/types'

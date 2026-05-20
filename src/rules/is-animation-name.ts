@@ -1,4 +1,4 @@
-export { isAnimationName as default }
+export { isAnimationName }
 
 /* eslint-disable no-undefined */
 

@@ -1,4 +1,4 @@
-export { isCSSVariable as default }
+export { isCSSVariable }
 
 /* eslint-disable no-magic-numbers */
 /* eslint-disable no-undefined */
@@ -30,7 +30,7 @@ const isCSSVariable = makeVariableCheckingRule(function (
 })
 
 import type { Expression } from 'estree'
-import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import { makeVariableCheckingRule } from '../utils/make-variable-checking-rule'
 import type { Pattern } from 'estree'
 import type { RuleResponse } from '#/rules/types'
 import type { Variables } from '#/rules/types'

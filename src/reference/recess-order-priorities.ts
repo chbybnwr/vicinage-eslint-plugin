@@ -1,4 +1,4 @@
-export { RECESS_ORDER_PRIORITIES as default }
+export { RECESS_ORDER_PRIORITIES }
 
 // Based on https://github.com/stormwarning/stylelint-config-recess-order/blob/293c244a8aea70f4abd81f0daa6653cae1c89351/groups.js
 const RECESS_ORDER_PRIORITIES: readonly string[] = [

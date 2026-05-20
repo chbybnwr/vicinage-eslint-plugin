@@ -1,4 +1,4 @@
-export { isPositionTryFallbacks as default }
+export { isPositionTryFallbacks }
 
 /* eslint-disable no-undefined */
 

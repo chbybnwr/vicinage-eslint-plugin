@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-export { sortKeys as default }
+export { sortKeys }
 
 const sortKeys: Rule.RuleModule = {
   meta: {
@@ -491,10 +491,10 @@ function isCommaToken(token: AST.Token): boolean {
 import type { AST } from 'eslint'
 import type { CallExpression } from 'estree'
 import type { Comment } from 'estree'
-import createImportTracker from './utils/create-import-tracker'
-import getPropertyName from './utils/get-property-name'
-import getPropertyPriorityAndType from './utils/get-property-priority-and-type'
-import getSourceCode from './utils/get-source-code'
+import { createImportTracker } from './utils/create-import-tracker'
+import { getPropertyName } from './utils/get-property-name'
+import { getPropertyPriorityAndType } from './utils/get-property-priority-and-type'
+import { getSourceCode } from './utils/get-source-code'
 import type { Node } from 'estree'
 import type { ObjectExpression } from 'estree'
 import type { Property } from 'estree'

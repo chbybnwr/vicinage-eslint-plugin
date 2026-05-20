@@ -1,4 +1,4 @@
-export { isAbsoluteLength as default }
+export { isAbsoluteLength }
 
 const absoluteLengthUnits = new Set(['px', 'mm', 'in', 'pc', 'pt'])
 

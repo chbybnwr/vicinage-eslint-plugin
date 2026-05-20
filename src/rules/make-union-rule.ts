@@ -1,4 +1,4 @@
-export { makeUnionRule as default }
+export { makeUnionRule }
 
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable no-undefined */
@@ -49,7 +49,7 @@ function makeUnionRule(
 }
 
 import type { Expression } from 'estree'
-import makeLiteralRule from './make-literal-rule'
+import { makeLiteralRule } from './make-literal-rule'
 import type { Pattern } from 'estree'
 import type { Property } from 'estree'
 import type { Rule } from 'eslint'

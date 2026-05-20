@@ -1,4 +1,4 @@
-export { getPropertyPriorityAndType as default }
+export { getPropertyPriorityAndType }
 
 /* eslint-disable no-magic-numbers */
 
@@ -133,10 +133,10 @@ function getPropertyPriorityAndType(
   return { priority: 1, type: 'string' }
 }
 
-import CLEAN_ORDER_PRIORITIES from '../reference/clean-order-priorities'
+import { CLEAN_ORDER_PRIORITIES } from '../reference/clean-order-priorities'
 import { getAtRulePriority } from '@stylexjs/shared'
 import { getDefaultPriority } from '@stylexjs/shared'
 import { getPseudoClassPriority } from '@stylexjs/shared'
 import { getPseudoElementPriority } from '@stylexjs/shared'
-import RECESS_ORDER_PRIORITIES from '../reference/recess-order-priorities'
+import { RECESS_ORDER_PRIORITIES } from '../reference/recess-order-priorities'
 //

@@ -1,4 +1,4 @@
-export { resolveKey as default }
+export { resolveKey }
 
 /* eslint-disable no-undefined */
 

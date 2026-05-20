@@ -1,4 +1,4 @@
-export { isStylexDefineVarsToken as default }
+export { isStylexDefineVarsToken }
 
 /* eslint-disable unicorn/no-array-reduce */
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */

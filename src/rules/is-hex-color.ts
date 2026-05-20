@@ -1,4 +1,4 @@
-export { isHexColor as default }
+export { isHexColor }
 
 const isHexColor = makeVariableCheckingRule(function (
   node: Node,
@@ -13,7 +13,7 @@ const isHexColor = makeVariableCheckingRule(function (
     : { message: 'a valid hex color (#FFAADD or #FFAADDFF)' }
 })
 
-import makeVariableCheckingRule from '../utils/make-variable-checking-rule'
+import { makeVariableCheckingRule } from '../utils/make-variable-checking-rule'
 import type { Node } from 'estree'
 import type { RuleResponse } from '#/rules/types'
 import type { Variables } from '#/rules/types'

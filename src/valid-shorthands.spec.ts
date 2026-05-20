@@ -10,7 +10,7 @@ const ruleTester = new RuleTester({
   },
 })
 
-ruleTester.run('valid-shorthands', rule, {
+ruleTester.run('valid-shorthands', validShorthands, {
   valid: [
     {
       code: /* js */ `
@@ -2836,6 +2836,6 @@ ruleTester.run('valid-shorthands', rule, {
   ],
 })
 
-import rule from './valid-shorthands'
 import { RuleTester } from 'eslint'
+import { validShorthands } from './valid-shorthands'
 //

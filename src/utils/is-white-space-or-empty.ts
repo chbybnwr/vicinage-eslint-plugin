@@ -1,4 +1,4 @@
-export { isWhiteSpaceOrEmpty as default }
+export { isWhiteSpaceOrEmpty }
 
 function isWhiteSpaceOrEmpty(str: string): boolean {
   return !str.trim()

@@ -1,4 +1,4 @@
-export { makeVariableCheckingRule as default }
+export { makeVariableCheckingRule }
 
 function makeVariableCheckingRule(rule: RuleCheck): RuleCheck {
   // eslint-disable-next-line max-params
