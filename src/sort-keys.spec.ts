@@ -385,6 +385,36 @@ eslintTester.run('sort-keys', sortKeys, {
       ],
     },
     {
+      code: `
+        import { apply } from 'vicinage'
+
+        apply({
+          fontSize: 12,
+          animationDuration: '100ms',
+          padding: 10,
+        })
+      `,
+      output: `
+        import { apply } from 'vicinage'
+
+        apply({
+          padding: 10,
+          animationDuration: '100ms',
+          fontSize: 12,
+        })
+      `,
+      errors: [
+        {
+          message:
+            'Style property key "animationDuration" should be above "fontSize"',
+        },
+        {
+          message:
+            'Style property key "padding" should be above "animationDuration"',
+        },
+      ],
+    },
+    {
       options: [{ order: 'clean' }],
       code: /* js */ `
           import * as vicinage from 'vicinage'
@@ -500,8 +530,8 @@ eslintTester.run('sort-keys', sortKeys, {
           import { apply } from 'vicinage'
           apply(
             {
-              alignItems: 'center',
               borderColor: 'red',
+              alignItems: 'center',
               display: 'flex',
             }
           )
@@ -564,8 +594,8 @@ eslintTester.run('sort-keys', sortKeys, {
               '@media (min-width: 1540px)': 1366,
               ':hover': 'red',
             },
-            display: 'flex',
             borderRadius: 10,
+            display: 'flex',
           },
         )
       `,

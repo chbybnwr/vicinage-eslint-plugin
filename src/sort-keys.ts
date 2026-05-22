@@ -155,7 +155,7 @@ const sortKeys: Rule.RuleModule = {
           return
         }
 
-        const { prevName, prevNode, numKeys } = stack
+        const { prevName, numKeys } = stack
         const currentName = getPropertyName(node)
         let isBlankLineBetweenNodes = stack.prevBlankLine
 
@@ -223,9 +223,10 @@ const sortKeys: Rule.RuleModule = {
             loc: node.key.loc!,
             message: `Style property key "${currentName}" should be above "${prevName}"`,
             fix: createFix({
-              prevNode: prevNode!,
               currNode: node,
               sourceCode,
+              order,
+              allowLineSeparatedGroups,
             }),
           })
         }
@@ -267,6 +268,14 @@ type Stack = null | {
   numKeys: number
 }
 
+interface SortableProperty {
+  node: Property
+  name: string
+  text: string
+  rangeStart: number
+  rangeEnd: number
+}
+
 function isValidOrder(
   previousName: string,
   currentName: string,
@@ -286,92 +295,201 @@ function isValidOrder(
   return previousName <= currentName
 }
 
+function comparePropertyNames(
+  aName: string,
+  bName: string,
+  order: Schema['order'],
+): number {
+  if (aName === bName) {
+    return 0
+  }
+
+  return isValidOrder(aName, bName, order) ? -1 : 1
+}
+
 function createFix({
   currNode,
-  prevNode,
   sourceCode,
+  order,
+  allowLineSeparatedGroups,
 }: {
-  currNode: Property
-  prevNode: Property
+  currNode: Property & Rule.NodeParentExtension
   sourceCode: SourceCode
+  order: Schema['order']
+  allowLineSeparatedGroups: boolean
 }) {
   return function (fixer: Rule.RuleFixer) {
-    // Need to handle the case if there is white space between node and comment above
-    // This can be especially tricky if the "sort between space groups" option is turned on
-    const fixes = []
+    const group = getSortableGroup(currNode)
 
-    // Retrieve comments before the previous node
-    const previousNodeCommentsBefore = getPropertyCommentsBefore(prevNode)
-
-    // Start node for the entire context with comments of prevNode
-    const previousNodeContextStartNode =
-      previousNodeCommentsBefore.length > 0
-        ? previousNodeCommentsBefore[0]
-        : prevNode
-
-    const { indentation: startNodeIndentation, isTokenBeforeSameLineAsNode } =
-      getNodeIndentation(previousNodeContextStartNode!)
-
-    const previousNodeSameLineComment = getPropertySameLineComment(prevNode)
-
-    const tokenAfterPreviousNode = sourceCode.getTokenAfter(prevNode, {
-      includeComments: false,
-    })
-
-    const previousNodeContextEndNode =
-      previousNodeSameLineComment ?? tokenAfterPreviousNode
-
-    if (
-      !previousNodeContextEndNode?.range ||
-      !previousNodeContextStartNode!.range
-    ) {
-      // Early return if range or prevNode doesn't exist
+    if (group.length < 2) {
       return []
     }
 
-    const rangeStart =
-      previousNodeContextStartNode!.range[0] - startNodeIndentation.length
+    const sortedGroup = [...group].toSorted((a, b) => {
+      const result = comparePropertyNames(a.name, b.name, order)
 
-    const [, rangeEnd] = previousNodeContextEndNode.range
-
-    const textToMove = sourceCode.getText().slice(rangeStart, rangeEnd)
-
-    fixes.push(
-      fixer.removeRange([
-        // If previous token is not on the same line, we remove an extra char to account for newline
-        rangeStart - Number(!isTokenBeforeSameLineAsNode),
-        rangeEnd,
-      ]),
-    )
-
-    const currentNodeSameLineComment = getPropertySameLineComment(currNode)
-
-    const tokenAfterCurrentNode = sourceCode.getTokenAfter(currNode, {
-      includeComments: false,
+      return result === 0 ? group.indexOf(a) - group.indexOf(b) : result
     })
 
-    const hasCommaAfterCurrentNode =
-      tokenAfterCurrentNode && isCommaToken(tokenAfterCurrentNode)
-
-    if (!hasCommaAfterCurrentNode) {
-      fixes.push(fixer.insertTextAfter(currNode, ','))
+    if (sortedGroup.every((item, index) => item === group[index])) {
+      return []
     }
 
-    // If token after the current node is a comma then we insert after the comma
-    // Otherwise we insert after the current node because there is a guaranteed fix to add comma (above)
-    const fallbackNode = hasCommaAfterCurrentNode
-      ? tokenAfterCurrentNode
-      : currNode
+    const head = group[0]
+    const tail = group.at(-1)
 
-    fixes.push(
-      fixer.insertTextAfter(
-        (currentNodeSameLineComment ?? fallbackNode) as AST.Token,
+    if (!(head != null && tail != null)) {
+      throw new TypeError('type error')
+    }
 
-        `${isSameLine(prevNode, currNode) ? '' : '\n'}${textToMove}`,
-      ),
+    const replacementText = isInlineGroup(group)
+      ? getInlineReplacementText(sortedGroup, head.text)
+      : sortedGroup.map((item) => item.text).join('\n')
+
+    return fixer.replaceTextRange(
+      [head.rangeStart, tail.rangeEnd],
+      replacementText,
     )
+  }
 
-    return fixes
+  function getSortableGroup(
+    node: Property & Rule.NodeParentExtension,
+  ): SortableProperty[] {
+    const { parent } = node
+
+    if (parent.type !== 'ObjectExpression') {
+      return []
+    }
+
+    const groups: SortableProperty[][] = []
+    let group: SortableProperty[] = []
+
+    for (const property of parent.properties) {
+      if (property.type !== 'Property') {
+        if (group.length > 0) {
+          groups.push(group)
+          group = []
+        }
+
+        continue
+      }
+
+      const name = getPropertyName(property)
+
+      if (name === null) {
+        if (group.length > 0) {
+          groups.push(group)
+          group = []
+        }
+
+        continue
+      }
+
+      const sortableProperty = getSortableProperty(property, name)
+
+      if (sortableProperty === null) {
+        if (group.length > 0) {
+          groups.push(group)
+          group = []
+        }
+
+        continue
+      }
+
+      const tail = group.at(-1)
+
+      if (group.length > 0 && isGroupBoundary(tail, sortableProperty)) {
+        groups.push(group)
+        group = []
+      }
+
+      group.push(sortableProperty)
+    }
+
+    if (group.length > 0) {
+      groups.push(group)
+    }
+
+    return (
+      groups.find((sortableGroup) =>
+        sortableGroup.some((item) => item.node === node),
+      ) ?? []
+    )
+  }
+
+  function getSortableProperty(
+    node: Property,
+    name: string,
+  ): SortableProperty | null {
+    const commentsBefore = getPropertyCommentsBefore(node)
+    const contextStartNode =
+      commentsBefore.length > 0 ? commentsBefore[0] : node
+
+    if (!(contextStartNode != null)) {
+      throw new TypeError('type error')
+    }
+
+    const { indentation } = getNodeIndentation(contextStartNode)
+    const sameLineComment = getPropertySameLineComment(node)
+    const tokenAfterNode = sourceCode.getTokenAfter(node, {
+      includeComments: false,
+    })
+    const hasCommaAfterNode = tokenAfterNode && isCommaToken(tokenAfterNode)
+    const contextEndNode =
+      sameLineComment ?? (hasCommaAfterNode ? tokenAfterNode : node)
+    const contextStartRange = contextStartNode.range
+    const contextEndRange = contextEndNode.range
+    const nodeRange = node.range
+
+    if (!contextStartRange || !contextEndRange || !nodeRange) {
+      return null
+    }
+
+    const rangeStart = contextStartRange[0] - indentation.length
+    const rangeEnd = contextEndRange[1]
+    const sourceText = sourceCode.getText()
+    const commaInsertIndex = nodeRange[1] - rangeStart
+    let text = sourceText.slice(rangeStart, rangeEnd)
+
+    if (!hasCommaAfterNode) {
+      text =
+        text.slice(0, commaInsertIndex) + ',' + text.slice(commaInsertIndex)
+    }
+
+    return {
+      node,
+      name,
+      text,
+      rangeStart,
+      rangeEnd,
+    }
+  }
+
+  function isGroupBoundary(
+    previousProperty: SortableProperty | undefined,
+    currentProperty: SortableProperty,
+  ): boolean {
+    const textBetweenProperties = sourceCode
+      .getText()
+      .slice(previousProperty?.rangeEnd, currentProperty.rangeStart)
+
+    if (/[^ \t\r\n]/.test(textBetweenProperties)) {
+      return true
+    }
+
+    return (
+      allowLineSeparatedGroups &&
+      /(?:\r?\n)[ \t]*(?:\r?\n)/.test(textBetweenProperties)
+    )
+  }
+
+  function isInlineGroup(group: SortableProperty[]): boolean {
+    const head = group[0]
+    const tail = group.at(-1)
+
+    return !/[\r\n]/.test(
+      sourceCode.getText().slice(head?.rangeStart, tail?.rangeEnd),
+    )
   }
 
   function getEmptyLineCountBetweenNodes(
@@ -475,6 +593,18 @@ function isSameLine(
 
 function isCommaToken(token: AST.Token): boolean {
   return token.type === 'Punctuator' && token.value === ','
+}
+
+function getInlineReplacementText(
+  sortedGroup: SortableProperty[],
+  firstText: string,
+): string {
+  const leadingWhitespace = /^[ \t]*/.exec(firstText)?.[0] ?? ''
+
+  return (
+    leadingWhitespace +
+    sortedGroup.map((item) => item.text.trimStart()).join(' ')
+  )
 }
 
 import type { AST } from 'eslint'
