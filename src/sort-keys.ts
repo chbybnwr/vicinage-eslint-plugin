@@ -222,7 +222,6 @@ const sortKeys: Rule.RuleModule = {
             node,
             loc: node.key.loc!,
             message: `Style property key "${currentName}" should be above "${prevName}"`,
-            // $FlowFixMe[incompatible-type]
             fix: createFix({
               prevNode: prevNode!,
               currNode: node,

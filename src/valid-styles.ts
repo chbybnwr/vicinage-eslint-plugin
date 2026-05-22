@@ -1189,15 +1189,12 @@ const validStyles: Rule.RuleModule = {
           //     if (
           //       styles.type === 'ArrowFunctionExpression' &&
           //       (styles.body.type === 'ObjectExpression' ||
-          //         // $FlowFixMe[invalid-compare]
           //         (styles.body.type === 'TSAsExpression' &&
-          //           // $FlowFixMe[invalid-compare]
           //           styles.body.expression.type === 'ObjectExpression'))
           //     ) {
           //       const { params } = styles
           //       styles = styles.body
 
-          //       // $FlowFixMe[invalid-compare]
           //       if (styles.type === 'TSAsExpression') {
           //         styles = styles.expression
           //       }

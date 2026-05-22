@@ -87,7 +87,6 @@ const noConflictingProperties: Rule.RuleModule = {
             stylingProperties.has(attribute.name.name)
           ) {
             context.report({
-              // $FlowFixMe[incompatible-type]
               node: attribute,
               message:
                 'The `{{propName}}` prop should not be used when spreading `apply()` to avoid conflicts.',
@@ -105,7 +104,6 @@ const noConflictingProperties: Rule.RuleModule = {
                 stylingProperties.has(property.key.name)
               ) {
                 context.report({
-                  // $FlowFixMe[incompatible-type]
                   node: property,
                   message:
                     'The `{{propName}}` prop should not be used when spreading `apply()` to avoid conflicts.',
