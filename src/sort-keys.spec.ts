@@ -1043,7 +1043,7 @@ eslintTester.run('sort-keys', sortKeys, {
     //     },
     //   ],
     // },
-    // {// {
+    // {
     //   options: [
     //     {
     //       validImports: [{ from: 'a', as: 'css' }],
