@@ -28,8 +28,12 @@ const isNumber: RuleCheck = makeVariableCheckingRule(function (
       'kind' in def.parent &&
       def.parent.kind === 'const'
 
-    // @ts-expect-error FIXME: please
-    return isLocalConst || variables?.get(node.name)?.type === 'number'
+    const nodeName = variables?.get(node.name)
+
+    return isLocalConst ||
+      (typeof nodeName !== 'string' &&
+        // @ts-expect-error TODO: find the case that cover this
+        nodeName?.type === 'number')
       ? undefined
       : { message: 'a number literal or math expression' }
   }

@@ -1,22 +1,21 @@
 export { evaluate }
 
 function evaluate(
-  node: Expression | Pattern,
+  node: Expression | Pattern | TSESTree.Expression,
   variables?: Variables,
 ): null | Literal | 'ARG' {
   if (
-    // @ts-expect-error FIXME: invalid-compare
-    node.type === 'TSSatisfiesExpression' ||
-    // @ts-expect-error FIXME: invalid-compare
-    node.type === 'TSAsExpression'
+    node.type === AST_NODE_TYPES.TSSatisfiesExpression ||
+    node.type === AST_NODE_TYPES.TSAsExpression
   ) {
-    // @ts-expect-error FIXME: please
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return evaluate(node.expression, variables)
   }
 
-  if (node.type === 'Identifier' && variables != null) {
-    const existingVar = variables.get(node.name)
+  if (node.type === AST_NODE_TYPES.Identifier && variables != null) {
+    const existingVar = variables.get(node.name) as
+      | TSESTree.Expression
+      | 'ARG'
+      | undefined
 
     if (existingVar === 'ARG') {
       return 'ARG'
@@ -27,15 +26,17 @@ function evaluate(
     }
   }
 
-  if (node.type === 'Literal') {
+  if (node.type === AST_NODE_TYPES.Literal) {
     return node
   }
 
   return null
 }
 
+import { AST_NODE_TYPES } from '@typescript-eslint/types'
 import type { Expression } from 'estree'
 import type { Literal } from 'estree'
 import type { Pattern } from 'estree'
+import type { TSESTree } from '@typescript-eslint/types'
 import type { Variables } from '#/rules/types'
 //

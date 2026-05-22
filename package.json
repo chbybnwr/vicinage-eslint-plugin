@@ -38,6 +38,7 @@
   "dependencies": {
     "@csstools/css-tokenizer": "^4.0.0",
     "@stylexjs/shared": "~0.18.3",
+    "@typescript-eslint/types": "^8.59.4",
     "micromatch": "^4.0.8",
     "postcss-value-parser": "^4.2.0"
   },

@@ -1,5 +1,8 @@
-/* eslint-disable no-magic-numbers */
+/* eslint-disable unicorn/no-keyword-prefix */
 export { sortKeys }
+
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable no-magic-numbers */
 
 const sortKeys: Rule.RuleModule = {
   meta: {
@@ -109,8 +112,7 @@ const sortKeys: Rule.RuleModule = {
 
       ObjectExpression: (node: ObjectExpression) => {
         if (isInsideApplyCall) {
-          // eslint-disable-next-line no-plusplus
-          objectExpressionNestingLevel++
+          objectExpressionNestingLevel += 1
         }
 
         if (objectExpressionNestingLevel >= 0) {
@@ -130,8 +132,7 @@ const sortKeys: Rule.RuleModule = {
         }
 
         if (isInsideApplyCall) {
-          // eslint-disable-next-line no-plusplus
-          objectExpressionNestingLevel--
+          objectExpressionNestingLevel -= 1
         }
       },
 
@@ -191,7 +192,6 @@ const sortKeys: Rule.RuleModule = {
             isBlankLineBetweenNodes = true
           }
 
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const firstToken = tokens[0]!
 
           if (
@@ -223,12 +223,11 @@ const sortKeys: Rule.RuleModule = {
         if (!isValidOrder(prevName, currName, order)) {
           context.report({
             node,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
             loc: node.key.loc!,
             message: `Style property key "${currName}" should be above "${prevName}"`,
             // $FlowFixMe[incompatible-type]
             fix: createFix({
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               prevNode: prevNode!,
               currNode: node,
               sourceCode,
@@ -278,9 +277,8 @@ function isValidOrder(
   currName: string,
   order: Schema['order'],
 ): boolean {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const prev = getPropertyPriorityAndType(prevName, order!)
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
   const curr = getPropertyPriorityAndType(currName, order!)
 
   if (prev.type !== 'string' || curr.type !== 'string') {
@@ -316,7 +314,6 @@ function createFix({
       prevNodeCommentsBefore.length > 0 ? prevNodeCommentsBefore[0] : prevNode
 
     const { indentation: startNodeIndentation, isTokenBeforeSameLineAsNode } =
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       getNodeIndentation(prevNodeContextStartNode!)
 
     const prevNodeSameLineComment = getPropertySameLineComment(prevNode)
@@ -327,18 +324,15 @@ function createFix({
 
     const prevNodeContextEndNode = prevNodeSameLineComment ?? tokenAfterPrevNode
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (!prevNodeContextEndNode?.range || !prevNodeContextStartNode!.range) {
       // Early return if range or prevNode doesn't exist
       return []
     }
 
     const rangeStart =
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       prevNodeContextStartNode!.range[0] - startNodeIndentation.length
 
-    // eslint-disable-next-line prefer-destructuring
-    const rangeEnd = prevNodeContextEndNode.range[1]
+    const [_rangeStart, rangeEnd] = prevNodeContextEndNode.range
 
     const textToMove = sourceCode.getText().slice(rangeStart, rangeEnd)
 
@@ -363,7 +357,6 @@ function createFix({
       fixes.push(fixer.insertTextAfter(currNode, ','))
     }
 
-    // eslint-disable-next-line unicorn/no-keyword-prefix
     const newLine = isSameLine(prevNode, currNode) ? '' : '\n'
     // If token after the current node is a comma then we insert after the comma
     // Otherwise we insert after the current node because there is a guaranteed fix to add comma (above)
@@ -372,7 +365,7 @@ function createFix({
     fixes.push(
       fixer.insertTextAfter(
         (currNodeSameLineComment ?? fallbackNode) as AST.Token,
-        // eslint-disable-next-line unicorn/no-keyword-prefix
+
         `${newLine}${textToMove}`,
       ),
     )
@@ -388,9 +381,8 @@ function createFix({
       (a, b) => (a.loc?.start.line ?? 0) - (b.loc?.start.line ?? 0),
     )
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const upperNodeLine = upperNode!.loc?.start.line
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     const lowerNodeLine = lowerNode!.loc?.start.line
 
     // eslint-disable-next-line no-undefined
@@ -456,7 +448,6 @@ function createFix({
     })
 
     const isTokenBeforeSameLineAsNode =
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       Boolean(tokenBefore) && isSameLine(tokenBefore!, node)
 
     const sliceStart =
@@ -467,8 +458,7 @@ function createFix({
     return {
       isTokenBeforeSameLineAsNode,
       indentation: node.loc
-        ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          sourceCode.lines[node.loc.start.line - 1]!.slice(
+        ? sourceCode.lines[node.loc.start.line - 1]!.slice(
             sliceStart,
             node.loc.start.column,
           )

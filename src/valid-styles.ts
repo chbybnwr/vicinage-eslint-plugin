@@ -1004,10 +1004,15 @@ const validStyles: Rule.RuleModule = {
             decl.init?.type === 'CallExpression' &&
             decl.init.callee.type === 'Identifier' &&
             decl.init.callee.name === 'require' &&
-            decl.init.arguments.length === 1 &&
-            decl.init.arguments[0]!.type === 'Literal' &&
-            // @ts-expect-error FIXME: please
-            validImports.has(decl.init.arguments[0]!.value)
+            (() => {
+              const [firstArg] = decl.init.arguments
+
+              return (
+                firstArg?.type === 'Literal' &&
+                typeof firstArg.value === 'string' &&
+                validImports.has(firstArg.value)
+              )
+            })()
           ) {
             if (decl.id.type === 'Identifier') {
               styleXDefaultImports.add(decl.id.name)
@@ -1083,7 +1088,7 @@ const validStyles: Rule.RuleModule = {
           for (const specifier of node.specifiers) {
             if (
               specifier.type === 'ImportSpecifier' &&
-              // @ts-expect-error FIXME: please
+              'name' in specifier.imported &&
               specifier.imported.name === 'apply'
             ) {
               styleXCreateImports.add(specifier.local.name)
@@ -1102,26 +1107,23 @@ const validStyles: Rule.RuleModule = {
               }
 
               if (
-                specifier.type === 'ImportSpecifier' &&
-                // @ts-expect-error FIXME: please
-                specifier.imported.name === 'keyframes'
+                !(
+                  specifier.type === 'ImportSpecifier' &&
+                  'name' in specifier.imported
+                )
               ) {
+                continue
+              }
+
+              if (specifier.imported.name === 'keyframes') {
                 styleXKeyframesImports.add(specifier.local.name)
               }
 
-              if (
-                specifier.type === 'ImportSpecifier' &&
-                // @ts-expect-error FIXME: please
-                specifier.imported.name === 'positionTry'
-              ) {
+              if (specifier.imported.name === 'positionTry') {
                 styleXPositionTryImports.add(specifier.local.name)
               }
 
-              if (
-                specifier.type === 'ImportSpecifier' &&
-                // @ts-expect-error FIXME: please
-                specifier.imported.name === 'when'
-              ) {
+              if (specifier.imported.name === 'when') {
                 styleXWhenImports.add(specifier.local.name)
               }
             }
@@ -1131,7 +1133,7 @@ const validStyles: Rule.RuleModule = {
             for (const specifier of node.specifiers) {
               if (
                 specifier.type === 'ImportSpecifier' &&
-                // @ts-expect-error FIXME: please
+                'name' in specifier.imported &&
                 specifier.imported.name === foundStylexImportSource.as
               ) {
                 styleXDefaultImports.add(specifier.local.name)

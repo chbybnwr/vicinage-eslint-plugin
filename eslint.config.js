@@ -97,7 +97,7 @@ const eslintConfig = defineConfig([
     name: 'x',
     files: ['**/*.{js,jsx,ts,tsx,mjs,mjsx,mtsx,cjs}'],
     extends: [
-      // @ts-ignore
+      // @ts-expect-error
       xPlugin.configs.recommended,
     ],
   },

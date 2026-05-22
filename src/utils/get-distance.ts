@@ -1,11 +1,7 @@
 export { getDistance }
 
+/* eslint-disable no-useless-assignment */
 /* eslint-disable no-magic-numbers */
-/* eslint-disable no-multi-assign */
-/* eslint-disable unicorn/prefer-single-call */
-/* eslint-disable init-declarations */
-/* eslint-disable no-plusplus */
-/* eslint-disable unicorn/prefer-code-point */
 
 // eslint-disable-next-line max-params
 function getDistanceMin(
@@ -33,6 +29,7 @@ function getDistanceMin(
  *
  * It will return Infinity if it bails out early
  */
+// eslint-disable-next-line complexity
 function getDistance(_a: string, _b: string, max: number): number {
   let a = _a
   let b = _b
@@ -51,15 +48,15 @@ function getDistance(_a: string, _b: string, max: number): number {
   let la = a.length
   let lb = b.length
 
-  while (la > 0 && a.charCodeAt(la - 1) === b.charCodeAt(lb - 1)) {
-    la--
-    lb--
+  while (la > 0 && a.codePointAt(la - 1) === b.codePointAt(lb - 1)) {
+    la -= 1
+    lb -= 1
   }
 
   let offset = 0
 
-  while (offset < la && a.charCodeAt(offset) === b.charCodeAt(offset)) {
-    offset++
+  while (offset < la && a.codePointAt(offset) === b.codePointAt(offset)) {
+    offset += 1
   }
 
   la -= offset
@@ -70,49 +67,49 @@ function getDistance(_a: string, _b: string, max: number): number {
   }
 
   let x = 0
-  let y
-  let d0
-  let d1
-  let d2
-  let d3
+  let y = 0
+  let d0 = 0
+  let d1 = 0
+  let d2 = 0
+  let d3 = 0
   let dd = Infinity
-  let dy
-  let ay
-  let bx0
-  let bx1
-  let bx2
-  let bx3
+  let dy = 0
+  let ay = 0
+  let bx0 = 0
+  let bx1 = 0
+  let bx2 = 0
+  let bx3 = 0
 
   const vector = []
 
-  for (y = 0; y < la; y++) {
-    vector.push(y + 1)
-    vector.push(a.charCodeAt(offset + y))
+  for (y = 0; y < la; y += 1) {
+    vector.push(
+      y + 1,
+      a.codePointAt(offset + y),
+      //
+    )
   }
 
   const len = vector.length - 1
 
   for (; x < lb - 3; ) {
-    bx0 = b.charCodeAt(offset + (d0 = x))
-    bx1 = b.charCodeAt(offset + (d1 = x + 1))
-    bx2 = b.charCodeAt(offset + (d2 = x + 2))
-    bx3 = b.charCodeAt(offset + (d3 = x + 3))
-    dd = x += 4
+    bx0 = b.codePointAt(offset + (d0 = x)) ?? Number.NaN
+    bx1 = b.codePointAt(offset + (d1 = x + 1)) ?? Number.NaN
+    bx2 = b.codePointAt(offset + (d2 = x + 2)) ?? Number.NaN
+    bx3 = b.codePointAt(offset + (d3 = x + 3)) ?? Number.NaN
+    x += 4
+    dd = x
 
     if (dd > max) {
       return Infinity
     }
 
     for (y = 0; y < len; y += 2) {
-      dy = vector[y]
-      ay = vector[y + 1]
-      // @ts-expect-error FIXME: please
+      dy = vector[y] ?? 0
+      ay = vector[y + 1] ?? 0
       d0 = getDistanceMin(dy, d0, d1, bx0, ay)
-      // @ts-expect-error FIXME: please
       d1 = getDistanceMin(d0, d1, d2, bx1, ay)
-      // @ts-expect-error FIXME: please
       d2 = getDistanceMin(d1, d2, d3, bx2, ay)
-      // @ts-expect-error FIXME: please
       dd = getDistanceMin(d2, d3, dd, bx3, ay)
       vector[y] = dd
       d3 = d2
@@ -123,17 +120,18 @@ function getDistance(_a: string, _b: string, max: number): number {
   }
 
   for (; x < lb; ) {
-    bx0 = b.charCodeAt(offset + (d0 = x))
-    dd = ++x
+    bx0 = b.codePointAt(offset + (d0 = x)) ?? Number.NaN
+    x += 1
+    dd = x
 
     if (dd > max) {
       return Infinity
     }
 
     for (y = 0; y < len; y += 2) {
-      dy = vector[y]
-      // @ts-expect-error FIXME: please
-      vector[y] = dd = getDistanceMin(dy, d0, dd, bx0, vector[y + 1])
+      dy = vector[y] ?? 0
+      dd = getDistanceMin(dy, d0, dd, bx0, vector[y + 1] ?? 0)
+      vector[y] = dd
 
       if (dd > max) {
         return Infinity
