@@ -20,6 +20,7 @@ const showError =
 const shorthandExpansionMap: Record<string, string> = {
   animation: 'animation',
   font: 'font',
+  gap: 'gap',
   gridArea: 'grid-area',
   gridColumn: 'grid-column',
   gridRow: 'grid-row',

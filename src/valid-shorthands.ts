@@ -197,6 +197,19 @@ const validShorthands: Rule.RuleModule = {
         return
       }
 
+      if (
+        key === 'gap' &&
+        values.length === 2 &&
+        values.every(
+          ([, value]) =>
+            'value' in property.value &&
+            (value === property.value.value ||
+              value === Number(property.value.value)),
+        )
+      ) {
+        return
+      }
+
       context.report({
         node: property,
         message: `Property shorthands using multiple values like "${key}: ${String(property.value.value)}" are not supported here. Separate into individual properties.`,

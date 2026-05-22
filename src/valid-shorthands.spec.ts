@@ -425,6 +425,56 @@ ruleTester.run('valid-shorthands', validShorthands, {
       })
     `,
     },
+    // gap: single value is not a shorthand, no expansion needed
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+
+        apply({
+          gap: '10px',
+        })
+      `,
+    },
+    // gap: single numeric value is not a shorthand
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+
+        apply({
+          gap: 10,
+        })
+      `,
+    },
+    // gap: numeric zero is not a shorthand
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+
+        apply({
+          gap: 0,
+        })
+      `,
+    },
+    // gap: var() single value is not a shorthand
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+
+        apply({
+          gap: 'var(--spacing)',
+        })
+      `,
+    },
+    // gap: calc() single value is not a shorthand
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+
+        apply({
+          gap: 'calc(10px + 1rem)',
+        })
+      `,
+    },
   ],
   invalid: [
     {
@@ -2263,126 +2313,6 @@ ruleTester.run('valid-shorthands', validShorthands, {
         {
           message:
             'Property shorthands using multiple values like "flex: 1 1 calc(100% - 20px)" are not supported here. Separate into individual properties.',
-        },
-      ],
-    },
-    // gap: single value expands to rowGap + columnGap
-    {
-      code: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            gap: '10px',
-        })
-      `,
-      output: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            rowGap: '10px',
-            columnGap: '10px',
-        })
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "gap: 10px" are not supported here. Separate into individual properties.',
-        },
-      ],
-    },
-    // gap: single numeric value expands to rowGap + columnGap
-    {
-      code: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            gap: 10,
-        })
-      `,
-      output: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            rowGap: 10,
-            columnGap: 10,
-        })
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "gap: 10" are not supported here. Separate into individual properties.',
-        },
-      ],
-    },
-    // gap: numeric zero expands to rowGap + columnGap
-    {
-      code: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            gap: 0,
-        })
-      `,
-      output: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            rowGap: 0,
-            columnGap: 0,
-        })
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "gap: 0" are not supported here. Separate into individual properties.',
-        },
-      ],
-    },
-    // gap: var() value expands to rowGap + columnGap
-    {
-      code: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            gap: 'var(--spacing)',
-        })
-      `,
-      output: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            rowGap: 'var(--spacing)',
-            columnGap: 'var(--spacing)',
-        })
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "gap: var(--spacing)" are not supported here. Separate into individual properties.',
-        },
-      ],
-    },
-    // gap: calc() value expands to rowGap + columnGap
-    {
-      code: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            gap: 'calc(10px + 1rem)',
-        })
-      `,
-      output: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            rowGap: 'calc(10px + 1rem)',
-            columnGap: 'calc(10px + 1rem)',
-        })
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "gap: calc(10px + 1rem)" are not supported here. Separate into individual properties.',
         },
       ],
     },
