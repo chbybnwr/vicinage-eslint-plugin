@@ -262,20 +262,20 @@ eslintTester.run('sort-keys', sortKeys, {
     //     )
     //     `,
     // },
-    // {
-    //   code: /* js */ `
-    //     import * as vicinage from 'vicinage'
-    //     vicinage.apply(
-    //       {
-    //         paddingBlock: 0,
-    //         maxWidth: {
-    //           default: "1080px",
-    //           "@media (min-width: 2000px)": "calc((1080 / 24) * 1rem)"
-    //         },
-    //       },
-    //     )
-    //     `,
-    // },
+    {
+      code: /* js */ `
+        import * as vicinage from 'vicinage'
+        vicinage.apply(
+          {
+            paddingBlock: 0,
+            maxWidth: {
+              default: "1080px",
+              "@media (min-width: 2000px)": "calc((1080 / 24) * 1rem)"
+            },
+          },
+        )
+        `,
+    },
   ],
   invalid: [
     {
