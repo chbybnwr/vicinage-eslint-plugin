@@ -1,9 +1,6 @@
 export { isNumber }
 export { isMathCall }
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable no-undefined */
 
 const numericOperators = new Set(['+', '-', '*', '/'])
@@ -21,13 +18,15 @@ const isNumber: RuleCheck = makeVariableCheckingRule(function (
   }
 
   if (node.type === 'Identifier' && context) {
-    // @ts-expect-error FIXME: [prop-missing] Flow libdefs doesn't know Rule.RuleContext has `getScope`
-    const scope = context.getScope()
+    const scope = context.sourceCode.getScope(node)
     const variable = scope.set.get(node.name)
-    const def = variable?.defs?.[0]
+    const def = variable?.defs[0]
 
     const isLocalConst =
-      def?.node?.type === 'VariableDeclarator' && def.parent?.kind === 'const'
+      def?.node.type === 'VariableDeclarator' &&
+      def.parent !== null &&
+      'kind' in def.parent &&
+      def.parent.kind === 'const'
 
     // @ts-expect-error FIXME: please
     return isLocalConst || variables?.get(node.name)?.type === 'number'

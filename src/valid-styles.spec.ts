@@ -784,28 +784,28 @@ ruleTester.run('valid-styles', validStyles, {
     },
   ],
   invalid: [
-    // {
-    //   code: /* js */ `
-    //     import { apply } from 'vicinage'
-    //     import { FOO } from 'foo'
-    //     apply({
-    //       scrollMarginTop: FOO + 5,
-    //     })
-    //   `,
-    //   errors: [
-    //     {
-    //       message:
-    //         'scrollMarginTop value must be one of:\n' +
-    //         'a number literal or math expression\n' +
-    //         'a string literal\n' +
-    //         'null\n' +
-    //         'initial\n' +
-    //         'inherit\n' +
-    //         'unset\n' +
-    //         'revert',
-    //     },
-    //   ],
-    // },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        import { FOO } from 'foo'
+        apply({
+          scrollMarginTop: FOO + 5,
+        })
+      `,
+      errors: [
+        {
+          message:
+            'scrollMarginTop value must be one of:\n' +
+            'a number literal or math expression\n' +
+            'a string literal\n' +
+            'null\n' +
+            'initial\n' +
+            'inherit\n' +
+            'unset\n' +
+            'revert',
+        },
+      ],
+    },
     {
       code: /* js */ `import { apply } from 'vicinage'
     const FOO = 'bad string'
