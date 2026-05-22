@@ -15,15 +15,15 @@ const createSpecificTransformer =
   ): ((
     rawValue: number | string,
     allowImportant?: boolean,
-    _preferInline?: boolean,
+    preferInline?: boolean,
   ) => readonly Readonly<[string, number | string]>[]) =>
-  (rawValue: number | string, allowImportant = false, _preferInline = false) =>
+  (rawValue: number | string, allowImportant = false, preferInline = false) =>
     splitSpecificShorthands(
       property,
       rawValue.toString(),
       allowImportant,
       typeof rawValue === 'number',
-      _preferInline,
+      preferInline,
     )
 
 const createDirectionalTransformer =
@@ -1128,7 +1128,7 @@ function splitSpecificShorthands(
   value: string,
   allowImportant = false,
   isNumber = false,
-  _preferInline = false,
+  preferInline = false,
 ): readonly Readonly<[string, number | string]>[] {
   // const rawValue = value.toString()
   // TODO: check the line above if the line below is broken
@@ -1198,13 +1198,13 @@ function splitSpecificShorthands(
     const [first, second] = gapValues
 
     if (gapValues.length <= 1) {
-      const value_ = isNumber
+      const value = isNumber
         ? Number(rawValue)
         : applyImportant(first ?? rawValue, importantSuffix)
 
       return [
-        ['rowGap', value_],
-        ['columnGap', value_],
+        ['rowGap', value],
+        ['columnGap', value],
       ]
     }
 
@@ -1333,7 +1333,7 @@ function splitSpecificShorthands(
       ]
     }
 
-    const keys = _preferInline
+    const keys = preferInline
       ? [
           `border-top-${suffix}`,
           `border-inline-end-${suffix}`,
@@ -1392,7 +1392,7 @@ function splitSpecificShorthands(
     const entries: [string, string][] = []
 
     for (const [index, key] of keys.entries()) {
-      const mappedKey = mapCornerKey(property, key, _preferInline)
+      const mappedKey = mapCornerKey(property, key, preferInline)
 
       if (!mappedKey) {
         return [[toCamelCase(property), CANNOT_FIX]]
@@ -1459,20 +1459,20 @@ function splitSpecificShorthands(
 }
 
 function splitDirectionalShorthands(
-  string_: number | string | null,
+  value: number | string | null,
   allowImportant = false,
 ): readonly (number | string | null | undefined)[] {
-  let processedString = string_
+  let processedString = value
 
   if (
-    string_ == null ||
-    (typeof string_ !== 'string' && typeof string_ !== 'number')
+    value == null ||
+    (typeof value !== 'string' && typeof value !== 'number')
   ) {
-    return [string_]
+    return [value]
   }
 
-  if (typeof string_ === 'number') {
-    processedString = String(string_)
+  if (typeof value === 'number') {
+    processedString = String(value)
   }
 
   if (Array.isArray(processedString)) {
@@ -1489,7 +1489,7 @@ function splitDirectionalShorthands(
     .filter((node) => node.type !== 'space' && node.type !== 'div')
     .map((node) => printNode(node as PostCSSValueASTNode))
 
-  if (typeof string_ === 'number') {
+  if (typeof value === 'number') {
     // if originally a number, let's preserve that here
     const processedNodes = nodes.map((node) => Number.parseFloat(node))
 

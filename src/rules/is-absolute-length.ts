@@ -2,10 +2,7 @@ export { isAbsoluteLength }
 
 const absoluteLengthUnits = new Set(['px', 'mm', 'in', 'pc', 'pt'])
 
-const isAbsoluteLength: RuleCheck = (
-  node: Node,
-  _variables?: Variables,
-): RuleResponse => {
+const isAbsoluteLength: RuleCheck = (node: Node): RuleResponse => {
   if (node.type === 'Literal') {
     const value = node.value
 
@@ -27,5 +24,4 @@ const isAbsoluteLength: RuleCheck = (
 import type { Node } from 'estree'
 import type { RuleCheck } from '#/rules/types'
 import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
 //

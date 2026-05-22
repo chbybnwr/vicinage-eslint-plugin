@@ -26,19 +26,14 @@ function getDistanceMin(
  * It will return Infinity if it bails out early
  */
 
-function getDistance(_a: string, _b: string, max: number): number {
-  let a = _a
-  let b = _b
-
+function getDistance(a: string, b: string, max: number): number {
   // returns Infinity if max is exceeded
   if (a === b) {
     return 0
   }
 
   if (a.length > b.length) {
-    const temporary = a
-    a = b
-    b = temporary
+    ;[a, b] = [b, a]
   }
 
   let la = a.length

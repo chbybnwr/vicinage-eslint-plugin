@@ -48,11 +48,7 @@ const isNamedColor: RuleCheck = makeUnionRule(
 
 const isLength: RuleCheck = makeUnionRule(isAbsoluteLength, isRelativeLength)
 
-function isNonNumericString(
-  node: Node,
-  _variables?: Variables,
-  _property?: Property,
-): RuleResponse {
+function isNonNumericString(node: Node): RuleResponse {
   if (
     node.type === 'Literal' &&
     typeof node.value === 'string' &&
@@ -432,11 +428,11 @@ const backgroundAttachment: RuleCheck = attachment
 
 const backgroundBlendMode: RuleCheck = (
   node: Expression | Pattern,
-  _variables?: Variables,
+  variables?: Variables,
   property?: Property,
 ) => {
   if (node.type !== 'Literal' || property == null) {
-    return blendMode(node, _variables, property)
+    return blendMode(node, variables, property)
   }
 
   if (typeof node.value === 'string') {
@@ -461,7 +457,7 @@ const backgroundBlendMode: RuleCheck = (
     for (const item of items) {
       const response = blendMode(
         { type: 'Literal', value: item, raw: `'${item}'` },
-        _variables,
+        variables,
         property,
       )
 

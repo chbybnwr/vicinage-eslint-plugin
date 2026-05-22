@@ -1,7 +1,7 @@
 export { makeRegExRule }
 
 function makeRegExRule(regex: RegExp, message: string): RuleCheck {
-  function regexChecker(node: Node, _variables?: Variables): RuleResponse {
+  function regexChecker(node: Node): RuleResponse {
     if (
       node.type === 'Literal' &&
       typeof node.value === 'string' &&
@@ -22,5 +22,4 @@ import { makeVariableCheckingRule } from '../utils/make-variable-checking-rule'
 import type { Node } from 'estree'
 import type { RuleCheck } from '#/rules/types'
 import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
 //

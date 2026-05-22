@@ -2,7 +2,6 @@ export { isPercentage }
 
 const isPercentage = makeVariableCheckingRule(function (
   node: Node,
-  _variables?: Variables,
 ): RuleResponse {
   if (node.type === 'Literal') {
     const value = node.value
@@ -23,5 +22,4 @@ const isPercentage = makeVariableCheckingRule(function (
 import { makeVariableCheckingRule } from '../utils/make-variable-checking-rule'
 import type { Node } from 'estree'
 import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
 //

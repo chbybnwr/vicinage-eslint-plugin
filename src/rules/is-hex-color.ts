@@ -2,7 +2,6 @@ export { isHexColor }
 
 const isHexColor = makeVariableCheckingRule(function (
   node: Node,
-  _variables?: Variables,
 ): RuleResponse {
   return node.type === 'Literal' &&
     typeof node.value === 'string' &&
@@ -14,5 +13,4 @@ const isHexColor = makeVariableCheckingRule(function (
 import { makeVariableCheckingRule } from '../utils/make-variable-checking-rule'
 import type { Node } from 'estree'
 import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
 //

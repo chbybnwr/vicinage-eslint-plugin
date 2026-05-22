@@ -6,7 +6,7 @@ export { makeLiteralRule }
 const MAX_DISTANCE = 4
 
 function makeLiteralRule(value: number | string | null): RuleCheck {
-  function literalChecker(node: Node, _variables?: Variables): RuleResponse {
+  function literalChecker(node: Node): RuleResponse {
     const defaultFailure = {
       message: value?.toString() ?? 'null',
     }
@@ -63,5 +63,4 @@ import type { Node } from 'estree'
 import type { Rule } from 'eslint'
 import type { RuleCheck } from '#/rules/types'
 import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
 //

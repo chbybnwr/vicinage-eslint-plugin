@@ -974,21 +974,21 @@ const validStyles: Rule.RuleModule = {
           (part) => part.type === 'VariableDeclaration',
         )
 
-        const variables_ = collection.flatMap(
+        const variableDeclarators = collection.flatMap(
           (constDecl) => constDecl.declarations,
         )
         const requires = []
         const others = []
 
-        for (const decl of variables_) {
+        for (const declarator of variableDeclarators) {
           if (
-            decl.init?.type === 'CallExpression' &&
-            decl.init.callee.type === 'Identifier' &&
-            decl.init.callee.name === 'require'
+            declarator.init?.type === 'CallExpression' &&
+            declarator.init.callee.type === 'Identifier' &&
+            declarator.init.callee.name === 'require'
           ) {
-            requires.push(decl)
+            requires.push(declarator)
           } else {
-            others.push(decl)
+            others.push(declarator)
           }
         }
 

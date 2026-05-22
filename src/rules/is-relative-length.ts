@@ -25,10 +25,7 @@ const relativeLengthUnits = new Set([
   'cqmax',
 ])
 
-const isRelativeLength: RuleCheck = (
-  node: Node,
-  _variables?: Variables,
-): RuleResponse => {
+const isRelativeLength: RuleCheck = (node: Node): RuleResponse => {
   if (node.type === 'Literal') {
     const value = node.value
 
@@ -50,5 +47,4 @@ const isRelativeLength: RuleCheck = (
 import type { Node } from 'estree'
 import type { RuleCheck } from '#/rules/types'
 import type { RuleResponse } from '#/rules/types'
-import type { Variables } from '#/rules/types'
 //
