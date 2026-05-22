@@ -197,9 +197,9 @@ eslintTester.run('sort-keys', sortKeys, {
         )
       `,
     },
-    //   {
-    //     options: [{ validImports: ['a'] }],
-    //     code: /* js */ `
+    // {
+    //   options: [{ validImports: ['a'] }],
+    //   code: /* js */ `
     //     import { apply as applySheet } from 'a'
     //     applySheet(
     //       {
@@ -208,10 +208,10 @@ eslintTester.run('sort-keys', sortKeys, {
     //       }
     //     )
     //   `,
-    //   },
-    //   {
-    //     options: [{ validImports: ['a'], order: 'clean' }],
-    //     code: /* js */ `
+    // },
+    // {
+    //   options: [{ validImports: ['a'], order: 'clean' }],
+    //   code: /* js */ `
     //     import { apply as applySheet } from 'a'
     //     applySheet(
     //       {
@@ -220,10 +220,10 @@ eslintTester.run('sort-keys', sortKeys, {
     //       }
     //     )
     //   `,
-    //   },
-    //   {
-    //     options: [{ validImports: ['a'], order: 'recess' }],
-    //     code: /* js */ `
+    // },
+    // {
+    //   options: [{ validImports: ['a'], order: 'recess' }],
+    //   code: /* js */ `
     //     import { apply as applySheet } from 'a'
     //     applySheet(
     //       {
@@ -232,10 +232,10 @@ eslintTester.run('sort-keys', sortKeys, {
     //       }
     //     )
     //   `,
-    //   },
-    //   {
-    //     options: [{ validImports: [{ from: 'a', as: 'css' }] }],
-    //     code: /* js */ `
+    // },
+    // {
+    //   options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+    //   code: /* js */ `
     //     import { css } from 'a'
     //     css.apply(
     //       {
@@ -244,15 +244,15 @@ eslintTester.run('sort-keys', sortKeys, {
     //       }
     //     )
     //     `,
-    //   },
-    //   {
-    //     options: [
-    //       {
-    //         validImports: [{ from: 'a', as: 'css' }],
-    //         order: 'clean',
-    //       },
-    //     ],
-    //     code: /* js */ `
+    // },
+    // {
+    //   options: [
+    //     {
+    //       validImports: [{ from: 'a', as: 'css' }],
+    //       order: 'clean',
+    //     },
+    //   ],
+    //   code: /* js */ `
     //     import { css } from 'a'
     //     css.apply(
     //       {
@@ -261,9 +261,9 @@ eslintTester.run('sort-keys', sortKeys, {
     //       }
     //     )
     //     `,
-    //   },
-    //   {
-    //     code: /* js */ `
+    // },
+    // {
+    //   code: /* js */ `
     //     import * as vicinage from 'vicinage'
     //     vicinage.apply(
     //       {
@@ -275,7 +275,7 @@ eslintTester.run('sort-keys', sortKeys, {
     //       },
     //     )
     //     `,
-    //   },
+    // },
   ],
   invalid: [
     {
@@ -1043,7 +1043,7 @@ eslintTester.run('sort-keys', sortKeys, {
     //     },
     //   ],
     // },
-    // {
+    // {// {
     //   options: [
     //     {
     //       validImports: [{ from: 'a', as: 'css' }],
