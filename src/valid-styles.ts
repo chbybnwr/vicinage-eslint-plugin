@@ -461,19 +461,21 @@ const validStyles: Rule.RuleModule = {
       // For: color: "blue" || "green" or zIndex: var ?? 10
       if (
         valueNode.type === 'LogicalExpression' &&
-        ['||', '??'].includes(valueNode.operator)
+        ['||', '??', '&&'].includes(valueNode.operator)
       ) {
-        const leftCheck = validateStyleValue(
-          valueNode.left,
-          varsWithFnArgs,
-          style,
-          styleKey,
-          propertyKey,
-          ruleChecker,
-        )
+        if (['||', '??'].includes(valueNode.operator)) {
+          const leftCheck = validateStyleValue(
+            valueNode.left,
+            varsWithFnArgs,
+            style,
+            styleKey,
+            propertyKey,
+            ruleChecker,
+          )
 
-        if (leftCheck != null) {
-          return leftCheck
+          if (leftCheck != null) {
+            return leftCheck
+          }
         }
 
         const rightCheck = validateStyleValue(

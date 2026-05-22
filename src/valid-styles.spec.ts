@@ -653,6 +653,33 @@ ruleTester.run('valid-styles', validStyles, {
         positionTryFallbacks: \`\${fallback1}, \${fallback2}\`,
     })
     `,
+    // test for short-circuit operator
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+            color: condition && 'blue',
+            display: condition && 'block',
+            fontSize: condition && '10px',
+            fontWeight: condition && 'bold',
+            opacity: condition && 0.5,
+            zIndex: condition && 10 + 10,
+        })
+      `,
+    },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+            color: conditionA && conditionB && 'blue',
+            display: conditionA && conditionB && 'block',
+            fontSize: conditionA && conditionB && '10px',
+            fontWeight: conditionA && conditionB && 'bold',
+            opacity: conditionA && conditionB && 0.5,
+            zIndex: conditionA && conditionB && 10 + 10,
+        })
+      `,
+    },
     // test for ternary and logical expressions
     {
       code: /* js */ `
