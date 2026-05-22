@@ -1305,20 +1305,20 @@ ruleTester.run('valid-shorthands', validShorthands, {
     },
     // {
     //   options: [{ validImports: ['custom-vicinage'] }],
-    //   code: `
-    //     import * as vicinage from 'custom-vicinage';
+    //   code: /*js */`
+    //     import * as vicinage from 'custom-vicinage'
     //
     //     vicinage.apply({
     //         margin: '10px 12px',
-    //     });
+    //     })
     //   `,
     //   output: `
-    //     import * as vicinage from 'custom-vicinage';
+    //     import * as vicinage from 'custom-vicinage'
     //
     //     vicinage.apply({
     //         marginBlock: '10px',
     //         marginInline: '12px',
-    //     });
+    //     })
     //   `,
     //   errors: [
     //     {
@@ -1329,20 +1329,20 @@ ruleTester.run('valid-shorthands', validShorthands, {
     // },
     // {
     //   options: [{ validImports: [{ from: 'a', as: 'css' }] }],
-    //   code: `
-    //     import { css } from 'a';
+    //   code: /*js */`
+    //     import { css } from 'a'
     //
     //     css.create({
     //         padding: '5px 10px',
-    //     });
+    //     })
     //   `,
     //   output: `
-    //     import { css } from 'a';
+    //     import { css } from 'a'
     //
     //     css.create({
     //         paddingBlock: '5px',
     //         paddingInline: '10px',
-    //     });
+    //     })
     //   `,
     //   errors: [
     //     {
