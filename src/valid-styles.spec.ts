@@ -13,17 +13,6 @@ const ruleTester = new RuleTester({
 const engine = '@stylexjs/stylex'
 const token = 'stylex'
 
-function message(strings: TemplateStringsArray): string {
-  const [block] = strings
-
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return block!
-    .trim()
-    .split('\n')
-    .map((line) => line.trim())
-    .join('\n')
-}
-
 ruleTester.run('valid-styles', validStyles, {
   valid: [
     // test for local static variables
@@ -2770,6 +2759,17 @@ ruleTester.run('valid-styles [autofixers]', validStyles, {
     },
   ],
 })
+
+function message(strings: TemplateStringsArray): string {
+  const [block] = strings
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return block!
+    .trim()
+    .split('\n')
+    .map((line) => line.trim())
+    .join('\n')
+}
 
 import { RuleTester } from 'eslint'
 import { validStyles } from './valid-styles'
