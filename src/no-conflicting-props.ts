@@ -11,30 +11,30 @@ const noConflictingProps: Rule.RuleModule = {
         'Disallow using `className` or `style` props on elements that spread `apply()`',
       recommended: true,
     },
-    // schema: [
-    //   {
-    //     type: 'object',
-    //     properties: {
-    //       validImports: {
-    //         type: 'array',
-    //         items: {
-    //           oneOf: [
-    //             { type: 'string' },
-    //             {
-    //               type: 'object',
-    //               properties: {
-    //                 from: { type: 'string' },
-    //                 as: { type: 'string' },
-    //               },
-    //             },
-    //           ],
-    //         },
-    //         default: defaultValidImports,
-    //       },
-    //     },
-    //     additionalProperties: false,
-    //   },
-    // ],
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          // validImports: {
+          //   type: 'array',
+          //   items: {
+          //     oneOf: [
+          //       { type: 'string' },
+          //       {
+          //         type: 'object',
+          //         properties: {
+          //           from: { type: 'string' },
+          //           as: { type: 'string' },
+          //         },
+          //       },
+          //     ],
+          //   },
+          //   default: defaultValidImports,
+          // },
+        },
+        additionalProperties: false,
+      },
+    ],
   },
   create: (context: Rule.RuleContext) => {
     // const options = context.options as { validImports: string[] }[]

@@ -14,22 +14,22 @@ const sortKeys: Rule.RuleModule = {
       {
         type: 'object',
         properties: {
-          validImports: {
-            type: 'array',
-            items: {
-              oneOf: [
-                { type: 'string' },
-                {
-                  type: 'object',
-                  properties: {
-                    from: { type: 'string' },
-                    as: { type: 'string' },
-                  },
-                },
-              ],
-            },
-            default: ['vicinage'],
-          },
+          // validImports: {
+          //   type: 'array',
+          //   items: {
+          //     oneOf: [
+          //       { type: 'string' },
+          //       {
+          //         type: 'object',
+          //         properties: {
+          //           from: { type: 'string' },
+          //           as: { type: 'string' },
+          //         },
+          //       },
+          //     ],
+          //   },
+          //   default: ['vicinage'],
+          // },
           order: {
             enum: ['default', 'clean', 'recess'],
             default: 'default',
