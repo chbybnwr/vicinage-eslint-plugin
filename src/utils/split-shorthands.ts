@@ -2,6 +2,7 @@ export { CANNOT_FIX }
 export { createBlockInlineTransformer }
 export { createDirectionalTransformer }
 export { createSpecificTransformer }
+export { isSingleToken }
 export { splitDirectionalShorthands }
 export { splitSpecificShorthands }
 
@@ -1510,6 +1511,13 @@ function splitDirectionalShorthands(
   }
 
   return nodes
+}
+
+function isSingleToken(value: string): boolean {
+  const { value: baseValue } = extractImportant(value)
+  const { parts } = splitTopLevelValueTokens(baseValue)
+
+  return parts.length <= 1
 }
 
 function exhaustiveCheck(value: never) {

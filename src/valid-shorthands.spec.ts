@@ -475,6 +475,55 @@ ruleTester.run('valid-shorthands', validShorthands, {
         })
       `,
     },
+    // flex: single values are valid (not multi-value shorthands)
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+          flex: 1,
+        })
+      `,
+    },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+          flex: '2',
+        })
+      `,
+    },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+          flex: 'auto',
+        })
+      `,
+    },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+          flex: 'none',
+        })
+      `,
+    },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+          flex: 'initial',
+        })
+      `,
+    },
+    {
+      code: /* js */ `
+        import { apply } from 'vicinage'
+        apply({
+          flex: '100px',
+        })
+      `,
+    },
   ],
   invalid: [
     {
@@ -2037,156 +2086,6 @@ ruleTester.run('valid-shorthands', validShorthands, {
         {
           message:
             'Property shorthands using multiple values like "animation: bounce 1s alternate-reverse" are not supported here. Separate into individual properties.',
-        },
-      ],
-    },
-    // flex: single number expands to grow/shrink/basis
-    {
-      code: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flex: 1,
-        })
-      `,
-      output: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flexGrow: '1',
-            flexShrink: '1',
-            flexBasis: '0%',
-        })
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "flex: 1" are not supported here. Separate into individual properties.',
-        },
-      ],
-    },
-    // flex: string single number
-    {
-      code: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flex: '2',
-        })
-      `,
-      output: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flexGrow: '2',
-            flexShrink: '1',
-            flexBasis: '0%',
-        })
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "flex: 2" are not supported here. Separate into individual properties.',
-        },
-      ],
-    },
-    // flex: auto keyword
-    {
-      code: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flex: 'auto',
-        })
-      `,
-      output: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flexGrow: '1',
-            flexShrink: '1',
-            flexBasis: 'auto',
-        })
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "flex: auto" are not supported here. Separate into individual properties.',
-        },
-      ],
-    },
-    // flex: none keyword
-    {
-      code: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flex: 'none',
-        })
-      `,
-      output: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flexGrow: '0',
-            flexShrink: '0',
-            flexBasis: 'auto',
-        })
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "flex: none" are not supported here. Separate into individual properties.',
-        },
-      ],
-    },
-    // flex: initial keyword
-    {
-      code: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flex: 'initial',
-        })
-      `,
-      output: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flexGrow: '0',
-            flexShrink: '1',
-            flexBasis: 'auto',
-        })
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "flex: initial" are not supported here. Separate into individual properties.',
-        },
-      ],
-    },
-    // flex: single basis value (with unit)
-    {
-      code: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flex: '100px',
-        })
-      `,
-      output: /* js */ `
-        import { apply } from 'vicinage'
-
-        apply({
-            flexGrow: '1',
-            flexShrink: '1',
-            flexBasis: '100px',
-        })
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "flex: 100px" are not supported here. Separate into individual properties.',
         },
       ],
     },

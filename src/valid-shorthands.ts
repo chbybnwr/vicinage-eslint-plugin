@@ -173,13 +173,17 @@ const validShorthands: Rule.RuleModule = {
         return
       }
 
-      const v = property.value.value
+      const value = property.value.value
 
-      if (typeof v !== 'string' && typeof v !== 'number') {
+      if (typeof value !== 'string' && typeof value !== 'number') {
         return
       }
 
-      const values = shorthandAliasesForKey(v, allowImportant, preferInline)
+      if (key === 'flex' && isSingleToken(String(value))) {
+        return
+      }
+
+      const values = shorthandAliasesForKey(value, allowImportant, preferInline)
       const [firstValue] = values
 
       const isUnfixableError =
@@ -276,6 +280,7 @@ import { createImportTracker } from './utils/create-import-tracker'
 import { createSpecificTransformer } from './utils/split-shorthands'
 import { getNodeIndentation } from './utils/get-node-indentation'
 import { getSourceCode } from './utils/get-source-code'
+import { isSingleToken } from './utils/split-shorthands'
 import type { Node } from 'estree'
 import type { ObjectExpression } from 'estree'
 import type { Property } from 'estree'
