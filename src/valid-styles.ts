@@ -6,11 +6,11 @@ export { validStyles }
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable max-params */
 /* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+
 /* eslint-disable no-continue */
 /* eslint-disable max-depth */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable unicorn/no-keyword-prefix */
 /* eslint-disable no-undefined */
@@ -292,9 +292,7 @@ const validStyles: Rule.RuleModule = {
     const stylexResolvedVarsTokenImports = new Set<string>()
 
     // Track same-file defineVars/defineVarsNested/defineConstsNested declarations.
-    const currentFilename =
-      // @ts-expect-error FIXME: please
-      context.getFilename == null ? '' : context.getFilename()
+    const currentFilename = context.filename
     const isStylexFile = isValidStylexResolvedVarsFileExtension(
       currentFilename,
       themeFileExtension,
@@ -324,11 +322,7 @@ const validStyles: Rule.RuleModule = {
       ),
     }
 
-    // eslint-disable-next-line guard-for-in
-    for (const overrideKey in overrides) {
-      // @ts-expect-error FIXME: please
-      const { limit, reason } = overrides[overrideKey]
-
+    for (const [overrideKey, { limit, reason }] of Object.entries(overrides)) {
       if (limit === null) {
         // For properties with known shorthand expansions, provide auto-fixers
         if (overrideKey.includes('*') || overrideKey.includes('+')) {
@@ -529,7 +523,7 @@ const validStyles: Rule.RuleModule = {
         valueNode.type === 'Literal' &&
         typeof valueNode.value === 'string' &&
         isWhiteSpaceOrEmpty(valueNode.value) &&
-        // @ts-expect-error FIXME: please
+        'name' in styleKey &&
         styleKey.name !== 'content'
       ) {
         return {
@@ -736,8 +730,9 @@ const validStyles: Rule.RuleModule = {
           propName ??
           (styleKey.type === 'Identifier'
             ? styleKey.name
-            : // @ts-expect-error FIXME: please
-              styleKey.value)
+            : 'value' in styleKey
+              ? styleKey.value
+              : null)
 
         if (typeof key !== 'string') {
           context.report({
