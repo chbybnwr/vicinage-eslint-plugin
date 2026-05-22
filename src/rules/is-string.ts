@@ -1,7 +1,5 @@
 export { isString }
 
-/* eslint-disable no-undefined */
-
 const isString = makeVariableCheckingRule(function (
   node: Node,
   _variables?: Variables,

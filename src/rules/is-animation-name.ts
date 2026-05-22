@@ -1,7 +1,5 @@
 export { isAnimationName }
 
-/* eslint-disable no-undefined */
-
 function isAnimationName(
   styleXDefaultImports: Set<string>,
   styleXKeyframesImports: Set<string>,

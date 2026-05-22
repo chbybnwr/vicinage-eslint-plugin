@@ -7,39 +7,13 @@ const eslintConfig = defineConfig([
     '**/etc/**',
     '**/lib/**',
     '**/temp/**',
-    // TODO: remove after migration
-    'src/**/*.js',
   ]),
 
   {
     name: 'js',
     files: ['**/*.{js,jsx,ts,tsx,mjs,mjsx,mtsx,cjs}'],
     plugins: { js: jsPlugin },
-    extends: ['js/all'],
-    rules: {
-      camelcase: 'warn',
-      'capitalized-comments': 'off',
-      eqeqeq: 'off',
-      'func-names': 'off',
-      'func-style': 'off',
-      'id-length': 'off',
-      'max-lines': 'off',
-      'max-lines-per-function': 'off',
-      'max-statements': 'off',
-      'no-duplicate-imports': 'off',
-      'no-eq-null': 'off',
-      'no-inline-comments': 'off',
-      'no-magic-numbers': ['warn', { ignore: [0, 1] }],
-      'no-param-reassign': ['error', { props: true }],
-      'no-ternary': 'off',
-      'no-use-before-define': 'off',
-      'no-warning-comments': 'off',
-      'one-var': 'off',
-      'prefer-arrow-callback': 'off',
-      'sort-imports': 'off',
-      'sort-keys': 'off',
-      'symbol-description': 'off',
-    },
+    extends: ['js/recommended'],
   },
 
   {
@@ -105,15 +79,22 @@ const eslintConfig = defineConfig([
   {
     name: 'unicorn',
     files: ['**/*.{js,jsx,ts,tsx,mjs,mjsx,mtsx,cjs}'],
-    extends: [unicornPlugin.configs.all],
+    extends: [unicornPlugin.configs.recommended],
     languageOptions: {
       globals: globals.builtin,
     },
     rules: {
       'unicorn/no-null': 'off',
       'unicorn/no-named-default': 'off',
-      'unicorn/prevent-abbreviations': 'off',
-      'unicorn/consistent-destructuring': 'off',
+      'unicorn/prevent-abbreviations': [
+        'warn',
+        {
+          allowList: {
+            pkg: true,
+            overflowDir: true,
+          },
+        },
+      ],
     },
   },
 
@@ -127,7 +108,7 @@ const eslintConfig = defineConfig([
   {
     name: 'vitest',
     files: ['**/*.{test,spec}*.{js,jsx,ts,tsx,mjs,mjsx,mtsx,cjs}'],
-    extends: [vitestPlugin.configs.all],
+    extends: [vitestPlugin.configs.recommended],
     settings: {
       vitest: {
         typecheck: true,
@@ -140,40 +121,6 @@ const eslintConfig = defineConfig([
           pattern: '.*.spec(-d)?.ts(x)?$',
         },
       ],
-      'vitest/no-hooks': 'off',
-      'vitest/prefer-expect-assertions': 'off',
-      'vitest/prefer-importing-vitest-globals': 'off',
-      'vitest/require-mock-type-parameters': 'off',
-      // TODO: use vite-plugin-test-name instead
-      'vitest/prefer-describe-function-title': 'off',
-      'vitest/require-top-level-describe': 'off',
-      'vitest/require-hook': 'off',
-    },
-  },
-
-  {
-    name: 'vitest-type',
-    files: ['**/*.spec-d.{js,jsx,ts,tsx,mjs,mjsx,mtsx,cjs}'],
-    rules: {
-      'vitest/prefer-lowercase-title': 'off',
-      'vitest/require-top-level-describe': 'off',
-      'vitest/consistent-test-it': 'off',
-      'vitest/valid-title': 'off',
-    },
-  },
-
-  {
-    name: 'type-error-test',
-    files: ['**/*.error.{test,spec}-d.{ts,tsx,mtsx}'],
-    rules: {
-      '@typescript-eslint/ban-ts-comment': [
-        'error',
-        {
-          'ts-expect-error': false,
-        },
-      ],
-      'vitest/expect-expect': 'off',
-      'vitest/require-to-throw-message': 'off',
     },
   },
 

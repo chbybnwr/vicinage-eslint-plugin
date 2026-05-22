@@ -1,29 +1,25 @@
 export { makeUnionRule }
 
-/* eslint-disable no-undefined */
-
 function makeUnionRule(
   ...rules: readonly (number | string | RuleCheck)[]
 ): RuleCheck {
-  // eslint-disable-next-line max-params
   return function (
     node: Expression | Pattern,
     variables?: Variables,
-    prop?: Property,
+    property?: Property,
     context?: Rule.RuleContext,
   ): RuleResponse {
     const failedRules = []
 
-    // eslint-disable-next-line no-underscore-dangle
-    for (const _rule of rules) {
+    for (const baseRule of rules) {
       const rule =
-        typeof _rule === 'string'
-          ? makeLiteralRule(_rule)
-          : typeof _rule === 'number'
-            ? makeLiteralRule(_rule)
-            : _rule
+        typeof baseRule === 'string'
+          ? makeLiteralRule(baseRule)
+          : typeof baseRule === 'number'
+            ? makeLiteralRule(baseRule)
+            : baseRule
 
-      const check = rule(node, variables, prop, context)
+      const check = rule(node, variables, property, context)
 
       if (check === undefined) {
         // passes, that means we pass.

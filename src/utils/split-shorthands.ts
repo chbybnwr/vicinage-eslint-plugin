@@ -5,9 +5,7 @@ export { createSpecificTransformer }
 export { splitDirectionalShorthands }
 export { splitSpecificShorthands }
 
-/* eslint-disable no-magic-numbers */
-/* eslint-disable no-continue */
-/* eslint-disable max-params */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 const CANNOT_FIX = 'CANNOT_FIX'
 
@@ -101,7 +99,7 @@ function printNode(node: PostCSSValueASTNode): string {
     }
 
     case 'function': {
-      return `${node.value}(${node.nodes.map((iNode) => printNode(iNode)).join('')})`
+      return `${node.value}(${node.nodes.map((indexNode) => printNode(indexNode)).join('')})`
     }
 
     default: {
@@ -188,7 +186,6 @@ function extractImportant(value: string): {
     return { value: value.trim(), important: false }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return { value: match[1]!.trim(), important: true }
 }
 
@@ -289,7 +286,6 @@ function areAllValuesSame(values: string[]): boolean {
 function expandQuadValues(values: string[]): [string, string, string, string] {
   const [top, right = top, bottom = top, left = right] = values
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return [top!, right!, bottom!, left!]
 }
 
@@ -320,7 +316,6 @@ function splitOnSlashGroups(parts: ValuePart[]): string[] {
     if (part.text === '/') {
       groups.push([])
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       groups.at(-1)!.push(part.text)
     }
   }
@@ -609,7 +604,6 @@ function isFlexBasisValue(
   )
 }
 
-// eslint-disable-next-line complexity
 function expandFlexShorthand(
   values: string[],
   importantSuffix: string,
@@ -752,7 +746,6 @@ function isAnimationIterationCount(value: string): boolean {
   return lower === 'infinite' || /^(?:\d+|\d*\.\d+)$/u.test(lower)
 }
 
-// eslint-disable-next-line complexity
 function expandAnimationShorthand(
   parts: ValuePart[],
   hasTopLevelComma: boolean,
@@ -773,50 +766,50 @@ function expandAnimationShorthand(
   let playState = null
   let name = null
 
-  for (const val of values) {
-    const lower = val.toLowerCase()
+  for (const value of values) {
+    const lower = value.toLowerCase()
 
-    if (isTimeValue(val)) {
+    if (isTimeValue(value)) {
       if (duration == null) {
-        duration = val
+        duration = value
         continue
       }
 
       if (delay == null) {
-        delay = val
+        delay = value
         continue
       }
 
       return null
     }
 
-    if (timingFunction == null && isAnimationTimingFunction(val)) {
-      timingFunction = val
+    if (timingFunction == null && isAnimationTimingFunction(value)) {
+      timingFunction = value
       continue
     }
 
     if (direction == null && ANIMATION_DIRECTION_KEYWORDS.has(lower)) {
-      direction = val
+      direction = value
       continue
     }
 
     if (fillMode == null && ANIMATION_FILL_MODE_KEYWORDS.has(lower)) {
-      fillMode = val
+      fillMode = value
       continue
     }
 
     if (playState == null && ANIMATION_PLAY_STATE_KEYWORDS.has(lower)) {
-      playState = val
+      playState = value
       continue
     }
 
-    if (iterationCount == null && isAnimationIterationCount(val)) {
-      iterationCount = val
+    if (iterationCount == null && isAnimationIterationCount(value)) {
+      iterationCount = value
       continue
     }
 
     if (name == null) {
-      name = val
+      name = value
       continue
     }
 
@@ -909,7 +902,6 @@ function expandBorderSideShorthand(
   ]
 }
 
-// eslint-disable-next-line complexity
 function expandBackgroundShorthand(
   parts: ValuePart[],
   hasTopLevelComma: boolean,
@@ -1048,7 +1040,6 @@ function expandFontShorthand(
 
   const sizePart = parts[sizeIndex]
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const sizeValues = splitFontSizeAndLineHeight(sizePart!)
 
   if (!sizeValues) {
@@ -1132,7 +1123,6 @@ function expandFontShorthand(
   return entries
 }
 
-// eslint-disable-next-line complexity
 function splitSpecificShorthands(
   property: string,
   value: string,
@@ -1208,13 +1198,13 @@ function splitSpecificShorthands(
     const [first, second] = gapValues
 
     if (gapValues.length <= 1) {
-      const val = isNumber
+      const value_ = isNumber
         ? Number(rawValue)
         : applyImportant(first ?? rawValue, importantSuffix)
 
       return [
-        ['rowGap', val],
-        ['columnGap', val],
+        ['rowGap', value_],
+        ['columnGap', value_],
       ]
     }
 
@@ -1269,10 +1259,7 @@ function splitSpecificShorthands(
         }
 
         default: {
-          // eslint-disable-next-line no-underscore-dangle
-          const _exhaustiveCheck: never = property
-
-          return _exhaustiveCheck
+          return exhaustiveCheck(property)
         }
       }
     }
@@ -1365,7 +1352,7 @@ function splitSpecificShorthands(
     for (const [index, key] of keys.entries()) {
       entries.push([
         toCamelCase(key),
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         applyImportant(expanded[index]!, importantSuffix),
       ])
     }
@@ -1413,7 +1400,7 @@ function splitSpecificShorthands(
 
       entries.push([
         toCamelCase(mappedKey),
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         applyImportant(expanded[index]!, importantSuffix),
       ])
     }
@@ -1472,34 +1459,37 @@ function splitSpecificShorthands(
 }
 
 function splitDirectionalShorthands(
-  str: number | string | null,
+  string_: number | string | null,
   allowImportant = false,
 ): readonly (number | string | null | undefined)[] {
-  let processedStr = str
+  let processedString = string_
 
-  if (str == null || (typeof str !== 'string' && typeof str !== 'number')) {
-    return [str]
+  if (
+    string_ == null ||
+    (typeof string_ !== 'string' && typeof string_ !== 'number')
+  ) {
+    return [string_]
   }
 
-  if (typeof str === 'number') {
-    processedStr = String(str)
+  if (typeof string_ === 'number') {
+    processedString = String(string_)
   }
 
-  if (Array.isArray(processedStr)) {
-    return processedStr
+  if (Array.isArray(processedString)) {
+    return processedString
   }
 
-  if (typeof processedStr !== 'string') {
-    return [processedStr]
+  if (typeof processedString !== 'string') {
+    return [processedString]
   }
 
-  const parsed = parser(processedStr.trim())
+  const parsed = parser(processedString.trim())
 
   const nodes = parsed.nodes
     .filter((node) => node.type !== 'space' && node.type !== 'div')
     .map((node) => printNode(node as PostCSSValueASTNode))
 
-  if (typeof str === 'number') {
+  if (typeof string_ === 'number') {
     // if originally a number, let's preserve that here
     const processedNodes = nodes.map((node) => Number.parseFloat(node))
 
@@ -1520,6 +1510,10 @@ function splitDirectionalShorthands(
   }
 
   return nodes
+}
+
+function exhaustiveCheck(value: never) {
+  return value
 }
 
 import type { CSSToken } from '@csstools/css-tokenizer'

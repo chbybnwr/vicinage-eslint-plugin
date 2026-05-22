@@ -1,7 +1,5 @@
 export { isPositionTryFallbacks }
 
-/* eslint-disable no-undefined */
-
 function isPositionTryFallbacks(
   styleXDefaultImports: Set<string>,
   styleXPositionTryImports: Set<string>,

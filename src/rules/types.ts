@@ -2,11 +2,10 @@ export type { RuleCheck }
 export type { RuleResponse }
 export type { Variables }
 
-// eslint-disable-next-line max-params
 type RuleCheck = (
   node: Readonly<Expression | Pattern>,
   variables?: Variables,
-  prop?: Readonly<Property>,
+  property?: Readonly<Property>,
   context?: Rule.RuleContext,
 ) => RuleResponse
 

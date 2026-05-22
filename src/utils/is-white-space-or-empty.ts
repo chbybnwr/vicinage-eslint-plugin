@@ -1,5 +1,5 @@
 export { isWhiteSpaceOrEmpty }
 
-function isWhiteSpaceOrEmpty(str: string): boolean {
-  return !str.trim()
+function isWhiteSpaceOrEmpty(text: string): boolean {
+  return !text.trim()
 }

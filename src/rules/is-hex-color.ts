@@ -2,14 +2,12 @@ export { isHexColor }
 
 const isHexColor = makeVariableCheckingRule(function (
   node: Node,
-  _vars?: Variables,
+  _variables?: Variables,
 ): RuleResponse {
   return node.type === 'Literal' &&
     typeof node.value === 'string' &&
-    // eslint-disable-next-line require-unicode-regexp
-    /^#(?:[\dA-Fa-f]{3,4}|[\dA-Fa-f]{6}|[\dA-Fa-f]{8})$/.test(node.value)
-    ? // eslint-disable-next-line no-undefined
-      undefined
+    /^#(?:[\dA-Fa-f]{3,4}|[\dA-Fa-f]{6}|[\dA-Fa-f]{8})$/u.test(node.value)
+    ? undefined
     : { message: 'a valid hex color (#FFAADD or #FFAADDFF)' }
 })
 

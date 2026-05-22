@@ -1,54 +1,56 @@
 export { makeVariableCheckingRule }
 
 function makeVariableCheckingRule(rule: RuleCheck): RuleCheck {
-  // eslint-disable-next-line max-params
-  function varCheckingRule(
+  function variableCheckingRule(
     node: Expression | Pattern | TSESTree.Expression,
     variables?: Variables,
-    prop?: Readonly<Property>,
+    property?: Readonly<Property>,
     context?: Rule.RuleContext,
   ): RuleResponse {
     if (
       node.type === AST_NODE_TYPES.TSSatisfiesExpression ||
       node.type === AST_NODE_TYPES.TSAsExpression
     ) {
-      return varCheckingRule(node.expression, variables, prop, context)
+      return variableCheckingRule(node.expression, variables, property, context)
     }
 
     if (node.type === 'Identifier' && variables != null) {
-      const existingVar = variables.get(node.name)
+      const existingVariable = variables.get(node.name)
 
-      if (existingVar === 'ARG') {
-        // eslint-disable-next-line no-undefined
+      if (existingVariable === 'ARG') {
         return undefined
       }
 
-      if (existingVar != null) {
-        return varCheckingRule(existingVar, variables, prop, context)
+      if (existingVariable != null) {
+        return variableCheckingRule(
+          existingVariable,
+          variables,
+          property,
+          context,
+        )
       }
     }
 
     if (node.type === 'MemberExpression' && variables != null) {
-      let obj = node.object
+      let object = node.object
 
-      while (obj.type === 'MemberExpression') {
-        obj = obj.object
+      while (object.type === 'MemberExpression') {
+        object = object.object
       }
 
-      if (obj.type === 'Identifier') {
-        const existingVar = variables.get(obj.name)
+      if (object.type === 'Identifier') {
+        const existingVariable = variables.get(object.name)
 
-        if (existingVar === 'ARG') {
-          // eslint-disable-next-line no-undefined
+        if (existingVariable === 'ARG') {
           return undefined
         }
       }
     }
 
-    return rule(node as Parameters<RuleCheck>[0], variables, prop, context)
+    return rule(node as Parameters<RuleCheck>[0], variables, property, context)
   }
 
-  return varCheckingRule
+  return variableCheckingRule
 }
 
 import { AST_NODE_TYPES } from '@typescript-eslint/types'

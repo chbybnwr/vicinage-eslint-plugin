@@ -23,13 +23,17 @@ function getNodeIndentation(
       ? tokenBefore.loc.end.column
       : 0
 
-  return node.loc
-    ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      sourceCode.lines[node.loc.start.line - 1]!.slice(
-        sliceStart,
-        node.loc.start.column,
-      )
-    : ''
+  if (node.loc) {
+    const segment = sourceCode.lines[node.loc.start.line - 1]
+
+    if (segment == null) {
+      throw new TypeError('segment is required')
+    }
+
+    return segment.slice(sliceStart, node.loc.start.column)
+  }
+
+  return ''
 }
 
 import type { AST } from 'eslint'

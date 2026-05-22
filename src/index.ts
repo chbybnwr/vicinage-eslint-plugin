@@ -3,7 +3,7 @@ export { plugin as default }
 const { name, version } = pkg
 
 const rules = {
-  'no-conflicting-props': noConflictingProps,
+  'no-conflicting-props': noConflictingProperties,
   // 'no-nonstandard-styles': noNonStandardStyles,
   'sort-keys': sortKeys,
   'valid-shorthands': validShorthands,
@@ -33,7 +33,7 @@ const plugin = {
   },
 } satisfies Plugin
 
-import { noConflictingProps } from './no-conflicting-props'
+import { noConflictingProperties } from './no-conflicting-properties'
 import pkg from '../package.json'
 import type { Plugin } from '@eslint/config-helpers'
 // import noNonStandardStyles from './no-nonstandard-styles'

@@ -1,7 +1,3 @@
-/* eslint-disable unicorn/no-keyword-prefix */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable no-continue */
-
 export { validShorthands }
 
 const legacyNameMapping: Readonly<Record<string, string>> = {
@@ -124,29 +120,25 @@ const validShorthands: Rule.RuleModule = {
       )
     }
 
-    function validateObject(obj: ObjectExpression) {
-      for (const prop of obj.properties) {
-        if (prop.type === 'SpreadElement') {
-          continue
-        }
-
-        if (prop.value.type === 'ObjectExpression') {
-          validateObject(prop.value)
-        } else {
-          validateProperty(prop)
+    function validateObject(object: ObjectExpression) {
+      for (const property of object.properties) {
+        if (property.type !== 'SpreadElement') {
+          if (property.value.type === 'ObjectExpression') {
+            validateObject(property.value)
+          } else {
+            validateProperty(property)
+          }
         }
       }
     }
 
-    // eslint-disable-next-line complexity
     function validateProperty(property: Property) {
       if (property.computed) {
         // can't resolve computed keys
         return
       }
 
-      // eslint-disable-next-line init-declarations
-      let key
+      let key = null
 
       if (property.key.type === 'Identifier') {
         key = property.key.name
@@ -154,15 +146,16 @@ const validShorthands: Rule.RuleModule = {
         key = property.key.value
       }
 
-      if (typeof key === 'string' && legacyNameMapping[key] != null) {
-        context.report({
-          node: property,
-          message: `Use "${legacyNameMapping[key]}" instead of legacy formats like "${key}" to adhere to logical property naming.`,
-          fix: (fixer) =>
-            // $FlowFixMe[incompatible-type] - We've already checked that key is a string and in legacyNameMapping
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            fixer.replaceText(property.key, legacyNameMapping[key]!),
-        })
+      if (typeof key === 'string') {
+        const modernName = legacyNameMapping[key]
+
+        if (modernName != null) {
+          context.report({
+            node: property,
+            message: `Use "${modernName}" instead of legacy formats like "${key}" to adhere to logical property naming.`,
+            fix: (fixer) => fixer.replaceText(property.key, modernName),
+          })
+        }
       }
 
       if (typeof key !== 'string') {
@@ -186,26 +179,23 @@ const validShorthands: Rule.RuleModule = {
         return
       }
 
-      const newValues = shorthandAliasesForKey(v, allowImportant, preferInline)
+      const values = shorthandAliasesForKey(v, allowImportant, preferInline)
+      const [firstValue] = values
 
       const isUnfixableError =
-        newValues.length === 1 && newValues[0]?.[1] === CANNOT_FIX
+        values.length === 1 && values[0]?.[1] === CANNOT_FIX
 
-      /* eslint-disable @typescript-eslint/no-non-null-assertion */
       if (
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        !newValues ||
-        (newValues.length === 1 &&
-          newValues[0]![0] === key &&
-          (newValues[0]![1] === property.value.value ||
-            newValues[0]![1] === property.value.value?.toString() ||
-            newValues[0]![1] ===
-              Number.parseInt(property.value.value as string, 10)) &&
-          !isUnfixableError)
+        values.length === 1 &&
+        firstValue?.[0] === key &&
+        (firstValue[1] === property.value.value ||
+          firstValue[1] === property.value.value?.toString() ||
+          firstValue[1] ===
+            Number.parseInt(property.value.value as string, 10)) &&
+        !isUnfixableError
       ) {
         return
       }
-      /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
       context.report({
         node: property,
@@ -222,16 +212,15 @@ const validShorthands: Rule.RuleModule = {
                 sourceCode,
                 property,
               )
-              const newLineAndIndent = `\n${startNodeIndentation}`
 
-              const newPropertiesText = newValues
+              const propertiesText = values
                 .map(
-                  ([iKey, value], index) =>
-                    `${index > 0 ? newLineAndIndent : ''}${iKey}: ${typeof value === 'string' ? `'${value}'` : value}`,
+                  ([indexKey, value], index) =>
+                    `${index > 0 ? `\n${startNodeIndentation}` : ''}${indexKey}: ${typeof value === 'string' ? `'${value}'` : (value?.toString() ?? '')}`,
                 )
                 .join(',')
 
-              return fixer.replaceText(property, newPropertiesText)
+              return fixer.replaceText(property, propertiesText)
             },
       })
     }
@@ -240,7 +229,6 @@ const validShorthands: Rule.RuleModule = {
       Program: (node) => {
         for (const part of node.body) {
           if (part.type === 'ImportDeclaration') {
-            // eslint-disable-next-line new-cap
             importTracker.ImportDeclaration(part)
           }
         }
@@ -253,12 +241,10 @@ const validShorthands: Rule.RuleModule = {
           return
         }
 
-        for (const arg of node.arguments) {
-          if (arg.type !== 'ObjectExpression') {
-            continue
+        for (const argument of node.arguments) {
+          if (argument.type === 'ObjectExpression') {
+            validateObject(argument)
           }
-
-          validateObject(arg)
         }
       },
 

@@ -1,7 +1,5 @@
 export { getPropertyPriorityAndType }
 
-/* eslint-disable no-magic-numbers */
-
 interface PriorityAndType {
   priority: number
   type:
@@ -13,7 +11,6 @@ interface PriorityAndType {
 }
 
 const ORDER_PRIORITIES = {
-  // eslint-disable-next-line no-undefined
   default: undefined,
   clean: CLEAN_ORDER_PRIORITIES,
   recess: RECESS_ORDER_PRIORITIES,
@@ -119,10 +116,9 @@ function getPropertyPriorityAndType(
     if (defaultPriority) {
       return { priority: defaultPriority, type: 'knownCssProperty' }
     }
-  } else if (
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    ORDER_PRIORITIES[order]
-  ) {
+  }
+
+  if (ORDER_PRIORITIES[order] != null) {
     const index = ORDER_PRIORITIES[order].indexOf(key)
 
     if (index !== -1) {

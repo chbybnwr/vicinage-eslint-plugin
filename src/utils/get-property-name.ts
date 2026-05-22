@@ -35,8 +35,7 @@ function getStaticStringValue(node: Node): string | null {
 
     case 'TemplateLiteral': {
       if (node.expressions.length === 0 && node.quasis.length === 1) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return node.quasis[0]!.value.cooked ?? null
+        return node.quasis[0]?.value.cooked ?? null
       }
 
       break
@@ -49,54 +48,51 @@ function getStaticStringValue(node: Node): string | null {
 }
 
 function getStaticPropertyName(node: Node | ChainExpression): string | null {
-  // eslint-disable-next-line init-declarations
-  let prop
-
   if (node.type === 'ChainExpression') {
     return getStaticPropertyName(node.expression)
   }
 
-  switch (node.type) {
-    case 'Property':
+  const property = (() => {
+    switch (node.type) {
+      case 'Property':
 
-    // fallthrough
-    case 'PropertyDefinition':
+      // fallthrough
+      case 'PropertyDefinition':
 
-    // fallthrough
-    case 'MethodDefinition': {
-      prop = node.key
+      // fallthrough
+      case 'MethodDefinition': {
+        return node.key
+      }
 
-      break
+      case 'MemberExpression': {
+        return node.property
+      }
+
+      default: {
+        return null
+      }
+    }
+  })()
+
+  if (property != null) {
+    if (property.type === 'Identifier' && !('computed' in node)) {
+      return property.name
     }
 
-    case 'MemberExpression': {
-      prop = node.property
-
-      break
-    }
-
-    // no default
-  }
-
-  if (prop) {
-    if (prop.type === 'Identifier' && !('computed' in node)) {
-      return prop.name
-    }
-
-    if (prop.type === 'CallExpression') {
-      const callee = getCalleeName(prop.callee)
+    if (property.type === 'CallExpression') {
+      const callee = getCalleeName(property.callee)
       if (!callee) return null
 
       if (callee.startsWith('stylex.when') || callee.startsWith('when')) {
         const relation = callee.split('.').pop()
-        const [arg] = prop.arguments
-        if (!arg) return null
+        const [argument] = property.arguments
+        if (!argument) return null
 
-        return `:when:${relation ?? ''}${getStaticStringValue(arg) ?? ''}`
+        return `:when:${relation ?? ''}${getStaticStringValue(argument) ?? ''}`
       }
     }
 
-    return getStaticStringValue(prop)
+    return getStaticStringValue(property)
   }
 
   return null

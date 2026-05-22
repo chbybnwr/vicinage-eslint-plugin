@@ -7,7 +7,6 @@ function makeRegExRule(regex: RegExp, message: string): RuleCheck {
       typeof node.value === 'string' &&
       regex.test(node.value)
     ) {
-      // eslint-disable-next-line no-undefined
       return undefined
     }
 

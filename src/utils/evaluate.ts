@@ -12,17 +12,17 @@ function evaluate(
   }
 
   if (node.type === AST_NODE_TYPES.Identifier && variables != null) {
-    const existingVar = variables.get(node.name) as
+    const existingVariable = variables.get(node.name) as
       | TSESTree.Expression
       | 'ARG'
       | undefined
 
-    if (existingVar === 'ARG') {
+    if (existingVariable === 'ARG') {
       return 'ARG'
     }
 
-    if (existingVar != null) {
-      return evaluate(existingVar, variables)
+    if (existingVariable != null) {
+      return evaluate(existingVariable, variables)
     }
   }
 

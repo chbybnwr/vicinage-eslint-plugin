@@ -5,14 +5,12 @@ const isPercentage = makeVariableCheckingRule(function (
   _variables?: Variables,
 ): RuleResponse {
   if (node.type === 'Literal') {
-    const val = node.value
+    const value = node.value
 
     if (
-      typeof val === 'string' &&
-      // eslint-disable-next-line prefer-regex-literals, require-unicode-regexp
-      new RegExp(String.raw`^([-,+]?\d+(\.\d+)?%)$`).test(val)
+      typeof value === 'string' &&
+      /^(?<value>[-,+]?\d+(?<decimal>\.\d+)?%)$/u.test(value)
     ) {
-      // eslint-disable-next-line no-undefined
       return undefined
     }
   }

@@ -1,19 +1,9 @@
 export { validStyles }
 
-/* eslint-disable no-magic-numbers */
-/* eslint-disable unicorn/no-array-reduce */
-/* eslint-disable no-shadow */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable max-params */
-/* eslint-disable complexity */
-
-/* eslint-disable no-continue */
-/* eslint-disable max-depth */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable unicorn/no-keyword-prefix */
-/* eslint-disable no-undefined */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 type ValidationResult =
   | RuleResponse
@@ -69,26 +59,29 @@ const NUMERIC_LITERAL_PROPERTIES = new Set([
   'animationIterationCount',
 ])
 
-const serializeValue = (propertyKey: string, val: number | string): string => {
-  if (typeof val === 'number') {
-    return String(val)
+const serializeValue = (
+  propertyKey: string,
+  value: number | string,
+): string => {
+  if (typeof value === 'number') {
+    return String(value)
   }
 
   if (
     NUMERIC_LITERAL_PROPERTIES.has(propertyKey) &&
-    NUMERIC_LITERAL_VALUE_REGEX.test(val)
+    NUMERIC_LITERAL_VALUE_REGEX.test(value)
   ) {
-    return String(Number(val))
+    return String(Number(value))
   }
 
   // Escape single quotes within the string
-  const escaped = val.replaceAll('\\', '\\\\').replaceAll("'", String.raw`\'`)
+  const escaped = value.replaceAll('\\', '\\\\').replaceAll("'", String.raw`\'`)
 
   return `'${escaped}'`
 }
 
 const formatExpandedProperties = (
-  prop: Readonly<Property>,
+  property: Readonly<Property>,
   expanded: readonly Readonly<[string, number | string]>[],
   context?: Rule.RuleContext,
 ): string => {
@@ -97,30 +90,34 @@ const formatExpandedProperties = (
     ([key, value]) => `${key}: ${serializeValue(key, value)}`,
   )
 
-  return formatPropertiesWithNodeIndentation(prop, properties, sourceCode)
+  return formatPropertiesWithNodeIndentation(property, properties, sourceCode)
 }
 
 function showErrorWithFix(message: string, propertyKey: string): RuleCheck {
   return function (
     node: Readonly<Expression | Pattern>,
     _variables?: Variables,
-    prop?: Readonly<Property>,
+    property?: Readonly<Property>,
     context?: Rule.RuleContext,
   ): RuleResponse {
     const response: NonNullable<RuleResponse> = { message }
-    const shorthandProp = shorthandExpansionMap[propertyKey]
+    const shorthandProperty = shorthandExpansionMap[propertyKey]
 
-    if (shorthandProp == null || node.type !== 'Literal' || prop == null) {
+    if (
+      shorthandProperty == null ||
+      node.type !== 'Literal' ||
+      property == null
+    ) {
       return response
     }
 
-    const val = node.value
+    const value = node.value
 
-    if (typeof val !== 'string' && typeof val !== 'number') {
+    if (typeof value !== 'string' && typeof value !== 'number') {
       return response
     }
 
-    const expanded = splitSpecificShorthands(shorthandProp, String(val))
+    const expanded = splitSpecificShorthands(shorthandProperty, String(value))
 
     if (expanded.length <= 1 && expanded[0]?.[1] !== CANNOT_FIX) {
       // Single value that's unchanged — no expansion available
@@ -132,19 +129,19 @@ function showErrorWithFix(message: string, propertyKey: string): RuleCheck {
       return response
     }
 
-    const newPropertiesText = formatExpandedProperties(prop, expanded, context)
+    const propertiesText = formatExpandedProperties(property, expanded, context)
 
-    const fixFn = (fixer: Rule.RuleFixer) =>
-      fixer.replaceText(prop, newPropertiesText)
+    const fixFunction = (fixer: Rule.RuleFixer) =>
+      fixer.replaceText(property, propertiesText)
 
     // animation is suggest-only since animationName needs a keyframes() reference
     if (propertyKey !== 'animation') {
-      response.fix = fixFn
+      response.fix = fixFunction
     }
 
     response.suggest = {
       desc: `Split '${propertyKey}' shorthand into individual longhand properties?`,
-      fix: fixFn,
+      fix: fixFunction,
     }
 
     return response
@@ -166,7 +163,7 @@ function showErrorWithFix(message: string, propertyKey: string): RuleCheck {
  *   transform that pre-resolve StyleX variables to silence ESLint/compiler errors.
  *
  */
-function isValidStylexResolvedVarsFileExtension(
+function isValidStylexResolvedVariablesFileExtension(
   filename: string,
   themeFileExtension: string,
 ) {
@@ -177,8 +174,8 @@ function isValidStylexResolvedVarsFileExtension(
   ]
   const extensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs']
 
-  return ['', ...extensions].some((ext) =>
-    baseExtensions.some((base) => filename.endsWith(`${base}${ext}`)),
+  return ['', ...extensions].some((extension) =>
+    baseExtensions.some((base) => filename.endsWith(`${base}${extension}`)),
   )
 }
 
@@ -256,12 +253,10 @@ const validStyles: Rule.RuleModule = {
   create: (context: Rule.RuleContext) => {
     const variables = new Map<string, Expression | 'ARG'>()
     const dynamicStyleVariables = new Set<string>()
-
     const options = context.options[0] ?? {}
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const themeFileExtension = options.themeFileExtension ?? '.stylex'
 
-    type PropLimits = Record<
+    type PropertyLimits = Record<
       string,
       {
         limit: null | string | number | (string | number)[]
@@ -278,22 +273,22 @@ const validStyles: Rule.RuleModule = {
           }
       )[]
       allowRawCSSVars: boolean
-      propLimits?: PropLimits
+      propLimits?: PropertyLimits
     }
 
     const {
       validStylexImports = ['stylex', '@stylexjs/stylex'],
-      allowRawCSSVars = true,
-      propLimits = {},
+      allowRawCSSVars: allowRawCSVariables = true,
+      propLimits: propertyLimits = {},
     }: Schema = context.options[0] ?? {}
 
     const validImports = new Set(['vicinage'])
 
-    const stylexResolvedVarsTokenImports = new Set<string>()
+    const stylexResolvedVariablesTokenImports = new Set<string>()
 
     // Track same-file defineVars/defineVarsNested/defineConstsNested declarations.
     const currentFilename = context.filename
-    const isStylexFile = isValidStylexResolvedVarsFileExtension(
+    const isStylexFile = isValidStylexResolvedVariablesFileExtension(
       currentFilename,
       themeFileExtension,
     )
@@ -304,7 +299,7 @@ const validStyles: Rule.RuleModule = {
     const styleXPositionTryImports = new Set<string>()
     const styleXWhenImports = new Set<string>()
 
-    const overrides: PropLimits = propLimits
+    const overrides: PropertyLimits = propertyLimits
 
     const CSSPropertiesWithOverrides: Record<string, RuleCheck> = {
       ...CSSProperties,
@@ -411,7 +406,7 @@ const validStyles: Rule.RuleModule = {
 
     function validateStyleValue(
       valueNode: Expression | Pattern,
-      varsWithFnArgs: Variables,
+      variablesWithFunctionArguments: Variables,
       style: Property,
       styleKey: Expression | PrivateIdentifier,
       propertyKey: string,
@@ -425,7 +420,7 @@ const validStyles: Rule.RuleModule = {
       if (valueNode.type === 'ConditionalExpression') {
         const trueCheck = validateStyleValue(
           valueNode.consequent,
-          varsWithFnArgs,
+          variablesWithFunctionArguments,
           style,
           styleKey,
           propertyKey,
@@ -438,7 +433,7 @@ const validStyles: Rule.RuleModule = {
 
         const falseCheck = validateStyleValue(
           valueNode.alternate,
-          varsWithFnArgs,
+          variablesWithFunctionArguments,
           style,
           styleKey,
           propertyKey,
@@ -460,7 +455,7 @@ const validStyles: Rule.RuleModule = {
         if (['||', '??'].includes(valueNode.operator)) {
           const leftCheck = validateStyleValue(
             valueNode.left,
-            varsWithFnArgs,
+            variablesWithFunctionArguments,
             style,
             styleKey,
             propertyKey,
@@ -474,7 +469,7 @@ const validStyles: Rule.RuleModule = {
 
         const rightCheck = validateStyleValue(
           valueNode.right,
-          varsWithFnArgs,
+          variablesWithFunctionArguments,
           style,
           styleKey,
           propertyKey,
@@ -499,7 +494,6 @@ const validStyles: Rule.RuleModule = {
 
         return {
           node: valueNode,
-
           loc: valueNode.loc!,
           message: `The value "${valueNode.value}" is not a standard CSS value for "${propertyKey}". Did you mean "${replacement}"?`,
           fix: (fixer) => fixer.replaceText(valueNode, `'${replacement}'`),
@@ -513,7 +507,12 @@ const validStyles: Rule.RuleModule = {
         }
       }
 
-      const check = ruleChecker(valueNode, varsWithFnArgs, style, context)
+      const check = ruleChecker(
+        valueNode,
+        variablesWithFunctionArguments,
+        style,
+        context,
+      )
 
       if (check != null) {
         return check
@@ -548,7 +547,7 @@ const validStyles: Rule.RuleModule = {
     function checkStyleProperty(
       style: Node,
       level: number,
-      propName: null | string,
+      propertyName: null | string,
       outerIsPseudoElement: boolean,
     ): void {
       // currently ignoring preset spreads.
@@ -561,7 +560,7 @@ const validStyles: Rule.RuleModule = {
           // But we want to make sure that the same "condition" isn't repeated
           if (
             level > 0 &&
-            propName == null &&
+            propertyName == null &&
             // Allow exactly one inner level when the outer/top nested layer is a pseudo-element
             !(outerIsPseudoElement && level === 1)
           ) {
@@ -585,7 +584,12 @@ const validStyles: Rule.RuleModule = {
                   : key.name
                 : null
 
-          if (isStylexDefineVarsToken(key, stylexResolvedVarsTokenImports)) {
+          if (
+            isStylexDefineVariablesToken(
+              key,
+              stylexResolvedVariablesTokenImports,
+            )
+          ) {
             return
           }
 
@@ -642,11 +646,11 @@ const validStyles: Rule.RuleModule = {
             }
           }
 
-          for (const prop of styleValue.properties)
+          for (const property of styleValue.properties)
             checkStyleProperty(
-              prop,
+              property,
               level + 1,
-              propName ??
+              propertyName ??
                 (keyName.startsWith('@') ||
                 keyName.startsWith(':') ||
                 keyName === 'default'
@@ -660,7 +664,12 @@ const validStyles: Rule.RuleModule = {
 
         let styleKey: Expression | PrivateIdentifier = style.key
 
-        if (isStylexDefineVarsToken(styleKey, stylexResolvedVarsTokenImports)) {
+        if (
+          isStylexDefineVariablesToken(
+            styleKey,
+            stylexResolvedVariablesTokenImports,
+          )
+        ) {
           return
         }
 
@@ -687,9 +696,9 @@ const validStyles: Rule.RuleModule = {
               calleeProperty.type === 'Identifier')
 
           if (!isStylexWhenCall) {
-            const val = evaluate(styleKey, variables)
+            const value = evaluate(styleKey, variables)
 
-            if (val == null) {
+            if (value == null) {
               context.report({
                 node: style.key,
                 loc: style.key.loc,
@@ -697,7 +706,7 @@ const validStyles: Rule.RuleModule = {
               } as Rule.ReportDescriptor)
 
               return
-            } else if (val === 'ARG') {
+            } else if (value === 'ARG') {
               context.report({
                 node: style.key,
                 loc: style.key.loc,
@@ -707,7 +716,7 @@ const validStyles: Rule.RuleModule = {
               return
             }
 
-            styleKey = val
+            styleKey = value
           }
         }
 
@@ -727,7 +736,7 @@ const validStyles: Rule.RuleModule = {
         }
 
         const key =
-          propName ??
+          propertyName ??
           (styleKey.type === 'Identifier'
             ? styleKey.name
             : 'value' in styleKey
@@ -746,9 +755,9 @@ const validStyles: Rule.RuleModule = {
         }
 
         if (CSSPropertyReplacements[key] != null) {
-          const propCheck: RuleCheck = CSSPropertyReplacements[key]
+          const propertyCheck: RuleCheck = CSSPropertyReplacements[key]
 
-          const check = propCheck(style.value, variables, style, context)
+          const check = propertyCheck(style.value, variables, style, context)
 
           if (check != null) {
             const { message } = check
@@ -776,12 +785,12 @@ const validStyles: Rule.RuleModule = {
         const ruleChecker = CSSPropertiesWithOverrides[key]
 
         if (ruleChecker == null) {
-          if (allowRawCSSVars && micromatch.isMatch(key, '--*')) {
+          if (allowRawCSVariables && micromatch.isMatch(key, '--*')) {
             return
           }
 
-          const closestKey = CSSPropertyKeys.find((cssProp) => {
-            const distance = getDistance(key, cssProp, 2)
+          const closestKey = CSSPropertyKeys.find((cssProperty) => {
+            const distance = getDistance(key, cssProperty, 2)
 
             return distance <= 2
           })
@@ -832,28 +841,32 @@ const validStyles: Rule.RuleModule = {
           throw new TypeError(`CSSProperties[${key}] is not a function`)
         }
 
-        const isReferencingStylexDefineVarsTokens =
-          stylexResolvedVarsTokenImports.size > 0 &&
-          isStylexDefineVarsToken(style.value, stylexResolvedVarsTokenImports)
+        const isReferencingStylexDefineVariablesTokens =
+          stylexResolvedVariablesTokenImports.size > 0 &&
+          isStylexDefineVariablesToken(
+            style.value,
+            stylexResolvedVariablesTokenImports,
+          )
 
-        if (!isReferencingStylexDefineVarsTokens) {
-          let varsWithFnArgs: Map<string, Expression | 'ARG'> = variables
+        if (!isReferencingStylexDefineVariablesTokens) {
+          let variablesWithFunctionArguments: Map<string, Expression | 'ARG'> =
+            variables
 
           if (dynamicStyleVariables.size > 0) {
-            varsWithFnArgs = new Map()
+            variablesWithFunctionArguments = new Map()
 
             for (const [key, value] of variables) {
-              varsWithFnArgs.set(key, value)
+              variablesWithFunctionArguments.set(key, value)
             }
 
             for (const key of dynamicStyleVariables) {
-              varsWithFnArgs.set(key, 'ARG')
+              variablesWithFunctionArguments.set(key, 'ARG')
             }
           }
 
           const check = validateStyleValue(
             style.value,
-            varsWithFnArgs,
+            variablesWithFunctionArguments,
             style,
             styleKey,
             key,
@@ -888,13 +901,13 @@ const validStyles: Rule.RuleModule = {
               shouldEnableLegacyConditionalShorthandFixer(key) &&
               style.value.type === 'Literal'
             ) {
-              const val = style.value.value
+              const value = style.value.value
 
-              if (typeof val === 'string' || typeof val === 'number') {
-                const shorthandProp = shorthandExpansionMap[key]
+              if (typeof value === 'string' || typeof value === 'number') {
+                const shorthandProperty = shorthandExpansionMap[key]
                 const expanded = splitSpecificShorthands(
-                  shorthandProp,
-                  String(val),
+                  shorthandProperty,
+                  String(value),
                 )
                 const canFix =
                   expanded.length > 1 ||
@@ -904,22 +917,22 @@ const validStyles: Rule.RuleModule = {
                   !(expanded.length === 1 && expanded[0]?.[1] === CANNOT_FIX)
 
                 if (isFixable) {
-                  const newPropertiesText = formatExpandedProperties(
+                  const propertiesText = formatExpandedProperties(
                     style,
                     expanded,
                     context,
                   )
-                  const fixFn = (fixer: Rule.RuleFixer) =>
-                    fixer.replaceText(style, newPropertiesText)
+                  const fixFunction = (fixer: Rule.RuleFixer) =>
+                    fixer.replaceText(style, propertiesText)
 
                   // animation is suggest-only since animationName needs keyframes()
                   if (key !== 'animation') {
-                    fix = fixFn
+                    fix = fixFunction
                   }
 
                   suggest = {
                     desc: `Split '${key}' shorthand into individual longhand properties?`,
-                    fix: fixFn,
+                    fix: fixFunction,
                   }
                 }
               }
@@ -957,46 +970,27 @@ const validStyles: Rule.RuleModule = {
         // Keep track of all the top-level local variable declarations
         // This is because stylex allows you to use local constants in your styles
 
-        // const body = node.body;
-        // for (let statement of body) {
-
-        // }
-
-        const vars = node.body
-          .reduce(
-            (
-              collection: VariableDeclaration[],
-              node: Statement | ModuleDeclaration | Directive,
-            ) => {
-              if (node.type === 'VariableDeclaration') {
-                collection.push(node)
-              }
-
-              return collection
-            },
-            [],
-          )
-          .flatMap(
-            (constDecl: VariableDeclaration): readonly VariableDeclarator[] =>
-              constDecl.declarations,
-          )
-
-        const [requires, others] = vars.reduce(
-          (acc, decl) => {
-            if (
-              decl.init?.type === 'CallExpression' &&
-              decl.init.callee.type === 'Identifier' &&
-              decl.init.callee.name === 'require'
-            ) {
-              acc[0].push(decl)
-            } else {
-              acc[1].push(decl)
-            }
-
-            return acc
-          },
-          [[] as VariableDeclarator[], [] as VariableDeclarator[]],
+        const collection = node.body.filter(
+          (part) => part.type === 'VariableDeclaration',
         )
+
+        const variables_ = collection.flatMap(
+          (constDecl) => constDecl.declarations,
+        )
+        const requires = []
+        const others = []
+
+        for (const decl of variables_) {
+          if (
+            decl.init?.type === 'CallExpression' &&
+            decl.init.callee.type === 'Identifier' &&
+            decl.init.callee.name === 'require'
+          ) {
+            requires.push(decl)
+          } else {
+            others.push(decl)
+          }
+        }
 
         for (const decl of requires) {
           // detect requires of "stylex" and "@stylexjs/stylex"
@@ -1004,13 +998,14 @@ const validStyles: Rule.RuleModule = {
             decl.init?.type === 'CallExpression' &&
             decl.init.callee.type === 'Identifier' &&
             decl.init.callee.name === 'require' &&
+            decl.init.arguments.length === 1 &&
             (() => {
-              const [firstArg] = decl.init.arguments
+              const [firstArgument] = decl.init.arguments
 
               return (
-                firstArg?.type === 'Literal' &&
-                typeof firstArg.value === 'string' &&
-                validImports.has(firstArg.value)
+                firstArgument?.type === 'Literal' &&
+                typeof firstArgument.value === 'string' &&
+                validImports.has(firstArgument.value)
               )
             })()
           ) {
@@ -1019,15 +1014,15 @@ const validStyles: Rule.RuleModule = {
             }
 
             if (decl.id.type === 'ObjectPattern') {
-              for (const prop of decl.id.properties) {
+              for (const property of decl.id.properties) {
                 if (
-                  prop.type === 'Property' &&
-                  prop.key.type === 'Identifier' &&
-                  prop.key.name === 'apply' &&
-                  !prop.computed &&
-                  prop.value.type === 'Identifier'
+                  property.type === 'Property' &&
+                  property.key.type === 'Identifier' &&
+                  property.key.name === 'apply' &&
+                  !property.computed &&
+                  property.value.type === 'Identifier'
                 ) {
-                  styleXCreateImports.add(prop.value.name)
+                  styleXCreateImports.add(property.value.name)
                 }
               }
             }
@@ -1048,11 +1043,7 @@ const validStyles: Rule.RuleModule = {
       },
 
       ImportDeclaration(node: ImportDeclaration) {
-        if (
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          node.source.type !== 'Literal' ||
-          typeof node.source.value !== 'string'
-        ) {
+        if (typeof node.source.value !== 'string') {
           return
         }
 
@@ -1072,14 +1063,18 @@ const validStyles: Rule.RuleModule = {
 
         const isVicinageImport = foundVicinageImportSource
         const isStylexImport = foundStylexImportSource !== undefined
-        const isStylexResolvedVarsImport =
-          isValidStylexResolvedVarsFileExtension(
+        const isStylexResolvedVariablesImport =
+          isValidStylexResolvedVariablesFileExtension(
             sourceValue,
             themeFileExtension,
           )
 
         if (
-          !(isVicinageImport || isStylexImport || isStylexResolvedVarsImport)
+          !(
+            isVicinageImport ||
+            isStylexImport ||
+            isStylexResolvedVariablesImport
+          )
         ) {
           return
         }
@@ -1142,10 +1137,10 @@ const validStyles: Rule.RuleModule = {
           }
         }
 
-        if (isStylexResolvedVarsImport) {
+        if (isStylexResolvedVariablesImport) {
           for (const specifier of node.specifiers) {
             if (specifier.type === 'ImportSpecifier') {
-              stylexResolvedVarsTokenImports.add(specifier.local.name)
+              stylexResolvedVariablesTokenImports.add(specifier.local.name)
             }
           }
         }
@@ -1157,7 +1152,7 @@ const validStyles: Rule.RuleModule = {
         if (isStylexFile && node.declaration?.type === 'VariableDeclaration') {
           for (const decl of node.declaration.declarations) {
             if (decl.id.type === 'Identifier') {
-              stylexResolvedVarsTokenImports.add(decl.id.name)
+              stylexResolvedVariablesTokenImports.add(decl.id.name)
             }
           }
         }
@@ -1167,14 +1162,14 @@ const validStyles: Rule.RuleModule = {
           return
         }
 
-        for (const arg of node.arguments) {
+        for (const argument of node.arguments) {
           // const loc: ?AST['SourceLocation'] = namespaces.loc;
-          if (arg.type !== 'ObjectExpression') {
+          if (argument.type !== 'ObjectExpression') {
             continue
           }
 
-          for (const prop of arg.properties) {
-            checkStyleProperty(prop, 0, null, false)
+          for (const property of argument.properties) {
+            checkStyleProperty(property, 0, null, false)
           }
 
           // for (const namespace of namespaces.properties) {
@@ -1254,7 +1249,6 @@ import { CANNOT_FIX } from './utils/split-shorthands'
 import { CSSProperties } from './reference/css-properties'
 import { CSSPropertyKeys } from './reference/css-properties'
 import { CSSPropertyReplacements } from './reference/css-properties'
-import type { Directive } from 'estree'
 import { evaluate } from './utils/evaluate'
 import type { Expression } from 'estree'
 import { formatPropertiesWithNodeIndentation } from './utils/format-properties-with-node-indentation'
@@ -1267,13 +1261,12 @@ import { isCSSVariable } from './rules/is-css-variable'
 import { isNumber } from './rules/is-number'
 import { isPositionTryFallbacks } from './rules/is-position-try-fallbacks'
 import { isString } from './rules/is-string'
-import { isStylexDefineVarsToken } from './rules/is-stylex-resolved-vars-token'
+import { isStylexDefineVariablesToken as isStylexDefineVariablesToken } from './rules/is-stylex-resolved-variables-token'
 import { isWhiteSpaceOrEmpty } from './utils/is-white-space-or-empty'
 import type { Literal } from 'estree'
 import { makeLiteralRule } from './rules/make-literal-rule'
 import { makeUnionRule } from './rules/make-union-rule'
 import micromatch from 'micromatch'
-import type { ModuleDeclaration } from 'estree'
 import type { Node } from 'estree'
 import type { ObjectExpression } from 'estree'
 import type { Pattern } from 'estree'
@@ -1287,8 +1280,5 @@ import type { Rule } from 'eslint'
 import type { RuleCheck } from '#/rules/types'
 import type { RuleResponse } from '#/rules/types'
 import { splitSpecificShorthands } from './utils/split-shorthands'
-import type { Statement } from 'estree'
-import type { VariableDeclaration } from 'estree'
-import type { VariableDeclarator } from 'estree'
 import type { Variables } from '#/rules/types'
 //

@@ -2763,8 +2763,11 @@ ruleTester.run('valid-styles [autofixers]', validStyles, {
 function message(strings: TemplateStringsArray): string {
   const [block] = strings
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return block!
+  if (block === undefined) {
+    throw new TypeError('string is required')
+  }
+
+  return block
     .trim()
     .split('\n')
     .map((line) => line.trim())

@@ -8,7 +8,6 @@ function makeRangeRule(min: number, max: number, message: string): RuleCheck {
       node.value >= min &&
       node.value <= max
     ) {
-      // eslint-disable-next-line no-undefined
       return undefined
     }
 

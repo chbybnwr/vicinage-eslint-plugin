@@ -1,16 +1,13 @@
 export { isNumber }
 export { isMathCall }
 
-/* eslint-disable no-undefined */
-
 const numericOperators = new Set(['+', '-', '*', '/'])
 const mathFunctions = new Set(['abs', 'ceil', 'floor', 'round'])
 
-// eslint-disable-next-line max-params, complexity
 const isNumber: RuleCheck = makeVariableCheckingRule(function (
   node: Node,
   variables?: Variables,
-  prop?: Readonly<Property>,
+  property?: Readonly<Property>,
   context?: Rule.RuleContext,
 ): RuleResponse {
   if (node.type === 'Literal' && typeof node.value === 'number') {
@@ -20,13 +17,13 @@ const isNumber: RuleCheck = makeVariableCheckingRule(function (
   if (node.type === 'Identifier' && context) {
     const scope = context.sourceCode.getScope(node)
     const variable = scope.set.get(node.name)
-    const def = variable?.defs[0]
+    const definition = variable?.defs[0]
 
     const isLocalConst =
-      def?.node.type === 'VariableDeclarator' &&
-      def.parent !== null &&
-      'kind' in def.parent &&
-      def.parent.kind === 'const'
+      definition?.node.type === 'VariableDeclarator' &&
+      definition.parent !== null &&
+      'kind' in definition.parent &&
+      definition.parent.kind === 'const'
 
     const nodeName = variables?.get(node.name)
 
@@ -39,13 +36,13 @@ const isNumber: RuleCheck = makeVariableCheckingRule(function (
   }
 
   if (node.type === 'UnaryExpression' && node.operator === '-') {
-    return isNumber(node.argument, variables, prop, context)
+    return isNumber(node.argument, variables, property, context)
   }
 
   if (node.type === 'BinaryExpression' && numericOperators.has(node.operator)) {
     // @ts-expect-error FIXME: please
-    const left = isNumber(node.left, variables, prop, context)
-    const right = isNumber(node.right, variables, prop, context)
+    const left = isNumber(node.left, variables, property, context)
+    const right = isNumber(node.right, variables, property, context)
 
     return left === undefined && right === undefined
       ? undefined

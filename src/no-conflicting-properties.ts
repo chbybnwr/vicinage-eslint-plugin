@@ -1,9 +1,9 @@
-export { noConflictingProps }
+export { noConflictingProperties }
 
 const defaultValidImports = ['vicinage']
-const stylingProps = new Set(['style', 'class', 'className'])
+const stylingProperties = new Set(['style', 'class', 'className'])
 
-const noConflictingProps: Rule.RuleModule = {
+const noConflictingProperties: Rule.RuleModule = {
   meta: {
     type: 'problem',
     docs: {
@@ -58,7 +58,6 @@ const noConflictingProps: Rule.RuleModule = {
       Program: (node) => {
         for (const part of node.body) {
           if (part.type === 'ImportDeclaration') {
-            // eslint-disable-next-line new-cap
             importTracker.ImportDeclaration(part)
           }
         }
@@ -69,48 +68,48 @@ const noConflictingProps: Rule.RuleModule = {
           return
         }
 
-        const hasPropsSpread = node.attributes.some(
-          (attr) =>
-            attr.type === 'JSXSpreadAttribute' &&
-            attr.argument.type === 'CallExpression' &&
-            isApplyCallee(attr.argument.callee),
+        const hasPropertiesSpread = node.attributes.some(
+          (attribute) =>
+            attribute.type === 'JSXSpreadAttribute' &&
+            attribute.argument.type === 'CallExpression' &&
+            isApplyCallee(attribute.argument.callee),
         )
 
-        if (!hasPropsSpread) {
+        if (!hasPropertiesSpread) {
           return
         }
 
-        for (const attr of node.attributes) {
+        for (const attribute of node.attributes) {
           if (
-            attr.type === 'JSXAttribute' &&
-            attr.name.type === 'JSXIdentifier' &&
-            'name' in attr.name &&
-            stylingProps.has(attr.name.name)
+            attribute.type === 'JSXAttribute' &&
+            attribute.name.type === 'JSXIdentifier' &&
+            'name' in attribute.name &&
+            stylingProperties.has(attribute.name.name)
           ) {
             context.report({
               // $FlowFixMe[incompatible-type]
-              node: attr,
+              node: attribute,
               message:
                 'The `{{propName}}` prop should not be used when spreading `apply()` to avoid conflicts.',
-              data: { propName: attr.name.name },
+              data: { propName: attribute.name.name },
             })
           } else if (
-            attr.type === 'JSXSpreadAttribute' &&
-            attr.argument.type === 'ObjectExpression'
+            attribute.type === 'JSXSpreadAttribute' &&
+            attribute.argument.type === 'ObjectExpression'
           ) {
-            for (const prop of attr.argument.properties) {
+            for (const property of attribute.argument.properties) {
               if (
-                prop.type === 'Property' &&
-                !prop.computed &&
-                prop.key.type === 'Identifier' &&
-                stylingProps.has(prop.key.name)
+                property.type === 'Property' &&
+                !property.computed &&
+                property.key.type === 'Identifier' &&
+                stylingProperties.has(property.key.name)
               ) {
                 context.report({
                   // $FlowFixMe[incompatible-type]
-                  node: prop,
+                  node: property,
                   message:
                     'The `{{propName}}` prop should not be used when spreading `apply()` to avoid conflicts.',
-                  data: { propName: prop.key.name },
+                  data: { propName: property.key.name },
                 })
               }
             }

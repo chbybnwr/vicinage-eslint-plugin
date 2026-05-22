@@ -1,10 +1,5 @@
 export { borderSplitter }
 
-/* eslint-disable no-magic-numbers */
-/* eslint-disable prefer-destructuring */
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-/* eslint-disable require-unicode-regexp */
-
 function splitValue(
   borderValue: number | string,
 ): readonly (number | string | null)[] {
@@ -62,9 +57,7 @@ const globalKeywords = new Set(['initial', 'inherit', 'unset'])
 function borderSplitter(
   value: string,
 ): [string | number | null, string | null, string | null] {
-  const borderParts: (number | string)[] = splitValue(value).filter(
-    (val) /* : val is number | string */ => val != null,
-  )
+  const borderParts = splitValue(value).filter((part) => part != null)
 
   const suffix = borderParts.some(
     (part) => typeof part === 'string' && part.endsWith('!important'),
@@ -93,9 +86,9 @@ function borderSplitter(
     (part) =>
       typeof part === 'number' ||
       (typeof part === 'string' &&
-        (/^\.?\d+/.exec(part) ||
+        (/^\.?\d+/u.exec(part) != null ||
           borderWidthKeywords.has(part) ||
-          /^calc\(/.exec(part))),
+          /^calc\(/u.exec(part) != null)),
   )
 
   if (typeof width === 'number') {
@@ -119,14 +112,13 @@ function borderSplitter(
   }
 
   if (parts.length === 2 && width == null) {
-    width = parts[0]
+    ;[width] = parts
     parts.splice(0, 1)
   }
 
-  const color = parts[0]
+  const [color] = parts
   const withSuffix = (part: undefined | null | string | number) =>
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-    part == null ? null : part + suffix
+    part == null ? null : part.toString() + suffix
 
   return [withSuffix(width), withSuffix(style), withSuffix(color)]
 }

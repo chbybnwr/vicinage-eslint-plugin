@@ -1,8 +1,6 @@
-/* eslint-disable unicorn/no-keyword-prefix */
 export { sortKeys }
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable no-magic-numbers */
 
 const sortKeys: Rule.RuleModule = {
   meta: {
@@ -89,7 +87,6 @@ const sortKeys: Rule.RuleModule = {
       Program: (node) => {
         for (const part of node.body) {
           if (part.type === 'ImportDeclaration') {
-            // eslint-disable-next-line new-cap
             importTracker.ImportDeclaration(part)
           }
         }
@@ -101,7 +98,8 @@ const sortKeys: Rule.RuleModule = {
         if (
           !isStyleDeclaration(node) ||
           !node.arguments.some(
-            (arg) => 'properties' in arg && arg.properties.length > 0,
+            (argument) =>
+              'properties' in argument && argument.properties.length > 0,
           )
         ) {
           return
@@ -147,7 +145,6 @@ const sortKeys: Rule.RuleModule = {
         }
       },
 
-      // eslint-disable-next-line complexity
       Property(node: Readonly<Property & Rule.NodeParentExtension>) {
         if (
           !isInsideApplyCall ||
@@ -159,7 +156,7 @@ const sortKeys: Rule.RuleModule = {
         }
 
         const { prevName, prevNode, numKeys } = stack
-        const currName = getPropertyName(node)
+        const currentName = getPropertyName(node)
         let isBlankLineBetweenNodes = stack.prevBlankLine
 
         const sourceCode = getSourceCode(context)
@@ -192,11 +189,11 @@ const sortKeys: Rule.RuleModule = {
             isBlankLineBetweenNodes = true
           }
 
-          const firstToken = tokens[0]!
+          const [firstToken] = tokens
 
           if (
             !isBlankLineBetweenNodes &&
-            firstToken.loc &&
+            firstToken?.loc &&
             stack.prevNode?.loc &&
             firstToken.loc.start.line - stack.prevNode.loc.end.line > 1
           ) {
@@ -206,26 +203,25 @@ const sortKeys: Rule.RuleModule = {
 
         stack.prevNode = node
 
-        if (currName !== null) {
-          stack.prevName = currName
+        if (currentName !== null) {
+          stack.prevName = currentName
         }
 
         if (allowLineSeparatedGroups && isBlankLineBetweenNodes) {
-          stack.prevBlankLine = currName === null
+          stack.prevBlankLine = currentName === null
 
           return
         }
 
-        if (prevName === null || currName === null || numKeys < minKeys) {
+        if (prevName === null || currentName === null || numKeys < minKeys) {
           return
         }
 
-        if (!isValidOrder(prevName, currName, order)) {
+        if (!isValidOrder(prevName, currentName, order)) {
           context.report({
             node,
-
             loc: node.key.loc!,
-            message: `Style property key "${currName}" should be above "${prevName}"`,
+            message: `Style property key "${currentName}" should be above "${prevName}"`,
             // $FlowFixMe[incompatible-type]
             fix: createFix({
               prevNode: prevNode!,
@@ -273,23 +269,22 @@ type Stack = null | {
 }
 
 function isValidOrder(
-  prevName: string,
-  currName: string,
+  previousName: string,
+  currentName: string,
   order: Schema['order'],
 ): boolean {
-  const prev = getPropertyPriorityAndType(prevName, order!)
+  const previous = getPropertyPriorityAndType(previousName, order!)
+  const current = getPropertyPriorityAndType(currentName, order!)
 
-  const curr = getPropertyPriorityAndType(currName, order!)
-
-  if (prev.type !== 'string' || curr.type !== 'string') {
-    if (prev.priority === curr.priority) {
-      return prevName <= currName
+  if (previous.type !== 'string' || current.type !== 'string') {
+    if (previous.priority === current.priority) {
+      return previousName <= currentName
     }
 
-    return prev.priority <= curr.priority
+    return previous.priority <= current.priority
   }
 
-  return prevName <= currName
+  return previousName <= currentName
 }
 
 function createFix({
@@ -307,32 +302,38 @@ function createFix({
     const fixes = []
 
     // Retrieve comments before the previous node
-    const prevNodeCommentsBefore = getPropertyCommentsBefore(prevNode)
+    const previousNodeCommentsBefore = getPropertyCommentsBefore(prevNode)
 
     // Start node for the entire context with comments of prevNode
-    const prevNodeContextStartNode =
-      prevNodeCommentsBefore.length > 0 ? prevNodeCommentsBefore[0] : prevNode
+    const previousNodeContextStartNode =
+      previousNodeCommentsBefore.length > 0
+        ? previousNodeCommentsBefore[0]
+        : prevNode
 
     const { indentation: startNodeIndentation, isTokenBeforeSameLineAsNode } =
-      getNodeIndentation(prevNodeContextStartNode!)
+      getNodeIndentation(previousNodeContextStartNode!)
 
-    const prevNodeSameLineComment = getPropertySameLineComment(prevNode)
+    const previousNodeSameLineComment = getPropertySameLineComment(prevNode)
 
-    const tokenAfterPrevNode = sourceCode.getTokenAfter(prevNode, {
+    const tokenAfterPreviousNode = sourceCode.getTokenAfter(prevNode, {
       includeComments: false,
     })
 
-    const prevNodeContextEndNode = prevNodeSameLineComment ?? tokenAfterPrevNode
+    const previousNodeContextEndNode =
+      previousNodeSameLineComment ?? tokenAfterPreviousNode
 
-    if (!prevNodeContextEndNode?.range || !prevNodeContextStartNode!.range) {
+    if (
+      !previousNodeContextEndNode?.range ||
+      !previousNodeContextStartNode!.range
+    ) {
       // Early return if range or prevNode doesn't exist
       return []
     }
 
     const rangeStart =
-      prevNodeContextStartNode!.range[0] - startNodeIndentation.length
+      previousNodeContextStartNode!.range[0] - startNodeIndentation.length
 
-    const [_rangeStart, rangeEnd] = prevNodeContextEndNode.range
+    const [, rangeEnd] = previousNodeContextEndNode.range
 
     const textToMove = sourceCode.getText().slice(rangeStart, rangeEnd)
 
@@ -344,29 +345,30 @@ function createFix({
       ]),
     )
 
-    const currNodeSameLineComment = getPropertySameLineComment(currNode)
+    const currentNodeSameLineComment = getPropertySameLineComment(currNode)
 
-    const tokenAfterCurrNode = sourceCode.getTokenAfter(currNode, {
+    const tokenAfterCurrentNode = sourceCode.getTokenAfter(currNode, {
       includeComments: false,
     })
 
-    const hasCommaAfterCurrNode =
-      tokenAfterCurrNode && isCommaToken(tokenAfterCurrNode)
+    const hasCommaAfterCurrentNode =
+      tokenAfterCurrentNode && isCommaToken(tokenAfterCurrentNode)
 
-    if (!hasCommaAfterCurrNode) {
+    if (!hasCommaAfterCurrentNode) {
       fixes.push(fixer.insertTextAfter(currNode, ','))
     }
 
-    const newLine = isSameLine(prevNode, currNode) ? '' : '\n'
     // If token after the current node is a comma then we insert after the comma
     // Otherwise we insert after the current node because there is a guaranteed fix to add comma (above)
-    const fallbackNode = hasCommaAfterCurrNode ? tokenAfterCurrNode : currNode
+    const fallbackNode = hasCommaAfterCurrentNode
+      ? tokenAfterCurrentNode
+      : currNode
 
     fixes.push(
       fixer.insertTextAfter(
-        (currNodeSameLineComment ?? fallbackNode) as AST.Token,
+        (currentNodeSameLineComment ?? fallbackNode) as AST.Token,
 
-        `${newLine}${textToMove}`,
+        `${isSameLine(prevNode, currNode) ? '' : '\n'}${textToMove}`,
       ),
     )
 
@@ -382,10 +384,8 @@ function createFix({
     )
 
     const upperNodeLine = upperNode!.loc?.start.line
-
     const lowerNodeLine = lowerNode!.loc?.start.line
 
-    // eslint-disable-next-line no-undefined
     if (upperNodeLine === undefined || lowerNodeLine === undefined) {
       throw new Error('Invalid node location')
     }

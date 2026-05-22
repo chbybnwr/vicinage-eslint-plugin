@@ -1,32 +1,30 @@
 export { resolveKey }
 
-/* eslint-disable no-undefined */
-
 function resolveKey(
   property: Identifier,
   variables?: Variables,
 ): string | undefined {
   const { name } = property
-  let existingVar = variables?.get(name) as
+  let existingVariable = variables?.get(name) as
     | 'ARG'
     | TSESTree.Expression
     | undefined
 
-  while (existingVar != null) {
-    if (existingVar === 'ARG') {
+  while (existingVariable != null) {
+    if (existingVariable === 'ARG') {
       return undefined
     }
 
-    if (existingVar.type === AST_NODE_TYPES.TSAsExpression) {
-      existingVar = existingVar.expression
+    if (existingVariable.type === AST_NODE_TYPES.TSAsExpression) {
+      existingVariable = existingVariable.expression
     }
 
-    if (existingVar.type === AST_NODE_TYPES.TSSatisfiesExpression) {
-      existingVar = existingVar.expression
+    if (existingVariable.type === AST_NODE_TYPES.TSSatisfiesExpression) {
+      existingVariable = existingVariable.expression
     }
 
-    if (existingVar.type === AST_NODE_TYPES.Literal) {
-      const { value } = existingVar
+    if (existingVariable.type === AST_NODE_TYPES.Literal) {
+      const { value } = existingVariable
 
       if (typeof value === 'string') {
         return value
@@ -35,11 +33,11 @@ function resolveKey(
       return undefined
     }
 
-    if (existingVar.type !== AST_NODE_TYPES.Identifier) {
+    if (existingVariable.type !== AST_NODE_TYPES.Identifier) {
       return undefined
     }
 
-    existingVar = variables?.get(existingVar.name) as
+    existingVariable = variables?.get(existingVariable.name) as
       | 'ARG'
       | TSESTree.Expression
       | undefined

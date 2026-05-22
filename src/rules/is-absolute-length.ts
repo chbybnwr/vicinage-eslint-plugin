@@ -7,16 +7,14 @@ const isAbsoluteLength: RuleCheck = (
   _variables?: Variables,
 ): RuleResponse => {
   if (node.type === 'Literal') {
-    const val = node.value
+    const value = node.value
 
     if (
-      typeof val === 'string' &&
+      typeof value === 'string' &&
       [...absoluteLengthUnits].some((unit) =>
-        // eslint-disable-next-line require-unicode-regexp
-        new RegExp(String.raw`^([-,+]?\d+(\.\d+)?${unit})$`).exec(val),
+        new RegExp(String.raw`^([-,+]?\d+(\.\d+)?${unit})$`, 'u').exec(value),
       )
     ) {
-      // eslint-disable-next-line no-undefined
       return undefined
     }
   }

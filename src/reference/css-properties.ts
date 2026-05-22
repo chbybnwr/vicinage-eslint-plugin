@@ -11,12 +11,7 @@ export type { RuleResponse }
 export { SVGProperties }
 export type { Variables }
 
-/* eslint-disable no-magic-numbers */
 /* eslint-disable unicorn/no-useless-undefined */
-/* eslint-disable unicorn/no-keyword-prefix */
-/* eslint-disable no-shadow */
-/* eslint-disable no-undefined */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 
 type RuleResponse =
   | undefined
@@ -32,11 +27,10 @@ type RuleResponse =
         | undefined
     }
 
-// eslint-disable-next-line max-params
 type RuleCheck = (
   node: Readonly<Expression | Pattern>,
   variables?: Variables,
-  prop?: Readonly<Property>,
+  property?: Readonly<Property>,
   context?: Rule.RuleContext,
 ) => RuleResponse
 
@@ -57,7 +51,7 @@ const isLength: RuleCheck = makeUnionRule(isAbsoluteLength, isRelativeLength)
 function isNonNumericString(
   node: Node,
   _variables?: Variables,
-  _prop?: Property,
+  _property?: Property,
 ): RuleResponse {
   if (
     node.type === 'Literal' &&
@@ -71,7 +65,7 @@ function isNonNumericString(
     return {
       message: 'a non-numeric string',
       suggest: {
-        desc: `Replace string '${node.value}' with number ${Number(node.value)}?`,
+        desc: `Replace string '${node.value}' with number ${Number(node.value).toString()}?`,
         fix: (fixer: Rule.RuleFixer): Rule.Fix | null =>
           fixer.replaceText(node, String(Number(node.value))),
       },
@@ -439,10 +433,10 @@ const backgroundAttachment: RuleCheck = attachment
 const backgroundBlendMode: RuleCheck = (
   node: Expression | Pattern,
   _variables?: Variables,
-  prop?: Property,
+  property?: Property,
 ) => {
-  if (node.type !== 'Literal' || prop == null) {
-    return blendMode(node, _variables, prop)
+  if (node.type !== 'Literal' || property == null) {
+    return blendMode(node, _variables, property)
   }
 
   if (typeof node.value === 'string') {
@@ -457,7 +451,7 @@ const backgroundBlendMode: RuleCheck = (
           desc: 'Replace comma with a comma and a space (", ")',
           fix: (fixer: Rule.RuleFixer): Rule.Fix | null =>
             fixer.replaceText(
-              prop,
+              property,
               `backgroundBlendMode: '${value.replaceAll(/,(?! )/gu, ', ')}'`,
             ),
         },
@@ -468,7 +462,7 @@ const backgroundBlendMode: RuleCheck = (
       const response = blendMode(
         { type: 'Literal', value: item, raw: `'${item}'` },
         _variables,
-        prop,
+        property,
       )
 
       if (response !== undefined) {
@@ -514,58 +508,63 @@ const NUMERIC_LITERAL_PROPERTIES = new Set([
   'borderBlockEndWidth',
 ])
 
-const serializeValue = (propertyKey: string, val: number | string): string => {
-  if (typeof val === 'number') {
-    return String(val)
+const serializeValue = (
+  propertyKey: string,
+  value: number | string,
+): string => {
+  if (typeof value === 'number') {
+    return String(value)
   }
 
   if (
     NUMERIC_LITERAL_PROPERTIES.has(propertyKey) &&
-    NUMERIC_LITERAL_VALUE_REGEX.test(val)
+    NUMERIC_LITERAL_VALUE_REGEX.test(value)
   ) {
-    return String(Number(val))
+    return String(Number(value))
   }
 
   // Escape single quotes within the string
-  const escaped = val.replaceAll('\\', '\\\\').replaceAll("'", String.raw`\'`)
+  const escaped = value.replaceAll('\\', '\\\\').replaceAll("'", String.raw`\'`)
 
   return `'${escaped}'`
 }
 
 const formatReplacementProperties = (
-  prop: Readonly<Property>,
+  property: Readonly<Property>,
   properties: readonly string[],
   context?: Rule.RuleContext,
 ): string => {
   const sourceCode = context == null ? undefined : getSourceCode(context)
 
-  return formatPropertiesWithNodeIndentation(prop, properties, sourceCode)
+  return formatPropertiesWithNodeIndentation(property, properties, sourceCode)
 }
 
 function border(suffix = ''): RuleCheck {
-  // eslint-disable-next-line max-params
   return function (
     node: Expression | Pattern,
     _variables?: Variables,
-    prop?: Property,
+    property?: Property,
     context?: Rule.RuleContext,
   ) {
     const response: NonNullable<RuleResponse> = {
       message: `The 'border${suffix}' property is not supported. Use the 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' properties instead.`,
     }
 
-    if (node.type !== 'Literal' || prop == null) {
+    if (node.type !== 'Literal' || property == null) {
       return response
     }
 
     if (typeof node.value === 'number') {
-      const fixFn = (fixer: Rule.RuleFixer): Rule.Fix | null =>
-        fixer.replaceText(prop, `border${suffix}Width: ${String(node.value)}`)
+      const fixFunction = (fixer: Rule.RuleFixer): Rule.Fix | null =>
+        fixer.replaceText(
+          property,
+          `border${suffix}Width: ${String(node.value)}`,
+        )
 
-      response.fix = fixFn
+      response.fix = fixFunction
       response.suggest = {
         desc: `Replace 'border${suffix}' set to a number with 'border${suffix}Width' instead?`,
-        fix: fixFn,
+        fix: fixFunction,
       }
     }
 
@@ -573,37 +572,37 @@ function border(suffix = ''): RuleCheck {
       const [width, style, color] = borderSplitter(node.value)
 
       if (width != null || style != null || color != null) {
-        const fixFn = (fixer: Rule.RuleFixer): Rule.Fix | null => {
-          const newRules = []
+        const fixFunction = (fixer: Rule.RuleFixer): Rule.Fix | null => {
+          const rules = []
 
           if (width != null) {
-            newRules.push(
+            rules.push(
               `border${suffix}Width: ${serializeValue(`border${suffix}Width`, width)}`,
             )
           }
 
           if (style != null) {
-            newRules.push(
+            rules.push(
               `border${suffix}Style: ${serializeValue(`border${suffix}Style`, style)}`,
             )
           }
 
           if (color != null) {
-            newRules.push(
+            rules.push(
               `border${suffix}Color: ${serializeValue(`border${suffix}Color`, color)}`,
             )
           }
 
           return fixer.replaceText(
-            prop,
-            formatReplacementProperties(prop, newRules, context),
+            property,
+            formatReplacementProperties(property, rules, context),
           )
         }
 
-        response.fix = fixFn
+        response.fix = fixFunction
         response.suggest = {
           desc: `Replace 'border${suffix}' with 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' instead?`,
-          fix: fixFn,
+          fix: fixFunction,
         }
       }
     }
@@ -1496,7 +1495,7 @@ const shapeRendering: RuleCheck = makeUnionRule(
   makeLiteralRule('crispEdges'),
   makeLiteralRule('geometricPrecision'),
 )
-const src: RuleCheck = isString
+const source: RuleCheck = isString
 const speak: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('none'),
@@ -1663,70 +1662,68 @@ const SVGProperties: Record<string, RuleCheck> = {
   ),
 }
 
-/* eslint-disable object-shorthand */
-// $FlowFixMe[cannot-spread-indexer]
 const CSSProperties = {
   ...SupportedVendorSpecificCSSProperties,
   ...SVGProperties,
   accentColor: color,
   alignTracks: isString,
-  alignContent: alignContent,
-  alignItems: alignItems,
-  alignSelf: alignSelf,
-  alignmentBaseline: alignmentBaseline,
-  all: all,
+  alignContent,
+  alignItems,
+  alignSelf,
+  alignmentBaseline,
+  all,
   animation: showError(
     '`animation` is not recommended. Please use `animationName`, `animationDuration`, etc. instead',
   ),
   animationComposition: makeUnionRule('replace', 'add', 'accumulate'),
   animationDelay: time,
-  animationDirection: animationDirection,
+  animationDirection,
   animationDuration: time,
-  animationFillMode: animationFillMode,
-  animationIterationCount: animationIterationCount,
-  animationPlayState: animationPlayState,
-  animationTimingFunction: animationTimingFunction,
+  animationFillMode,
+  animationIterationCount,
+  animationPlayState,
+  animationTimingFunction,
   animationTimeline: isString,
-  appearance: appearance,
+  appearance,
   aspectRatio: isStringOrNumber,
-  backdropFilter: backdropFilter,
-  backfaceVisibility: backfaceVisibility,
+  backdropFilter,
+  backfaceVisibility,
   background: isString,
-  backgroundAttachment: backgroundAttachment,
-  backgroundBlendMode: backgroundBlendMode,
-  backgroundClip: backgroundClip,
-  backgroundColor: backgroundColor,
-  backgroundImage: backgroundImage,
-  backgroundOrigin: backgroundOrigin,
-  backgroundPosition: backgroundPosition,
-  backgroundPositionX: backgroundPositionX,
-  backgroundPositionY: backgroundPositionY,
-  backgroundRepeat: backgroundRepeat,
-  backgroundSize: backgroundSize,
-  baselineShift: baselineShift,
-  behavior: behavior,
+  backgroundAttachment,
+  backgroundBlendMode,
+  backgroundClip,
+  backgroundColor,
+  backgroundImage,
+  backgroundOrigin,
+  backgroundPosition,
+  backgroundPositionX,
+  backgroundPositionY,
+  backgroundRepeat,
+  backgroundSize,
+  baselineShift,
+  behavior,
 
-  borderCollapse: borderCollapse,
+  borderCollapse,
 
-  borderImage: borderImage,
-  borderImageWidth: borderImageWidth,
-  borderImageOutset: borderImageOutset,
-  borderImageRepeat: borderImageRepeat,
-  borderImageSlice: borderImageSlice,
-  borderImageSource: borderImageSource,
+  borderImage,
+  borderImageWidth,
+  borderImageOutset,
+  borderImageRepeat,
+  borderImageSlice,
+  borderImageSource,
 
-  borderWidth: borderWidth,
-  borderStyle: borderStyle,
-  borderColor: borderColor,
-  borderTopWidth: borderTopWidth,
-  borderTopStyle: borderTopStyle,
+  borderWidth,
+  borderStyle,
+  borderColor,
+  borderTopWidth,
+  borderTopStyle,
   borderTopColor: color,
-  borderBottomWidth: borderBottomWidth,
-  borderBottomStyle: borderBottomStyle,
+  borderBottomWidth,
+  borderBottomStyle,
   borderBottomColor: color,
-  borderLeftColor: borderLeftColor,
-  borderLeftStyle: borderLeftStyle,
-  borderLeftWidth: borderLeftWidth,
+  borderLeftColor,
+  borderLeftStyle,
+  borderLeftWidth,
   borderRightColor: borderLeftColor,
   borderRightStyle: borderLeftStyle,
   borderRightWidth: borderLeftWidth,
@@ -1781,7 +1778,7 @@ const CSSProperties = {
   borderBlockStartStyle: borderLeftStyle,
   borderBlockStartWidth: borderLeftWidth,
 
-  borderSpacing: borderSpacing,
+  borderSpacing,
 
   borderRadius: lengthPercentage,
   borderStartStartRadius: lengthPercentage,
@@ -1794,7 +1791,7 @@ const CSSProperties = {
   borderBottomLeftRadius: lengthPercentage,
   borderBottomRightRadius: lengthPercentage,
 
-  cornerShape: cornerShape,
+  cornerShape,
   cornerStartStartShape: cornerShape,
   cornerStartEndShape: cornerShape,
   cornerEndStartShape: cornerShape,
@@ -1804,40 +1801,40 @@ const CSSProperties = {
   cornerBottomLeftShape: cornerShape,
   cornerBottomRightShape: cornerShape,
 
-  boxAlign: boxAlign,
-  boxDecorationBreak: boxDecorationBreak,
-  boxDirection: boxDirection,
-  boxFlex: boxFlex,
-  boxFlexGroup: boxFlexGroup,
-  boxLines: boxLines,
-  boxOrdinalGroup: boxOrdinalGroup,
-  boxOrient: boxOrient,
-  boxShadow: boxShadow,
-  boxSizing: boxSizing,
-  boxSuppress: boxSuppress,
+  boxAlign,
+  boxDecorationBreak,
+  boxDirection,
+  boxFlex,
+  boxFlexGroup,
+  boxLines,
+  boxOrdinalGroup,
+  boxOrient,
+  boxShadow,
+  boxSizing,
+  boxSuppress,
   breakAfter: breakBeforeOrAfter,
   breakBefore: breakBeforeOrAfter,
-  breakInside: breakInside,
-  captionSide: captionSide,
+  breakInside,
+  captionSide,
   caretColor: color,
-  clear: clear,
-  clip: clip,
-  clipPath: clipPath,
-  clipRule: clipRule,
-  color: color,
+  clear,
+  clip,
+  clipPath,
+  clipRule,
+  color,
   colorAdjust: makeUnionRule('economy', 'exact'),
   colorScheme: makeUnionRule('light', 'dark', 'light dark'),
-  columnCount: columnCount,
-  columnFill: columnFill,
-  columnGap: columnGap,
-  columnRule: columnRule,
-  columnRuleColor: columnRuleColor,
-  columnRuleStyle: columnRuleStyle,
-  columnRuleWidth: columnRuleWidth,
-  columnSpan: columnSpan,
-  columnWidth: columnWidth,
-  columns: columns,
-  contain: contain,
+  columnCount,
+  columnFill,
+  columnGap,
+  columnRule,
+  columnRuleColor,
+  columnRuleStyle,
+  columnRuleWidth,
+  columnSpan,
+  columnWidth,
+  columns,
+  contain,
   containIntrinsicSize: makeUnionRule(isNumber, isString),
   containIntrinsicBlockSize: makeUnionRule(isNumber, isString),
   containIntrinsicInlineSize: makeUnionRule(isNumber, isString),
@@ -1845,83 +1842,83 @@ const CSSProperties = {
   containIntrinsicWidth: makeUnionRule(isNumber, isString),
   containerType: makeUnionRule('normal', 'size', 'inline-size'),
   containerName: isString,
-  content: content,
+  content,
   contentVisibility: makeUnionRule('visible', 'hidden', 'auto'),
-  counterIncrement: counterIncrement,
-  counterReset: counterReset,
+  counterIncrement,
+  counterReset,
   counterSet: isString,
-  cue: cue,
-  cueAfter: cueAfter,
-  cueBefore: cueBefore,
-  cursor: cursor,
-  direction: direction,
-  display: display,
-  displayInside: displayInside,
-  displayList: displayList,
-  displayOutside: displayOutside,
-  dominantBaseline: dominantBaseline,
-  emptyCells: emptyCells,
+  cue,
+  cueAfter,
+  cueBefore,
+  cursor,
+  direction,
+  display,
+  displayInside,
+  displayList,
+  displayOutside,
+  dominantBaseline,
+  emptyCells,
 
-  filter: filter,
+  filter,
   flex: isString,
-  flexBasis: flexBasis,
-  flexDirection: flexDirection,
-  flexFlow: flexFlow,
-  flexGrow: flexGrow,
-  flexShrink: flexShrink,
-  flexWrap: flexWrap,
-  float: float,
+  flexBasis,
+  flexDirection,
+  flexFlow,
+  flexGrow,
+  flexShrink,
+  flexWrap,
+  float,
   font: showError(
     '`font` is not recommended. Please use `fontSize`, `fontFamily`, `fontStyle` etc. instead',
   ),
-  fontFamily: fontFamily,
-  fontFeatureSettings: fontFeatureSettings,
-  fontKerning: fontKerning,
-  fontLanguageOverride: fontLanguageOverride,
+  fontFamily,
+  fontFeatureSettings,
+  fontKerning,
+  fontLanguageOverride,
   fontOpticalSizing: makeUnionRule('auto', 'none'),
   fontPalette: isString,
-  fontSize: fontSize,
-  fontSizeAdjust: fontSizeAdjust,
+  fontSize,
+  fontSizeAdjust,
   fontSmooth: makeUnionRule('auto', 'never', 'always', lengthPercentage),
-  fontStretch: fontStretch,
-  fontStyle: fontStyle,
-  fontSynthesis: fontSynthesis,
-  fontVariant: fontVariant,
-  fontVariantAlternates: fontVariantAlternates,
-  fontVariantCaps: fontVariantCaps,
-  fontVariantEastAsian: fontVariantEastAsian,
+  fontStretch,
+  fontStyle,
+  fontSynthesis,
+  fontVariant,
+  fontVariantAlternates,
+  fontVariantCaps,
+  fontVariantEastAsian,
   fontVariantEmoji: makeUnionRule('auto', 'text', 'emoji', 'unicode'),
-  fontVariantLigatures: fontVariantLigatures,
-  fontVariantNumeric: fontVariantNumeric,
-  fontVariantPosition: fontVariantPosition,
+  fontVariantLigatures,
+  fontVariantNumeric,
+  fontVariantPosition,
   fontVariationSettings: isString,
-  fontWeight: fontWeight,
+  fontWeight,
   forcedColorAdjust: makeUnionRule('auto', 'none'),
 
   fieldSizing: makeUnionRule('content', 'fixed'),
 
-  gap: gap,
-  glyphOrientationHorizontal: glyphOrientationHorizontal,
-  glyphOrientationVertical: glyphOrientationVertical,
+  gap,
+  glyphOrientationHorizontal,
+  glyphOrientationVertical,
 
-  grid: grid,
-  gridArea: gridArea,
-  gridAutoColumns: gridAutoColumns,
-  gridAutoFlow: gridAutoFlow,
-  gridAutoRows: gridAutoRows,
-  gridColumn: gridColumn,
-  gridColumnEnd: gridColumnEnd,
+  grid,
+  gridArea,
+  gridAutoColumns,
+  gridAutoFlow,
+  gridAutoRows,
+  gridColumn,
+  gridColumnEnd,
   gridColumnGap: lengthPercentage,
-  gridColumnStart: gridColumnStart,
+  gridColumnStart,
 
-  gridRow: gridRow,
-  gridRowEnd: gridRowEnd,
+  gridRow,
+  gridRowEnd,
   gridGap: lengthPercentage,
   gridRowGap: lengthPercentage,
 
-  gridRowStart: gridRowStart,
-  gridTemplate: gridTemplate,
-  gridTemplateAreas: gridTemplateAreas,
+  gridRowStart,
+  gridTemplate,
+  gridTemplateAreas,
   gridTemplateColumns: gridTemplate,
   gridTemplateRows: gridTemplate,
 
@@ -1934,13 +1931,13 @@ const CSSProperties = {
     isString,
   ),
   hyphenateCharacter: isString,
-  hyphens: hyphens,
-  imageOrientation: imageOrientation,
-  imageRendering: imageRendering,
-  imageResolution: imageResolution,
-  imeMode: imeMode,
-  initialLetter: initialLetter,
-  initialLetterAlign: initialLetterAlign,
+  hyphens,
+  imageOrientation,
+  imageRendering,
+  imageResolution,
+  imeMode,
+  initialLetter,
+  initialLetterAlign,
 
   inset: length,
   top: length,
@@ -1955,11 +1952,11 @@ const CSSProperties = {
   insetInlineEnd: length,
 
   height: width,
-  width: width,
-  blockSize: blockSize,
-  inlineSize: inlineSize,
+  width,
+  blockSize,
+  inlineSize,
 
-  interpolateSize: interpolateSize,
+  interpolateSize,
 
   maxHeight: minMaxLength,
   maxWidth: minMaxLength,
@@ -1970,10 +1967,10 @@ const CSSProperties = {
   minInlineSize: minMaxLength,
   minWidth: minMaxLength,
 
-  isolation: isolation,
-  justifyContent: justifyContent,
-  justifyItems: justifyItems,
-  justifySelf: justifySelf,
+  isolation,
+  justifyContent,
+  justifyItems,
+  justifySelf,
   // Not supported in any browser yet.
   // justifyTracks: makeUnionRule(
   //   'start',
@@ -1987,16 +1984,16 @@ const CSSProperties = {
   //   'left',
   //   'right',
   // ),
-  kerning: kerning,
-  letterSpacing: letterSpacing,
-  lineBreak: lineBreak,
-  lineHeight: lineHeight,
-  listStyle: listStyle,
-  listStyleImage: listStyleImage,
-  listStylePosition: listStylePosition,
-  listStyleType: listStyleType,
+  kerning,
+  letterSpacing,
+  lineBreak,
+  lineHeight,
+  listStyle,
+  listStyleImage,
+  listStylePosition,
+  listStyleType,
 
-  margin: margin,
+  margin,
   marginBlock: marginLeft,
   marginBlockEnd: marginLeft,
   marginBlockStart: marginLeft,
@@ -2004,52 +2001,52 @@ const CSSProperties = {
   marginInline: marginLeft,
   marginInlineEnd: marginLeft,
   marginInlineStart: marginLeft,
-  marginLeft: marginLeft,
+  marginLeft,
   marginRight: marginLeft,
-  marginTop: marginTop,
+  marginTop,
 
-  marker: marker,
-  markerEnd: markerEnd,
-  markerMid: markerMid,
-  markerOffset: markerOffset,
-  markerStart: markerStart,
-  mask: mask,
+  marker,
+  markerEnd,
+  markerMid,
+  markerOffset,
+  markerStart,
+  mask,
   maskBorderMode: makeUnionRule('alpha', 'luminance'),
   maskBorderOutset: isString,
   maskBorderRepeat: makeUnionRule('stretch', 'repeat', 'round', 'space'),
   maskBorderSlice: isString,
   maskBorderSource: isString,
   maskBorderWidth: isString,
-  maskClip: maskClip,
-  maskComposite: maskComposite,
-  maskImage: maskImage,
-  maskMode: maskMode,
-  maskOrigin: maskOrigin,
-  maskPosition: maskPosition,
-  maskRepeat: maskRepeat,
-  maskSize: maskSize,
-  maskType: maskType,
+  maskClip,
+  maskComposite,
+  maskImage,
+  maskMode,
+  maskOrigin,
+  maskPosition,
+  maskRepeat,
+  maskSize,
+  maskType,
 
-  mixBlendMode: mixBlendMode,
-  motion: motion,
+  mixBlendMode,
+  motion,
   motionOffset: lengthPercentage,
-  motionPath: motionPath,
-  motionRotation: motionRotation,
-  objectFit: objectFit,
-  objectPosition: objectPosition,
+  motionPath,
+  motionRotation,
+  objectFit,
+  objectPosition,
 
   offsetAnchor: isString,
   offsetPath: isString,
   offsetDistance: width,
-  offsetBlockEnd: offsetBlockEnd,
-  offsetBlockStart: offsetBlockStart,
-  offsetInlineEnd: offsetInlineEnd,
-  offsetInlineStart: offsetInlineStart,
+  offsetBlockEnd,
+  offsetBlockStart,
+  offsetInlineEnd,
+  offsetInlineStart,
   offsetRotate: isString,
-  opacity: opacity,
-  order: order,
-  orphans: orphans,
-  outline: outline,
+  opacity,
+  order,
+  orphans,
+  outline,
   outlineColor: color,
   outlineOffset: makeUnionRule(isNumber, isLength),
   outlineStyle: makeUnionRule(
@@ -2067,13 +2064,13 @@ const CSSProperties = {
   outlineWidth: makeUnionRule(isNumber, isLength),
   blockOverflow: overflow, // TODO - Add support to Babel Plugin
   inlineOverflow: overflow, // TODO - Add support to Babel Plugin
-  overflow: overflow,
-  overflowAnchor: overflowAnchor,
-  overflowClipBox: overflowClipBox,
-  overflowWrap: overflowWrap,
+  overflow,
+  overflowAnchor,
+  overflowClipBox,
+  overflowWrap,
   overflowX: overflowDir,
   overflowY: overflowDir,
-  overscrollBehavior: overscrollBehavior,
+  overscrollBehavior,
   // Currently Unsupported
   // overscrollBehaviorInline: overscrollBehaviorX,
   overscrollBehaviorX: overscrollBehavior,
@@ -2098,14 +2095,14 @@ const CSSProperties = {
 
   pageBreakAfter: pageBreak,
   pageBreakBefore: pageBreak,
-  pageBreakInside: pageBreakInside,
+  pageBreakInside,
   pause: pauseOrRest,
   pauseAfter: pauseOrRest,
   pauseBefore: pauseOrRest,
-  perspective: perspective,
-  perspectiveOrigin: perspectiveOrigin,
-  pointerEvents: pointerEvents,
-  position: position,
+  perspective,
+  perspectiveOrigin,
+  pointerEvents,
+  position,
 
   // Shorthand not yet supported
   placeContent: isString,
@@ -2113,8 +2110,8 @@ const CSSProperties = {
   placeSelf: isString,
   printColorAdjust: makeUnionRule('economy', 'exact'),
 
-  quotes: quotes,
-  resize: resize,
+  quotes,
+  resize,
   rest: pauseOrRest,
   restAfter: pauseOrRest,
   restBefore: pauseOrRest,
@@ -2123,20 +2120,20 @@ const CSSProperties = {
   scale: makeUnionRule(isString, isNumber),
   translate: makeUnionRule(isString, isNumber),
 
-  rowGap: rowGap,
-  rubyAlign: rubyAlign,
-  rubyMerge: rubyMerge,
-  rubyPosition: rubyPosition,
+  rowGap,
+  rubyAlign,
+  rubyMerge,
+  rubyPosition,
 
   scrollbarColor: color,
   scrollbarGutter: makeUnionRule('auto', 'stable', 'stable both-edges'),
   scrollbarWidth: makeUnionRule('auto', 'thin', 'none'),
 
-  scrollBehavior: scrollBehavior,
-  scrollSnapPaddingBottom: scrollSnapPaddingBottom,
-  scrollSnapPaddingTop: scrollSnapPaddingTop,
-  scrollSnapAlign: scrollSnapAlign,
-  scrollSnapType: scrollSnapType,
+  scrollBehavior,
+  scrollSnapPaddingBottom,
+  scrollSnapPaddingTop,
+  scrollSnapAlign,
+  scrollSnapType,
   scrollSnapStop: makeUnionRule('normal', 'always'),
 
   // scrollMargin: makeUnionRule(isNumber, isString),
@@ -2161,22 +2158,22 @@ const CSSProperties = {
   scrollSnapMarginRight: makeUnionRule(isNumber, isString),
   scrollSnapMarginTop: makeUnionRule(isNumber, isString),
 
-  shapeImageThreshold: shapeImageThreshold,
+  shapeImageThreshold,
   shapeMargin: lengthPercentage,
-  shapeOutside: shapeOutside,
-  shapeRendering: shapeRendering,
-  speak: speak,
-  speakAs: speakAs,
-  src: src,
+  shapeOutside,
+  shapeRendering,
+  speak,
+  speakAs,
+  src: source,
 
-  tabSize: tabSize,
-  tableLayout: tableLayout,
-  textAlign: textAlign,
-  textAlignLast: textAlignLast,
-  textAnchor: textAnchor,
-  textCombineUpright: textCombineUpright,
+  tabSize,
+  tableLayout,
+  textAlign,
+  textAlignLast,
+  textAnchor,
+  textCombineUpright,
 
-  textDecoration: textDecoration,
+  textDecoration,
   textDecorationColor: color,
   textDecorationLine: isString, // TODO: Stricter support in the future
   textDecorationSkip: makeUnionRule(
@@ -2198,53 +2195,53 @@ const CSSProperties = {
   ),
   textDecorationThickness: makeUnionRule(isNumber, isLength),
 
-  textEmphasis: textEmphasis,
-  textEmphasisColor: textEmphasisColor,
-  textEmphasisPosition: textEmphasisPosition,
-  textEmphasisStyle: textEmphasisStyle,
-  textIndent: textIndent,
-  textOrientation: textOrientation,
-  textOverflow: textOverflow,
-  textRendering: textRendering,
-  textShadow: textShadow,
-  textSizeAdjust: textSizeAdjust,
-  textTransform: textTransform,
-  textUnderlineOffset: textUnderlineOffset,
-  textUnderlinePosition: textUnderlinePosition,
+  textEmphasis,
+  textEmphasisColor,
+  textEmphasisPosition,
+  textEmphasisStyle,
+  textIndent,
+  textOrientation,
+  textOverflow,
+  textRendering,
+  textShadow,
+  textSizeAdjust,
+  textTransform,
+  textUnderlineOffset,
+  textUnderlinePosition,
   textWrap: makeUnionRule('wrap', 'nowrap', 'balance', 'pretty'),
 
-  touchAction: touchAction,
-  transform: transform,
-  transformBox: transformBox,
-  transformOrigin: transformOrigin,
-  transformStyle: transformStyle,
+  touchAction,
+  transform,
+  transformBox,
+  transformOrigin,
+  transformStyle,
   transition: isString,
   transitionDelay: time,
   transitionDuration: time,
-  transitionProperty: transitionProperty,
-  transitionTimingFunction: transitionTimingFunction,
-  unicodeBidi: unicodeBidi,
-  unicodeRange: unicodeRange,
-  userSelect: userSelect,
+  transitionProperty,
+  transitionTimingFunction,
+  unicodeBidi,
+  unicodeRange,
+  userSelect,
   viewTransitionName: makeUnionRule(all, isString),
-  verticalAlign: verticalAlign,
-  visibility: visibility,
-  voiceBalance: voiceBalance,
-  voiceDuration: voiceDuration,
-  voiceFamily: voiceFamily,
-  voicePitch: voicePitch,
-  voiceRange: voiceRange,
-  voiceRate: voiceRate,
-  voiceStress: voiceStress,
-  voiceVolume: voiceVolume,
-  whiteSpace: whiteSpace,
-  widows: widows,
-  willChange: willChange,
-  wordBreak: wordBreak,
-  wordSpacing: wordSpacing,
-  wordWrap: wordWrap,
-  writingMode: writingMode,
-  zIndex: zIndex,
+  verticalAlign,
+  visibility,
+  voiceBalance,
+  voiceDuration,
+  voiceFamily,
+  voicePitch,
+  voiceRange,
+  voiceRate,
+  voiceStress,
+  voiceVolume,
+  whiteSpace,
+  widows,
+  willChange,
+  wordBreak,
+  wordSpacing,
+  wordWrap,
+  writingMode,
+  zIndex,
 
   // Purposely not supported because it is not supported in Firefox.
   zoom: makeUnionRule('normal', 'reset', isNumber, isPercentage),
