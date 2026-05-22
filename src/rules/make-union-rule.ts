@@ -1,6 +1,5 @@
 export { makeUnionRule }
 
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable no-undefined */
 
 function makeUnionRule(
@@ -37,13 +36,12 @@ function makeUnionRule(
     const fixable = failedRules.filter(
       (a) => a.suggest != null || a.fix != null,
     )
-    fixable.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity))
+    fixable.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
 
-    // @ts-expect-error FIXME: please
     return {
       message: failedRules.map((a) => a.message).join('\n'),
-      fix: fixable[0] == null ? undefined : fixable[0].fix,
-      suggest: fixable[0] == null ? undefined : fixable[0].suggest,
+      fix: fixable[0]?.fix,
+      suggest: fixable[0]?.suggest,
     }
   }
 }

@@ -46,7 +46,6 @@ function makeLiteralRule(value: number | string | null): RuleCheck {
             }
           : undefined
 
-      // @ts-expect-error FIXME: incompatible-type
       return {
         ...defaultFailure,
         distance,

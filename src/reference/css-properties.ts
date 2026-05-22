@@ -23,11 +23,13 @@ type RuleResponse =
   | {
       message: string
       distance?: number
-      fix?: Rule.ReportFixer
-      suggest?: {
-        fix: Rule.ReportFixer
-        desc: string
-      }
+      fix?: Rule.ReportFixer | undefined
+      suggest?:
+        | {
+            fix: Rule.ReportFixer
+            desc: string
+          }
+        | undefined
     }
 
 // eslint-disable-next-line max-params
